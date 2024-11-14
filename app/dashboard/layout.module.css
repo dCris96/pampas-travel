@@ -1,0 +1,15 @@
+.layoutflex {
+  width: 100vw;
+  display: flex;
+  position: relative;
+}
+
+.right_content {
+  padding: 100px 30px 30px 330px;
+  transition: all ease-in-out 250ms;
+}
+
+.right_content_collapsed {
+  padding: 100px 30px 30px 30px;
+  transition: all ease-in-out 300ms;
+}

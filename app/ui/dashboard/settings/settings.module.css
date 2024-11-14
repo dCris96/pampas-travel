@@ -1,0 +1,87 @@
+.drawer {
+  width: 350px;
+  padding: 5px 20px;
+}
+
+.draw_head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.draw_title {
+  font-weight: 500;
+  font-size: 1.2rem;
+}
+
+.draw_close {
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all ease-in 300ms;
+  background-color: transparent;
+  color: var(--ornaments-light);
+}
+
+.draw_close:hover {
+  background-color: var(--semitone);
+}
+
+.draw_box {
+  margin-top: 20px;
+}
+
+.box_title {
+  font-size: 0.8rem;
+  color: var(--secondary);
+  font-weight: 400;
+}
+
+.botones {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+}
+
+.boton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 33%;
+  border: 1px solid var(--secondary);
+  padding: 15px 10px;
+  cursor: pointer;
+  background-color: transparent;
+  font-size: 0.9rem;
+  transition: all ease-in-out 300ms;
+}
+
+.boton:hover {
+  background-color: var(--semitone);
+}
+
+.active {
+  background-color: var(--semitone);
+  color: var(--ornaments-light);
+}
+
+.boton:nth-child(1) {
+  border-radius: 10px 0 0 10px;
+}
+
+.boton:nth-child(2) {
+  border-left: none;
+  border-right: none;
+}
+
+.boton:nth-child(3) {
+  border-radius: 0 10px 10px 0;
+}

@@ -1,0 +1,29 @@
+.link {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 15px;
+  border-radius: 10px;
+  transition: all ease-in-out 300ms;
+}
+
+.link:hover {
+  background-color: var(--semitone);
+  color: var(--text);
+}
+
+.active {
+  background-color: var(--semitone);
+  color: var(--text);
+}
+
+.link_icon {
+  font-size: 1.3rem;
+  transition: all ease 300ms;
+  color: var(--ornaments-light);
+}
+
+.text {
+  font-size: 1rem;
+  transition: all ease 300ms;
+}

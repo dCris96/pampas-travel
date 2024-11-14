@@ -1,13 +1,12 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --primary: #ffffff;
+  --secondary: #959595;
+  --background-dark: #10191e;
+  --background-light: #eae8e8;
+  --text: #191a1b;
+  --ornaments: #ec2633;
+  --ornaments-light: #0858f7;
+  --semitone: #cce6ff;
 }
 
 html,
@@ -17,11 +16,8 @@ body {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  color: var(--text);
+  background: var(--background-light);
 }
 
 * {
@@ -33,10 +29,4 @@ body {
 a {
   color: inherit;
   text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
 }
