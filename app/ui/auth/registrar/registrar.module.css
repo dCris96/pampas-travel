@@ -1,0 +1,139 @@
+.formulario {
+  width: 100%;
+}
+
+.contras_inputs,
+.nombres {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+}
+
+.input_cont {
+  flex: 1;
+}
+
+.input {
+  width: 100%;
+  background-color: #3b364c;
+  padding: 15px 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #b1b0b7;
+  border: none;
+  outline: 2px solid transparent;
+  transition: all ease 200ms;
+  display: flex;
+  justify-content: space-between;
+}
+
+.input input {
+  width: 90%;
+  font-size: 1rem;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  color: #b1b0b7;
+}
+
+.input input:focus {
+  color: #fff;
+}
+
+.input:focus {
+  outline: 2px solid #a08dcf;
+  color: #fff;
+}
+
+.input_error {
+  display: flex;
+  background-color: #3b364c;
+  padding: 15px 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #b1b0b7;
+  border: none;
+  outline: 2px solid red;
+}
+
+.input_error input {
+  width: 90%;
+  font-size: 1rem;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  color: #b1b0b7;
+}
+
+.input_error input:focus {
+  color: #fff;
+}
+
+.caja_ind {
+  width: 100%;
+  margin: 15px 0 15px;
+}
+
+.caja_ind input {
+  width: 100%;
+}
+
+.btn_pass {
+  line-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: transparent;
+  font-size: 1rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+.text_error {
+  color: red;
+  font-size: 0.8rem;
+}
+
+.contras_inputs {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.terminos {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.terminos label {
+  display: block;
+  cursor: pointer;
+}
+
+.terminos label a {
+  text-decoration: underline;
+}
+
+.btn_enviar {
+  width: 100%;
+  border: none;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #6e54b5;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all ease 300ms;
+}
+
+.btn_enviar:hover {
+  background-color: #947ecd;
+}
