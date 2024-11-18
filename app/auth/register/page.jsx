@@ -22,6 +22,7 @@ export default function Register() {
         <div className={styles.form_caja}>
           <FormRegister />
         </div>
+
         <div>
           <div className={styles.separator}>
             <div className={styles.line}></div>

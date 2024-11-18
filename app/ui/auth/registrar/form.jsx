@@ -3,18 +3,22 @@ import Link from "next/link";
 import { useState } from "react";
 import { IoMdEyeOff } from "react-icons/io";
 import { FaEye } from "react-icons/fa6";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 import styles from "./registrar.module.css";
 
 export default function FormRegister() {
+  const router = useRouter();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    nombre: "",
+    apellido: "",
     email: "",
-    password: "",
+    contraseña: "",
     repeatPassword: "",
     acceptTerms: false,
   });
@@ -31,17 +35,18 @@ export default function FormRegister() {
 
   const validateForm = () => {
     let newErrors = {};
-    if (!formData.firstName) newErrors.firstName = "El nombre es obligatorio";
-    if (!formData.lastName) newErrors.lastName = "El apellido es obligatorio";
+    if (!formData.nombre) newErrors.nombre = "El nombre es obligatorio";
+    if (!formData.apellido) newErrors.apellido = "El apellido es obligatorio";
     if (!formData.email) newErrors.email = "El correo es obligatorio";
     else if (!/\S+@\S+\.\S+/.test(formData.email))
       newErrors.email = "Este correo es inválido";
-    if (!formData.password) newErrors.password = "La contraseña es obligatoria";
-    else if (formData.password.length < 6)
-      newErrors.password = "La contraseña debe tener al menos 6 caracteres";
-    if (formData.password !== formData.repeatPassword)
+    if (!formData.contraseña)
+      newErrors.contraseña = "La contraseña es obligatoria";
+    else if (formData.contraseña.length < 6)
+      newErrors.contraseña = "La contraseña debe tener al menos 6 caracteres";
+    if (formData.contraseña !== formData.repeatPassword)
       newErrors.repeatPassword = "Las contraseñas no coinciden";
-    if (!formData.acceptTerms)
+    if (formData.acceptTerms !== true)
       newErrors.acceptTerms = "Debe aceptar las condiciones";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -50,8 +55,12 @@ export default function FormRegister() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log("Form submitted:", formData);
-      // Here you would typically send the data to your server
+      try {
+        axios.post("/api/usuario", formData);
+        router.push("/auth/confirmacion");
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      }
     }
   };
 
@@ -61,8 +70,8 @@ export default function FormRegister() {
         <div className={styles.input_cont}>
           <input
             placeholder="Nombres"
-            name="firstName"
-            value={formData.firstName}
+            name="nombre"
+            value={formData.nombre}
             onChange={handleChange}
             className={errors.firstName ? styles.input_error : styles.input}
           />
@@ -73,8 +82,8 @@ export default function FormRegister() {
         <div className={styles.input_cont}>
           <input
             placeholder="Apellidos"
-            name="lastName"
-            value={formData.lastName}
+            name="apellido"
+            value={formData.apellido}
             onChange={handleChange}
             className={errors.lastName ? styles.input_error : styles.input}
           />
@@ -100,9 +109,9 @@ export default function FormRegister() {
           <div className={errors.password ? styles.input_error : styles.input}>
             <input
               placeholder="Contraseña"
-              name="password"
+              name="contraseña"
               type={showPassword ? "text" : "password"}
-              value={formData.password}
+              value={formData.contraseña}
               onChange={handleChange}
             />
             <button
@@ -151,9 +160,7 @@ export default function FormRegister() {
           id="acceptTerms"
           name="acceptTerms"
           checked={formData.acceptTerms}
-          onChange={(checked) =>
-            setFormData((prev) => ({ ...prev, acceptTerms: checked }))
-          }
+          onChange={handleChange}
         />
         <label htmlFor="acceptTerms">
           Acepto los <Link href="#">Términos y condiciones</Link>
