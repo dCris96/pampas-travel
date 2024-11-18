@@ -7,8 +7,10 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 
 import styles from "./registrar.module.css";
+import LoaderGeneral from "../../loader";
 
 export default function FormRegister() {
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -55,12 +57,21 @@ export default function FormRegister() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
+      setLoading(true);
+
       try {
         axios.post("/api/usuario", formData);
+        setLoading(false);
         router.push("/auth/confirmacion");
       } catch (error) {
         console.error("Error submitting form:", error);
+        setLoading(false);
       }
+
+      // Simular demora
+      // setTimeout(async () => {
+
+      // }, 50000);
     }
   };
 
@@ -170,8 +181,9 @@ export default function FormRegister() {
         <p className={styles.text_error}>{errors.acceptTerms}</p>
       )}
       <button type="submit" className={styles.btn_enviar}>
-        Empecemos
+        {loading ? "Enviando..." : "Empecemos"}
       </button>
+      {loading && <LoaderGeneral />}
     </form>
   );
 }

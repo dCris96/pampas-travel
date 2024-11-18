@@ -1,0 +1,74 @@
+.contenedor {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.caja_confirm {
+  width: 370px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.caja_head {
+  background-color: #2b2738;
+  padding: 20px;
+  color: #fff;
+  text-align: center;
+}
+
+.icon {
+  font-size: 4rem;
+  animation: iconoAnimado 1s infinite;
+}
+
+@keyframes iconoAnimado {
+  0%,
+  100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.caja_body {
+  background-color: #fff;
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.correo {
+  color: #6e54b5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
+}
+
+.correo p {
+  display: inline-block;
+}
+
+.caja_body span {
+  font-size: 0.9rem;
+  color: #3b364c;
+}
+
+.boton {
+  background-color: #6e54b5;
+  padding: 20px;
+  display: inline-block;
+  border-radius: 10px;
+  color: #fff;
+  width: 70%;
+  margin: auto;
+}
