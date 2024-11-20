@@ -7,10 +7,14 @@ import {
 } from "react-icons/md";
 import Image from "next/image";
 import styles from "./header.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { montserrat } from "../../fonts";
 import { useRouter } from "next/navigation";
+
+// IMPORTACIONES PARA EL VER EL USUARIO Y LA SESION
 import Cookies from "js-cookie";
+import { jwtVerify } from "jose"; // Usamos jose para verificar y decodificar el token
+import axios from "axios";
 
 // IMPORTANCIONES PARA EL MENU
 import MenuNotificaciones from "./menu-notificaciones";
@@ -48,6 +52,59 @@ export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
 
     router.push("/auth/login");
   };
+
+  // CODIGO PARA VER EL USUARIO Y SU ROL
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      // Obtener el token desde las cookies usando js-cookie
+      const token = Cookies.get("token");
+
+      if (!token) {
+        router.push("/auth/login");
+        return;
+      }
+
+      try {
+        // Decodificar el token usando jose
+        const { payload } = await jwtVerify(
+          token,
+          new TextEncoder().encode(process.env.NEXT_PUBLIC_JWT_SECRET)
+        );
+
+        // Llamar a la API para obtener los datos del usuario usando el id extraído del token
+        const response = await axios.get(`/api/usuario/${payload.id}`);
+        const userData = response.data[0];
+
+        // Obtener los datos del rol: id y nombre
+        const idRol = response.data[0].id_rol;
+        const dataRol = await axios.get(`/api/rol/${idRol}`);
+        const nombreRol = dataRol.data[0].nombre_rol;
+
+        // Extraer el primer nombre
+        const [primerNombre] = userData.nombre.split(" ");
+
+        //Extraer el primer apellido
+        const [primerApellido] = userData.apellido.split(" ");
+
+        setUser({
+          ...userData,
+          rol: nombreRol,
+          primerNombre,
+          primerApellido,
+        });
+      } catch (error) {
+        console.error(
+          "Error al verificar el token o recuperar los datos del usuario:",
+          error
+        );
+        router.push("/auth/login");
+      }
+    };
+
+    getUserData();
+  }, []);
 
   return (
     <>
@@ -95,10 +152,16 @@ export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
                 </span>
               </div>
 
-              <div className={styles.acount_info}>
-                <h4 className={styles.acountName}>Cristian Crespín</h4>
-                <p className={styles.rol}>Administrador</p>
-              </div>
+              {user ? (
+                <div className={styles.acount_info}>
+                  <h4 className={styles.acountName}>
+                    {user.primerNombre} {user.primerApellido}
+                  </h4>
+                  <p className={styles.rol}>{user.rol}</p>
+                </div>
+              ) : (
+                <p>Cargando...</p>
+              )}
             </div>
 
             {/* CODIGO DEL MENU DEL USUARIO */}
