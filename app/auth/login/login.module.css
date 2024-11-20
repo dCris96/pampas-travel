@@ -1,0 +1,43 @@
+.contenedor {
+  width: 70%;
+  background-color: #2b2738;
+  padding: 10px;
+  border-radius: 15px;
+  display: flex;
+  color: #fff;
+}
+
+.slider_cont {
+  width: 50%;
+}
+
+.form_cont {
+  width: 50%;
+  padding: 40px;
+}
+
+.form_head {
+  margin-bottom: 20px;
+}
+
+.form_head h2 {
+  margin-bottom: 10px;
+  font-size: 2rem;
+}
+
+.form_head p {
+  color: #b1b0b7;
+}
+
+.form_head p a {
+  color: #6395ff;
+  transition: all ease 200ms;
+}
+
+.form_head p a:hover {
+  color: rgb(77, 77, 255);
+}
+
+.form_caja {
+  width: 100%;
+}

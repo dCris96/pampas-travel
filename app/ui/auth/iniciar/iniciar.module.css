@@ -1,0 +1,274 @@
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  overflow: hidden;
+  position: relative;
+}
+
+.logo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+}
+
+.link {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+}
+
+.link a {
+  padding: 5px 10px;
+  border-radius: 50px;
+  background-color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+}
+
+.sliderContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  transition: opacity 1s ease-in-out;
+  padding: 40px;
+}
+
+.slideHidden {
+  opacity: 0;
+}
+
+.slideVisible {
+  opacity: 1;
+}
+
+.fondo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.fondo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.contenido {
+  z-index: 5;
+  width: 70%;
+}
+
+.contenido h2 {
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 2rem;
+  margin-bottom: 1rem;
+}
+
+.contenido p {
+  font-size: 1rem;
+  line-height: 1rem;
+  font-weight: 400;
+}
+
+.contenido span {
+  font-size: 0.9rem;
+}
+
+.indicators {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.indicator {
+  border-radius: 5px;
+  height: 0.25rem;
+  transition: all 0.3s;
+}
+
+.indicatorActive {
+  width: 2rem;
+  background-color: white;
+}
+
+.indicatorInactive {
+  width: 1rem;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* ESTILOS DEL FORMULARIO */
+.formulario {
+  width: 100%;
+}
+
+.contras_inputs,
+.nombres {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+}
+
+.input_cont {
+  flex: 1;
+}
+
+.input {
+  width: 100%;
+  background-color: #3b364c;
+  padding: 15px 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #b1b0b7;
+  border: none;
+  outline: 2px solid transparent;
+  transition: all ease 200ms;
+  display: flex;
+  justify-content: space-between;
+}
+
+.input input {
+  width: 90%;
+  font-size: 1rem;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  color: #b1b0b7;
+}
+
+.input input:focus {
+  color: #fff;
+}
+
+.input:focus {
+  outline: 2px solid #a08dcf;
+  color: #fff;
+}
+
+.input_error {
+  display: flex;
+  background-color: #3b364c;
+  padding: 15px 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #b1b0b7;
+  border: none;
+  outline: 2px solid red;
+}
+
+.input_error input {
+  width: 90%;
+  font-size: 1rem;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  color: #b1b0b7;
+}
+
+.input_error input:focus {
+  color: #fff;
+}
+
+.caja_ind {
+  width: 100%;
+  margin: 15px 0 15px;
+}
+
+.caja_ind input {
+  width: 100%;
+}
+
+.btn_pass {
+  line-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: transparent;
+  font-size: 1rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+.text_error {
+  color: red;
+  font-size: 0.8rem;
+}
+
+.contras_inputs {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.terminos {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.terminos label {
+  display: block;
+  cursor: pointer;
+}
+
+.terminos label a {
+  text-decoration: underline;
+}
+
+.terminos a {
+  color: #6395ff;
+  text-decoration: underline;
+}
+
+.btn_enviar {
+  width: 100%;
+  border: none;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #6e54b5;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all ease 300ms;
+}
+
+.btn_enviar:hover {
+  background-color: #947ecd;
+}

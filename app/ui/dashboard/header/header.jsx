@@ -97,17 +97,13 @@ export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
               open={open}
               onClose={handleClose}
               onClick={handleClose}
-              keepMounted
-              disablePortal
               slotProps={{
                 paper: {
                   elevation: 0,
                   sx: {
                     overflow: "visible",
-                    position: "absolute", // Esto ayuda a sacar el menú del flujo del DOM
                     filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
                     mt: 1.5,
-                    zIndex: 1300,
                     "& .MuiAvatar-root": {
                       width: 32,
                       height: 32,

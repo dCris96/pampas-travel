@@ -4,7 +4,10 @@ import HeaderDashboard from "../ui/dashboard/header/header";
 import Settings from "../ui/dashboard/settings/settings";
 import styles from "./layout.module.css";
 import { roboto } from "../ui/fonts";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie"; // Importamos para manejar las cookies
+import { jwtVerify } from "jose";
 
 export default function Layout({ children }) {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
@@ -13,12 +16,42 @@ export default function Layout({ children }) {
     setIsSidebarExpanded(!isSidebarExpanded);
   };
 
-  // CODIGO PARA ABRIR LOS SETTINGS DE COLORES Y MODO OSCURO
+  // Código para abrir los settings de colores y modo oscuro
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const toggleDrawer = (newIsDrawerOpen) => () => {
     setIsDrawerOpen(newIsDrawerOpen);
   };
+
+  // Lógica para el inicio de sesión
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = Cookies.get("token"); // Lee el token desde las cookies
+      if (!token) {
+        router.push("/auth/login");
+        return;
+      }
+
+      const secretKey = process.env.NEXT_PUBLIC_JWT_SECRET;
+
+      if (!secretKey) {
+        router.push("/auth/login");
+        return;
+      }
+
+      try {
+        const encodedSecretKey = new TextEncoder().encode(secretKey); // Aseguramos que la clave no esté vacía
+
+        await jwtVerify(token, encodedSecretKey); // Verificamos el token con la clave codificada
+      } catch (err) {
+        router.push("/auth/login");
+      }
+    };
+
+    checkToken();
+  }, [router]);
 
   return (
     <div className={`${roboto.className}`}>
