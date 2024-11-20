@@ -59,19 +59,17 @@ export default function FormRegister() {
     if (validateForm()) {
       setLoading(true);
 
-      try {
-        axios.post("/api/usuario", formData);
-        setLoading(false);
-        router.push("/auth/confirmacion");
-      } catch (error) {
-        console.error("Error submitting form:", error);
-        setLoading(false);
-      }
-
       // Simular demora
-      // setTimeout(async () => {
-
-      // }, 50000);
+      setTimeout(async () => {
+        try {
+          axios.post("/api/usuario", formData);
+          setLoading(false);
+          router.push("/auth/confirmacion");
+        } catch (error) {
+          console.error("Error submitting form:", error);
+          setLoading(false);
+        }
+      }, 1000);
     }
   };
 

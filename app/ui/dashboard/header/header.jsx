@@ -9,6 +9,8 @@ import Image from "next/image";
 import styles from "./header.module.css";
 import { useState } from "react";
 import { montserrat } from "../../fonts";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 // IMPORTANCIONES PARA EL MENU
 import MenuNotificaciones from "./menu-notificaciones";
@@ -36,6 +38,15 @@ export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  // CODIGO PARA CERRAR SESION
+  const router = useRouter();
+
+  const handleLogout = () => {
+    Cookies.remove("token");
+
+    router.push("/auth/login");
   };
 
   return (
@@ -141,7 +152,7 @@ export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
                 </ListItemIcon>
                 Cambiar contraseña
               </MenuItem>
-              <MenuItem onClick={handleClose}>
+              <MenuItem onClick={handleLogout}>
                 <ListItemIcon>
                   <IoLogOut />
                 </ListItemIcon>

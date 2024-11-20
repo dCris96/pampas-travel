@@ -8,8 +8,11 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 
 import styles from "./iniciar.module.css";
+import LoaderGeneral from "../../loader";
 
 export default function FormLogin() {
+  const [loading, setLoading] = useState(false);
+
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -44,6 +47,7 @@ export default function FormLogin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     if (!validateForm()) return;
 
@@ -58,9 +62,11 @@ export default function FormLogin() {
         httpOnly: false,
       });
 
+      setLoading(false);
       // Redirigir al usuario a la página principal o dashboard
       router.push("/dashboard"); // Asegúrate de hacer el redireccionamiento aquí
     } catch (error) {
+      setLoading(false);
       const errorMsg =
         error.response?.data?.error ||
         "Error al iniciar sesión. Intenta de nuevo.";
@@ -109,6 +115,7 @@ export default function FormLogin() {
       <button type="submit" className={styles.btn_enviar}>
         Empecemos
       </button>
+      {loading && <LoaderGeneral />}
     </form>
   );
 }
