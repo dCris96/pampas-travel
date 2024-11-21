@@ -7,7 +7,7 @@ export async function GET(request) {
     const id = url.pathname.split("/").pop();
 
     const [result] = await myConexion.query(
-      "SELECT * FROM usuarios WHERE id_usuario = ?",
+      "SELECT * FROM permisos WHERE id_permiso = ?",
       [id]
     );
 
@@ -15,7 +15,7 @@ export async function GET(request) {
       return NextResponse.json(result);
     } else {
       return NextResponse.json(
-        { message: "El usuario no existe" },
+        { message: "El permiso no existe" },
         { status: 404 }
       );
     }
@@ -34,17 +34,17 @@ export async function PUT(request) {
 
     const data = await request.json();
 
-    const [updateUsuario] = await myConexion.query(
-      "UPDATE usuarios SET ? WHERE id_usuario = ?",
+    const [updatePermiso] = await myConexion.query(
+      "UPDATE permisos SET ? WHERE id_permiso = ?",
       [data, id]
     );
 
-    if (updateUsuario.affectedRows === 0) {
-      return NextResponse.json("No se encontró el usuario.");
+    if (updatePermiso.affectedRows === 0) {
+      return NextResponse.json("No se encontró el permiso.");
     }
 
     const [result] = await myConexion.query(
-      "SELECT * FROM usuarios WHERE id_usuario = ?",
+      "SELECT * FROM permisos WHERE id_permiso = ?",
       [id]
     );
 
@@ -62,19 +62,19 @@ export async function DELETE(request) {
     const url = new URL(request.url);
     const id = url.pathname.split("/").pop();
 
-    const [deleteUser] = await myConexion.query(
-      "UPDATE usuarios SET id_estado_usuario = 2 WHERE id_usuario = ?",
+    const [result] = await myConexion.query(
+      "DELETE FROM permisos WHERE id_permiso = ?",
       [id]
     );
 
-    if (deleteUser.affectedRows === 1) {
+    if (result.affectedRows === 1) {
       return NextResponse.json(
-        { message: "Usuario marcado como inactivo." },
+        { message: "Registro eliminado correctamente." },
         { status: 200 }
       );
     } else {
       return NextResponse.json(
-        { message: "Usuario no encontrado." },
+        { message: "Permiso no encontrado." },
         { status: 404 }
       );
     }
