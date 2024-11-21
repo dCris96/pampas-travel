@@ -13,7 +13,7 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    const { nombre_modulo, descripcion, id_estado_modulo } =
+    const { nombre_modulo, descripcion, ruta, icono, id_estado_modulo } =
       await request.json();
 
     // Convertir la primera letra de cada palabra en mayúscula
@@ -39,14 +39,16 @@ export async function POST(request) {
     const descReady = sanitizeString(capitalizeFirstLetter(descripcion));
 
     const [result] = await myConexion.query(
-      "INSERT INTO modulos (nombre_modulo, descripcion, id_estado_modulo) VALUES (?,?,?)",
-      [nombreReady, descReady, id_estado_modulo]
+      "INSERT INTO modulos (nombre_modulo, descripcion, ruta, icono, id_estado_modulo) VALUES (?,?,?,?,?)",
+      [nombreReady, descReady, ruta, icono, id_estado_modulo]
     );
 
     return NextResponse.json({
       id: result.insertId,
       nombreReady,
       descReady,
+      ruta,
+      icono,
       id_estado_modulo,
     });
   } catch (error) {

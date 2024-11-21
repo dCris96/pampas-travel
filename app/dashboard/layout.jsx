@@ -8,23 +8,24 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie"; // Importamos para manejar las cookies
 import { jwtVerify } from "jose";
+import axios from "axios";
 
 export default function Layout({ children }) {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+  const [userPermissions, setUserPermissions] = useState([]); // Para almacenar permisos
+  const [userRole, setUserRole] = useState(null);
+  // Código para abrir los settings de colores y modo oscuro
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  // Lógica para el inicio de sesión
+  const router = useRouter();
 
   const toggleSidebar = () => {
     setIsSidebarExpanded(!isSidebarExpanded);
   };
 
-  // Código para abrir los settings de colores y modo oscuro
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
   const toggleDrawer = (newIsDrawerOpen) => () => {
     setIsDrawerOpen(newIsDrawerOpen);
   };
-
-  // Lógica para el inicio de sesión
-  const router = useRouter();
 
   useEffect(() => {
     const checkToken = async () => {
@@ -43,8 +44,12 @@ export default function Layout({ children }) {
 
       try {
         const encodedSecretKey = new TextEncoder().encode(secretKey); // Aseguramos que la clave no esté vacía
-
         await jwtVerify(token, encodedSecretKey); // Verificamos el token con la clave codificada
+        const role = Cookies.get("role"); // Obtener el rol del usuario desde las cookies
+        setUserRole(role);
+        // Obtener los permisos del usuario desde la API
+        const response = await axios.get(`/api/permiso?rol=${role}`);
+        setUserPermissions(response.data);
       } catch (err) {
         router.push("/auth/login");
       }
@@ -56,7 +61,10 @@ export default function Layout({ children }) {
   return (
     <div className={`${roboto.className}`}>
       <div>
-        <SideNav isExpanded={isSidebarExpanded} />
+        <SideNav
+          isExpanded={isSidebarExpanded}
+          userPermissions={userPermissions}
+        />
         <HeaderDashboard
           toggleSidebar={toggleSidebar}
           toggleDrawer={toggleDrawer}
