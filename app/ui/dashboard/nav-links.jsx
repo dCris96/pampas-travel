@@ -7,6 +7,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useUserPermissions } from "@/app/hooks/useUserPermissions";
+import Skeleton from "@mui/material/Skeleton";
 
 const loadIcon = async (iconName) => {
   try {
@@ -77,37 +78,42 @@ export default function NavLinks() {
     fetchData();
   }, []);
 
-  if (loading) return <p>Cargando...</p>;
   if (error) return <p>Error: {error}</p>;
   return (
     <>
-      {data
-        .filter((modulo) => {
-          // Verificamos si el usuario tiene permiso de lectura (r) para este módulo
-          const permiso = userPermissions.find(
-            (permiso) => permiso.id_modulo === modulo.id_modulo
-          );
-          return permiso && permiso.r; // Si tiene permiso de lectura, mostrar módulo
-        })
-        .map((modulo) => {
-          const LinkIcon = icons[modulo.icono];
-          return (
-            <Link
-              key={modulo.nombre_modulo}
-              href={modulo.ruta}
-              className={clsx(styles.link, {
-                [styles.active]: pathname === modulo.ruta,
-              })}
-            >
-              {LinkIcon ? (
-                <LinkIcon className={styles.link_icon} />
-              ) : (
-                <span className={styles.link_icon_placeholder}>⚠️</span>
-              )}
-              <p className={styles.text}>{modulo.nombre_modulo}</p>
-            </Link>
-          );
-        })}
+      {" "}
+      {data.length === 0 && loading
+        ? Array.from({ length: 10 }, (_, index) => (
+            <div key={index} style={{ marginBottom: "10px" }}>
+              <Skeleton variant="rectangular" height={40} width="100%" />
+            </div>
+          ))
+        : data
+            .filter((modulo) => {
+              const permiso = userPermissions.find(
+                (permiso) => permiso.id_modulo === modulo.id_modulo
+              );
+              return permiso && permiso.r;
+            })
+            .map((modulo) => {
+              const LinkIcon = icons[modulo.icono];
+              return (
+                <Link
+                  key={modulo.nombre_modulo}
+                  href={modulo.ruta}
+                  className={clsx(styles.link, {
+                    [styles.active]: pathname === modulo.ruta,
+                  })}
+                >
+                  {LinkIcon ? (
+                    <LinkIcon className={styles.link_icon} />
+                  ) : (
+                    <Skeleton width={24} height={24} />
+                  )}
+                  <p className={styles.text}>{modulo.nombre_modulo}</p>
+                </Link>
+              );
+            })}
     </>
   );
 }

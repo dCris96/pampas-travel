@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_2" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 29.24 29.24">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#Degradado_sin_nombre_11);
+      }
+
+      .cls-2 {
+        fill: none;
+        stroke: #fff;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.87px;
+      }
+    </style>
+    <linearGradient id="Degradado_sin_nombre_11" data-name="Degradado sin nombre 11" x1="24.96" y1="4.28" x2="4.28" y2="24.96" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f26798"/>
+      <stop offset=".87" stop-color="#c72092"/>
+      <stop offset="1" stop-color="#c11592"/>
+    </linearGradient>
+  </defs>
+  <g id="ELEMENTS">
+    <g>
+      <circle class="cls-1" cx="14.62" cy="14.62" r="14.62"/>
+      <path class="cls-2" d="M14.62,6.23h-4.48c-1.04,0-1.57,0-1.97.2-.35.18-.64.46-.82.82-.2.4-.2.92-.2,1.97v10.82c0,1.04,0,1.57.2,1.97.18.35.46.64.82.82.4.2.92.2,1.97.2h3.54M14.62,6.23l5.6,5.6M14.62,6.23v4.1c0,.52,0,.78.1.98.09.18.23.32.41.41.2.1.46.1.98.1h4.1M20.22,11.82v1.87M10.89,19.28h.93M10.89,15.55h2.8M10.89,11.82h.93M18.82,18.08c-.65-.73-1.74-.92-2.56-.26-.82.67-.93,1.78-.29,2.56.36.44,1.22,1.22,1.91,1.82.32.28.48.42.68.48.17.05.36.05.53,0,.2-.06.36-.2.68-.48.68-.59,1.54-1.37,1.91-1.82.64-.79.54-1.91-.29-2.56-.83-.66-1.91-.47-2.56.26Z"/>
+    </g>
+  </g>
+</svg>

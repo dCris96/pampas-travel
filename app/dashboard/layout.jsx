@@ -48,7 +48,9 @@ export default function Layout({ children }) {
         const role = Cookies.get("role"); // Obtener el rol del usuario desde las cookies
         setUserRole(role);
         // Obtener los permisos del usuario desde la API
-        const response = await axios.get(`/api/permiso?rol=${role}`);
+        const response = await axios.get(
+          `/api/permiso/permiso_rol?rol=${role}`
+        );
         setUserPermissions(response.data);
       } catch (err) {
         router.push("/auth/login");

@@ -5,6 +5,7 @@
 }
 
 .right_content {
+  width: 100%;
   padding: 100px 30px 30px 330px;
   transition: all ease-in-out 250ms;
 }

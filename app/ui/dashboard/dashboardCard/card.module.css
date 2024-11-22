@@ -21,6 +21,8 @@
 
 .image {
   object-fit: contain;
+  filter: drop-shadow(15px 15px 15px rgba(0, 0, 0, 0.1))
+    drop-shadow(15px 15px 5px rgba(0, 0, 0, 0.2));
 }
 
 .texto {

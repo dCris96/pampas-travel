@@ -27,7 +27,9 @@ export const useUserPermissions = () => {
           }
 
           try {
-            const response = await axios.get(`/api/permiso?rol=${role}`);
+            const response = await axios.get(
+              `/api/permiso/permiso_rol?rol=${role}`
+            );
             setPermissions(response.data); // Guardamos los permisos en el estado
           } catch (error) {
             console.error("Error al obtener permisos:", error);
