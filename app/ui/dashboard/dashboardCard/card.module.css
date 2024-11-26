@@ -30,7 +30,7 @@
 }
 
 .texto span {
-  color: var(--secondary);
+  color: var(--text-secondary);
 }
 
 .texto p {
@@ -46,10 +46,10 @@
   border: none;
   font-size: 2rem;
   cursor: pointer;
-  color: var(--secondary);
+  color: var(--text-secondary);
   transition: all ease-in 300ms;
 }
 
 .boton:hover {
-  color: var(--ornaments-light);
+  color: var(--acent-color);
 }

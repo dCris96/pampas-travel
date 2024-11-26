@@ -8,19 +8,23 @@
 }
 
 .link:hover {
-  background-color: var(--semitone);
+  background-color: var(--hover);
   color: var(--text);
 }
 
 .active {
-  background-color: var(--semitone);
-  color: var(--text);
+  background-color: var(--acent-color);
+  color: #fff;
+}
+
+.active .link_icon {
+  color: #fff;
 }
 
 .link_icon {
   font-size: 1.3rem;
   transition: all ease 300ms;
-  color: var(--ornaments-light);
+  color: var(--acent-color);
 }
 
 .text {

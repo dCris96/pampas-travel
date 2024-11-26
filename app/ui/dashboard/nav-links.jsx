@@ -81,7 +81,6 @@ export default function NavLinks() {
   if (error) return <p>Error: {error}</p>;
   return (
     <>
-      {" "}
       {data.length === 0 && loading
         ? Array.from({ length: 10 }, (_, index) => (
             <div key={index} style={{ marginBottom: "10px" }}>

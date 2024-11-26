@@ -1,12 +1,22 @@
 :root {
   --primary: #ffffff;
-  --secondary: #959595;
-  --background-dark: #10191e;
-  --background-light: #eae8e8;
+  --foreground: #ffffff;
+  --bg-header: rgba(255, 255, 255, 0.9);
+  --background-color: #eae8e8;
   --text: #191a1b;
-  --ornaments: #ec2633;
-  --ornaments-light: #0858f7;
-  --semitone: #cce6ff;
+  --text-secondary: #959595;
+  --hover: #f0f0f0;
+  --acent-color: #4058f2;
+}
+
+[data-theme="dark"] {
+  --primary: #404040;
+  --foreground: #242424;
+  --bg-header: rgba(36, 36, 36, 0.9);
+  --background-color: #1d1d1d;
+  --text: #ffffff;
+  --text-secondary: #959595;
+  --hover: #343434;
 }
 
 html,
@@ -17,7 +27,7 @@ body {
 
 body {
   color: var(--text);
-  background: var(--background-light);
+  background: var(--background-color);
 }
 
 * {

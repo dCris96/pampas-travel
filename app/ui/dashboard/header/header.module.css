@@ -4,7 +4,7 @@
   left: 0;
   width: 100%;
   height: 70px;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: var(--bg-header);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -38,19 +38,20 @@
   height: 40px;
   border: none;
   padding: 10px;
-  background-color: var(--semitone);
+  background-color: var(--acent-color);
   border-radius: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--text);
+  color: #fff;
   cursor: pointer;
   font-size: 1.5rem;
   transition: all ease 300ms;
 }
 
 .button_header:hover {
-  color: var(--ornaments-light);
+  background-color: var(--hover);
+  color: var(--acent-color);
 }
 
 .user_header {
@@ -74,14 +75,14 @@
 }
 
 .my_acount:hover {
-  background-color: var(--semitone);
+  background-color: var(--primary);
 }
 
 .user_img {
   width: 50px;
   height: 50px;
   border-radius: 50px;
-  border: 1px solid var(--ornaments-light);
+  border: 1px solid var(--acent-color);
   padding: 3px;
   display: flex;
   justify-content: flex-end;
@@ -110,11 +111,10 @@
 }
 
 .rol {
-  color: var(--secondary);
+  color: var(--text-secondary);
 }
 
 /* CODIGO DE LAS NOTIFICACIONES */
-
 .notifications {
   right: 240px !important;
   width: 350px !important;
@@ -132,7 +132,7 @@
 
 .title_notificaciones {
   font-size: 1.3rem;
-  color: var(--ornaments-light);
+  color: var(--acent-color);
 }
 
 .scroll {
@@ -149,9 +149,9 @@
   background: #ccc !important;
 }
 
-.menu_item {
-  background-color: var(--semitone) !important;
-}
+/* .menu_item {
+  background-color: var(--text-secondary) !important;
+} */
 
 .noti_title,
 .noti_desc,
@@ -161,7 +161,7 @@
 
 .noti_title {
   font-size: 1rem;
-  color: var(--ornaments-light);
+  color: var(--acent-color);
   line-height: 1rem;
   margin-bottom: 5px;
 }
@@ -174,16 +174,16 @@
 
 .noti_time {
   font-size: 0.8rem;
-  color: var(--ornaments-light);
+  color: var(--acent-color);
   line-height: 0.8rem;
 }
 
 .button_noti {
   width: 100%;
-  background-color: var(--ornaments-light);
+  background-color: var(--acent-color);
   padding: 15px;
   text-align: center;
-  color: var(--primary);
+  color: var(--text);
   border: none;
   cursor: pointer;
   border-radius: 10px;

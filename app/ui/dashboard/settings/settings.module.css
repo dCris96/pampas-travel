@@ -27,11 +27,11 @@
   cursor: pointer;
   transition: all ease-in 300ms;
   background-color: transparent;
-  color: var(--ornaments-light);
+  color: var(--acent-color);
 }
 
 .draw_close:hover {
-  background-color: var(--semitone);
+  background-color: var(--hover);
 }
 
 .draw_box {
@@ -40,7 +40,7 @@
 
 .box_title {
   font-size: 0.8rem;
-  color: var(--secondary);
+  color: var(--text-secondary);
   font-weight: 400;
 }
 
@@ -56,7 +56,7 @@
   justify-content: center;
   gap: 5px;
   width: 33%;
-  border: 1px solid var(--secondary);
+  border: 1px solid var(--text-secondary);
   padding: 15px 10px;
   cursor: pointer;
   background-color: transparent;
@@ -65,12 +65,13 @@
 }
 
 .boton:hover {
-  background-color: var(--semitone);
+  background-color: var(--hover);
+  color: var(--text);
 }
 
 .active {
-  background-color: var(--semitone);
-  color: var(--ornaments-light);
+  background-color: var(--acent-color);
+  color: #fff;
 }
 
 .boton:nth-child(1) {
@@ -84,4 +85,24 @@
 
 .boton:nth-child(3) {
   border-radius: 0 10px 10px 0;
+}
+
+.colores {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn_color {
+  width: 30px;
+  height: 30px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
 }

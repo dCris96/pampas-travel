@@ -1,12 +1,12 @@
 .aside {
   width: 300px;
-  background-color: var(--primary);
+  background-color: var(--foreground);
   transition: all ease-in-out 300ms;
   height: 100vh;
   position: fixed;
   top: 70px;
   left: 0;
-  border-right: 2px solid var(--background-light);
+  /* border-right: 2px solid var(--acent-color); */
   padding: 10px 20px;
   overflow-y: scroll !important;
   transition: all ease 300ms;
@@ -18,18 +18,18 @@
 }
 
 .aside::-webkit-scrollbar-thumb {
-  background: var(--ornaments-light) !important;
+  background: var(--acent-color) !important;
 }
 
 .aside_collapsed {
   margin-left: -300px;
-  background-color: var(--primary);
+  background-color: var(--foreground);
   transition: all ease-in-out 300ms;
   height: 100vh;
   position: fixed;
   top: 70px;
   left: 0;
-  border-right: 2px solid var(--background-light);
+  /* border-right: 2px solid var(--background-color); */
   padding: 10px 20px;
   overflow-y: scroll !important;
   transition: all ease 300ms;
@@ -41,5 +41,5 @@
 }
 
 .aside_collapsed::-webkit-scrollbar-thumb {
-  background: var(--ornaments-light) !important;
+  background: var(--acent-color) !important;
 }

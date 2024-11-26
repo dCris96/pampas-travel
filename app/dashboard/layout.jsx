@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie"; // Importamos para manejar las cookies
 import { jwtVerify } from "jose";
 import axios from "axios";
+import { ThemeProvider } from "../ThemeContext";
 
 export default function Layout({ children }) {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
@@ -61,27 +62,29 @@ export default function Layout({ children }) {
   }, [router]);
 
   return (
-    <div className={`${roboto.className}`}>
-      <div>
-        <SideNav
-          isExpanded={isSidebarExpanded}
-          userPermissions={userPermissions}
-        />
-        <HeaderDashboard
-          toggleSidebar={toggleSidebar}
-          toggleDrawer={toggleDrawer}
-        />
+    <ThemeProvider>
+      <div className={`${roboto.className}`}>
+        <div>
+          <SideNav
+            isExpanded={isSidebarExpanded}
+            userPermissions={userPermissions}
+          />
+          <HeaderDashboard
+            toggleSidebar={toggleSidebar}
+            toggleDrawer={toggleDrawer}
+          />
+        </div>
+        <div
+          className={
+            isSidebarExpanded
+              ? styles.right_content
+              : styles.right_content_collapsed
+          }
+        >
+          {children}
+        </div>
+        <Settings isOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
       </div>
-      <div
-        className={
-          isSidebarExpanded
-            ? styles.right_content
-            : styles.right_content_collapsed
-        }
-      >
-        {children}
-      </div>
-      <Settings isOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
-    </div>
+    </ThemeProvider>
   );
 }
