@@ -1,6 +1,7 @@
 .drawer {
   width: 350px;
   padding: 5px 20px;
+  z-index: 200000;
 }
 
 .draw_head {

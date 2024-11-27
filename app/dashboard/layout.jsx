@@ -67,7 +67,6 @@ export default function Layout({ children }) {
         <div>
           <SideNav
             isExpanded={isSidebarExpanded}
-            toggleAside={toggleSidebar}
             userPermissions={userPermissions}
           />
           <HeaderDashboard

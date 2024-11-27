@@ -7,6 +7,14 @@
   --text-secondary: #959595;
   --hover: #f0f0f0;
   --acent-color: #4058f2;
+
+  --ver: #28a745;
+  --editar: #007bff;
+  --eliminar: #dc3545;
+
+  --ver-hover: #1e7e34;
+  --editar-hover: #0056b3;
+  --eliminar-hover: #c82333;
 }
 
 [data-theme="dark"] {
@@ -54,4 +62,15 @@ a {
 .title_children {
   font-size: 1.2rem;
   font-weight: 600;
+}
+
+/* Estilos generales en el dashboard==================================== */
+
+.subtitulos-dashboard {
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
 }

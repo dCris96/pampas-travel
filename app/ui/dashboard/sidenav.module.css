@@ -10,7 +10,7 @@
   padding: 10px 20px;
   overflow-y: scroll !important;
   transition: all ease 300ms;
-  z-index: 10000;
+  z-index: 100;
 }
 
 .aside::-webkit-scrollbar {

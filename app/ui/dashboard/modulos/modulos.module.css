@@ -1,12 +1,149 @@
+/* CODIGO DEL FORMULARIO */
+
 .cont_form {
   background-color: var(--primary);
   color: var(--text);
+  min-width: 375px;
   width: 375px;
   padding: 20px;
+  border-radius: 10px;
 }
+
+.formulario {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.campo {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--hover);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.campo:focus {
+  outline: 2px solid var(--background-color);
+}
+
+.textarea {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 150px;
+  max-height: 150px;
+}
+
+.boton {
+  border: 2px solid transparent;
+  background-color: var(--acent-color);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all ease 300ms;
+  text-transform: uppercase;
+}
+
+.boton:hover {
+  background-color: transparent;
+  border: 2px solid var(--acent-color);
+  color: var(--text);
+}
+
+/* CODIGO DE LA TABLA */
 
 .cont_tabla {
   background-color: var(--primary);
   color: var(--text);
   flex: 1;
+  border-radius: 10px;
+  padding: 20px;
+  overflow: auto;
+}
+
+.cont_table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  /* table-layout: fixed; */
+}
+
+.thead {
+  background-color: var(--hover);
+  text-align: left;
+}
+
+.thead th {
+  padding: 12px 15px;
+  font-weight: bold;
+  color: var(--text);
+  border-bottom: 2px solid var(--background-color);
+}
+
+.tbody tr {
+  border-bottom: 1px solid var(--background-color);
+}
+
+/* .tbody tr:nth-child(even) {
+  background-color: var(--acent-color);
+} */
+
+.tbody td {
+  padding: 12px 15px;
+  color: var(--text);
+}
+
+.tbody tr:hover {
+  background-color: var(--hover);
+}
+
+.cont_actions {
+  display: flex;
+  gap: 8px;
+}
+
+.cont_actions button {
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.cont_actions button:nth-child(1) {
+  background-color: var(--editar);
+}
+
+.cont_actions button:nth-child(1):hover {
+  background-color: var(--editar-hover);
+}
+
+.cont_actions button:nth-child(2) {
+  background-color: var(--eliminar);
+}
+
+.cont_actions button:nth-child(2):hover {
+  background-color: var(--eliminar-hover);
+}
+
+.paginacion {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

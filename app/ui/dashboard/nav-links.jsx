@@ -51,7 +51,7 @@ const loadIcon = async (iconName) => {
   }
 };
 
-export default function NavLinks({ setIsExpanded }) {
+export default function NavLinks() {
   const [data, setData] = useState([]);
   const [icons, setIcons] = useState({});
   const [loading, setLoading] = useState(true);
@@ -112,7 +112,6 @@ export default function NavLinks({ setIsExpanded }) {
                   className={clsx(styles.link, {
                     [styles.active]: pathname === modulo.ruta,
                   })}
-                  onClick={() => setIsExpanded(false)}
                 >
                   {LinkIcon ? (
                     <LinkIcon className={styles.link_icon} />
