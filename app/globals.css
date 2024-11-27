@@ -40,3 +40,18 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+.header_children {
+  background-color: var(--primary);
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title_children {
+  font-size: 1.2rem;
+  font-weight: 600;
+}

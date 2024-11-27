@@ -10,6 +10,7 @@
   padding: 10px 20px;
   overflow-y: scroll !important;
   transition: all ease 300ms;
+  z-index: 10000;
 }
 
 .aside::-webkit-scrollbar {
@@ -33,6 +34,7 @@
   padding: 10px 20px;
   overflow-y: scroll !important;
   transition: all ease 300ms;
+  z-index: 10000;
 }
 
 .aside_collapsed::-webkit-scrollbar {
@@ -42,4 +44,15 @@
 
 .aside_collapsed::-webkit-scrollbar-thumb {
   background: var(--acent-color) !important;
+}
+
+@media screen and (max-width: 992px) {
+  .aside {
+    margin-left: -300px;
+  }
+
+  .aside_collapsed {
+    width: 300px;
+    margin-left: 0;
+  }
 }

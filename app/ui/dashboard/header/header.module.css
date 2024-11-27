@@ -189,3 +189,13 @@
   border-radius: 10px;
   font-weight: 600 !important;
 }
+
+@media screen and (max-width: 642px) {
+  .cont_title_logo {
+    display: none;
+  }
+
+  .acount_info {
+    display: none;
+  }
+}

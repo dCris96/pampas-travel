@@ -26,9 +26,11 @@ import { FaKey } from "react-icons/fa6";
 import { IoLogOut } from "react-icons/io5";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
+import useScreenSize from "@/app/hooks/useScreenSize";
 
 export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
   const [isToggled, setIsToggled] = useState(false);
+  const { width, height } = useScreenSize();
 
   const handleIconClick = () => {
     toggleSidebar();
@@ -129,7 +131,17 @@ export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
             </p>
           </div>
           <button onClick={handleIconClick} className={styles.button_header}>
-            {isToggled ? <MdOutlineMenu /> : <MdOutlineMenuOpen />}
+            {width < 993 ? (
+              isToggled ? (
+                <MdOutlineMenuOpen />
+              ) : (
+                <MdOutlineMenu />
+              )
+            ) : isToggled ? (
+              <MdOutlineMenu />
+            ) : (
+              <MdOutlineMenuOpen />
+            )}
           </button>
         </div>
 

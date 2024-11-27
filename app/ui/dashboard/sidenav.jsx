@@ -1,11 +1,11 @@
 import NavLinks from "./nav-links";
 import styles from "./sidenav.module.css";
 
-export default function SideNav({ isExpanded }) {
+export default function SideNav({ isExpanded, toggleAside }) {
   return (
     <>
       <aside className={isExpanded ? styles.aside : styles.aside_collapsed}>
-        <NavLinks></NavLinks>
+        <NavLinks />
       </aside>
     </>
   );

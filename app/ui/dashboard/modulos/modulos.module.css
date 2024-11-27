@@ -1,0 +1,12 @@
+.cont_form {
+  background-color: var(--primary);
+  color: var(--text);
+  width: 375px;
+  padding: 20px;
+}
+
+.cont_tabla {
+  background-color: var(--primary);
+  color: var(--text);
+  flex: 1;
+}

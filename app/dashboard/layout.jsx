@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie"; // Importamos para manejar las cookies
 import { jwtVerify } from "jose";
 import axios from "axios";
-import { ThemeProvider } from "../ThemeContext";
+import { AppProvider } from "../AppContext";
 
 export default function Layout({ children }) {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
@@ -62,11 +62,12 @@ export default function Layout({ children }) {
   }, [router]);
 
   return (
-    <ThemeProvider>
+    <AppProvider>
       <div className={`${roboto.className}`}>
         <div>
           <SideNav
             isExpanded={isSidebarExpanded}
+            toggleAside={toggleSidebar}
             userPermissions={userPermissions}
           />
           <HeaderDashboard
@@ -85,6 +86,6 @@ export default function Layout({ children }) {
         </div>
         <Settings isOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
       </div>
-    </ThemeProvider>
+    </AppProvider>
   );
 }

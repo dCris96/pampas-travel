@@ -9,7 +9,7 @@ import { Divider } from "@mui/material";
 import { roboto } from "../../fonts";
 
 import clsx from "clsx";
-import { useTheme, useColor } from "@/app/ThemeContext";
+import { useTheme, useColor } from "@/app/AppContext";
 import { useEffect, useState } from "react";
 
 const colorOptions = [

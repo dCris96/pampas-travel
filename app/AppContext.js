@@ -4,7 +4,7 @@ import { createContext, useState, useContext, useEffect } from "react";
 const ThemeContext = createContext();
 const ColorContext = createContext();
 
-export const ThemeProvider = ({ children }) => {
+export const AppProvider = ({ children }) => {
   // Theme state
   const [theme, setTheme] = useState(() => {
     if (typeof window !== "undefined") {
@@ -71,6 +71,14 @@ export const ThemeProvider = ({ children }) => {
       return "#4058f2";
     }
   });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedColor = localStorage.getItem("acent-color") || "#4058f2";
+      setColor(savedColor);
+      document.documentElement.style.setProperty("--acent-color", savedColor);
+    }
+  }, []);
 
   const changeColor = (newColor) => {
     setColor(newColor);

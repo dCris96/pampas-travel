@@ -30,6 +30,15 @@ const loadIcon = async (iconName) => {
       case "Gi":
         module = await import("react-icons/gi");
         break;
+      case "Io":
+        module = await import("react-icons/io");
+        break;
+      case "Gr":
+        module = await import("react-icons/gr");
+        break;
+      case "Tb":
+        module = await import("react-icons/tb");
+        break;
       default:
         console.error(`Biblioteca de iconos no soportada: ${library}`);
         return null;
@@ -42,7 +51,7 @@ const loadIcon = async (iconName) => {
   }
 };
 
-export default function NavLinks() {
+export default function NavLinks({ setIsExpanded }) {
   const [data, setData] = useState([]);
   const [icons, setIcons] = useState({});
   const [loading, setLoading] = useState(true);
@@ -103,6 +112,7 @@ export default function NavLinks() {
                   className={clsx(styles.link, {
                     [styles.active]: pathname === modulo.ruta,
                   })}
+                  onClick={() => setIsExpanded(false)}
                 >
                   {LinkIcon ? (
                     <LinkIcon className={styles.link_icon} />

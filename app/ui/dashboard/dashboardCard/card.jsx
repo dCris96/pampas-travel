@@ -32,33 +32,35 @@ export default function DashboardCard({
 
   return (
     <div className={styles.dashboardBox}>
-      <div className={styles.image_container}>
-        <Image src={img} alt={altText} fill className={styles.image} />
-      </div>
-      <div className={styles.texto}>
-        <span>{title}</span> <p>{cantidad}</p>
-      </div>
-      <div>
-        <button className={styles.boton} onClick={handleClick}>
-          <IoMdMore />
-        </button>
-        <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          MenuListProps={{ "aria-labelledby": "basic-button" }}
-          disableScrollLock
-        >
-          {menuOptions.map((option, index) => (
-            <MenuItem
-              key={index}
-              onClick={() => handleMenuItemClick(option.url)}
-            >
-              {option.text}
-            </MenuItem>
-          ))}
-        </Menu>
+      <div className={styles.box_responsive}>
+        <div className={styles.image_container}>
+          <Image src={img} alt={altText} fill className={styles.image} />
+        </div>
+        <div className={styles.texto}>
+          <span>{title}</span> <p>{cantidad}</p>
+        </div>
+        <div>
+          <button className={styles.boton} onClick={handleClick}>
+            <IoMdMore />
+          </button>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{ "aria-labelledby": "basic-button" }}
+            disableScrollLock
+          >
+            {menuOptions.map((option, index) => (
+              <MenuItem
+                key={index}
+                onClick={() => handleMenuItemClick(option.url)}
+              >
+                {option.text}
+              </MenuItem>
+            ))}
+          </Menu>
+        </div>
       </div>
     </div>
   );
