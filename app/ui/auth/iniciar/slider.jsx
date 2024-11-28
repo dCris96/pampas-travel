@@ -39,7 +39,12 @@ export default function SliderLogin() {
           }`}
         >
           <div className={styles.fondo}>
-            <Image src="/lago.jpg" alt="lago" fill />
+            <Image
+              src="/lago.jpg"
+              alt="lago"
+              fill
+              sizes="(max-width: 2440px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
           </div>
 
           <div className={styles.contenido}>
@@ -54,7 +59,12 @@ export default function SliderLogin() {
           }`}
         >
           <div className={styles.fondo}>
-            <Image src="/montaña.jpg" alt="montaña" fill />
+            <Image
+              src="/montaña.jpg"
+              alt="montaña"
+              fill
+              sizes="(max-width: 2440px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
           </div>
 
           <div className={styles.contenido}>
@@ -69,7 +79,12 @@ export default function SliderLogin() {
           }`}
         >
           <div className={styles.fondo}>
-            <Image src="/ruinas.jpg" alt="ruinas" fill />
+            <Image
+              src="/ruinas.jpg"
+              alt="ruinas"
+              fill
+              sizes="(max-width: 2440px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
           </div>
 
           <div className={styles.contenido}>

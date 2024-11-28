@@ -41,3 +41,21 @@
 .form_caja {
   width: 100%;
 }
+
+@media screen and (max-width: 900px) {
+  .contenedor {
+    display: block;
+  }
+  .slider_cont {
+    display: none;
+  }
+  .form_cont {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 506px) {
+  .contenedor {
+    width: 90%;
+  }
+}

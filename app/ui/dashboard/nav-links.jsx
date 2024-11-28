@@ -7,7 +7,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useUserPermissions } from "@/app/hooks/useUserPermissions";
-import Skeleton from "@mui/material/Skeleton";
+import { SidebarSkeleton } from "../skeletons";
+import { Suspense } from "react";
 
 const loadIcon = async (iconName) => {
   try {
@@ -93,7 +94,9 @@ export default function NavLinks() {
       {data.length === 0 && loading
         ? Array.from({ length: 10 }, (_, index) => (
             <div key={index} style={{ marginBottom: "10px" }}>
-              <Skeleton variant="rectangular" height={40} width="100%" />
+              <Suspense>
+                <SidebarSkeleton />
+              </Suspense>
             </div>
           ))
         : data

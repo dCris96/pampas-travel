@@ -75,7 +75,7 @@
 }
 
 .my_acount:hover {
-  background-color: var(--primary);
+  background-color: var(--hover);
 }
 
 .user_img {

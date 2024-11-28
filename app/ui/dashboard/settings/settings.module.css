@@ -63,6 +63,7 @@
   background-color: transparent;
   font-size: 0.9rem;
   transition: all ease-in-out 300ms;
+  color: var(--text);
 }
 
 .boton:hover {

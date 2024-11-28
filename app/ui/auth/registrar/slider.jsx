@@ -39,7 +39,12 @@ export default function SliderRegister() {
           }`}
         >
           <div className={styles.fondo}>
-            <Image src="/colibri.jpg" alt="Foto de colibri" fill />
+            <Image
+              src="/colibri.jpg"
+              alt="Foto de colibri"
+              fill
+              sizes="(max-width: 2440px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
           </div>
 
           <div className={styles.contenido}>
@@ -54,7 +59,12 @@ export default function SliderRegister() {
           }`}
         >
           <div className={styles.fondo}>
-            <Image src="/selva.jpg" alt="Foto de colibri" fill />
+            <Image
+              src="/selva.jpg"
+              alt="Foto de colibri"
+              fill
+              sizes="(max-width: 2440px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
           </div>
 
           <div className={styles.contenido}>
@@ -69,7 +79,12 @@ export default function SliderRegister() {
           }`}
         >
           <div className={styles.fondo}>
-            <Image src="/flor.jpg" alt="Foto de colibri" fill />
+            <Image
+              src="/flor.jpg"
+              alt="Foto de colibri"
+              fill
+              sizes="(max-width: 2440px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
           </div>
 
           <div className={styles.contenido}>

@@ -83,3 +83,22 @@
 .botones button:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
+
+@media screen and (max-width: 1000px) {
+  .contenedor {
+    width: 90%;
+    display: block;
+  }
+  .slider_cont {
+    display: none;
+  }
+  .form_cont {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .form_cont {
+    padding: 20px;
+  }
+}

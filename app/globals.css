@@ -74,3 +74,64 @@ a {
   gap: 10px;
   margin-bottom: 15px;
 }
+
+/* ========= ESTILOS DEL INPUT DE BUSQUEDA ===================== */
+.caja_busqueda {
+  width: 60%;
+  background-color: var(--background-color);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  color: var(--text);
+  padding: 10px;
+  font-size: 1.5rem;
+  border-radius: 5px;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.input_busqueda {
+  flex: 1;
+  background-color: transparent;
+  font-size: 1rem;
+  color: var(--text);
+  border: none;
+}
+
+.caja_busqueda.focused {
+  border-color: var(
+    --acent-color
+  ); /* Cambia el color del borde cuando está enfocado */
+}
+
+.input_busqueda:focus {
+  outline: none;
+}
+
+.input_busqueda:focus + .MdOutlineSearch {
+  display: none;
+}
+
+/* COLORES MODIFICADOS DE COMPONENTES DE MATERIAL UI */
+.css-x6cj71-MuiPaper-root-MuiPopover-paper-MuiMenu-paper,
+.css-1toxriw-MuiList-root-MuiMenu-list,
+.css-ar64vm-MuiModal-root-MuiDrawer-root .MuiDrawer-paper {
+  background-color: var(--primary) !important;
+  color: var(--text) !important;
+}
+.css-x6cj71-MuiPaper-root-MuiPopover-paper-MuiMenu-paper::before,
+.css-x6cj71-MuiPaper-root-MuiPopover-paper-MuiMenu-paper::before {
+  background-color: var(--primary) !important;
+}
+.css-1rju2q6-MuiButtonBase-root-MuiMenuItem-root .MuiListItemIcon-root {
+  color: var(--text) !important;
+}
+.css-1bug3cd-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected {
+  color: #fff !important;
+}
+.css-1rju2q6-MuiButtonBase-root-MuiMenuItem-root {
+  transition: all ease-in 100ms;
+}
+.css-1rju2q6-MuiButtonBase-root-MuiMenuItem-root:hover {
+  background-color: var(--hover);
+}

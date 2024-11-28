@@ -267,3 +267,10 @@
 .btn_enviar:hover {
   background-color: #947ecd;
 }
+
+@media screen and (max-width: 500px) {
+  .contras_inputs,
+  .nombres {
+    flex-direction: column;
+  }
+}

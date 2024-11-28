@@ -111,6 +111,30 @@
   background-color: var(--hover);
 }
 
+.desc {
+  min-width: 300px;
+}
+
+.estado {
+  font-size: 0.7rem;
+  color: #fff;
+  padding: 5px;
+  border-radius: 50px;
+}
+
+.activo {
+  background-color: var(--editar);
+  color: #fff;
+}
+
+.inactivo {
+  background-color: var(--eliminar);
+}
+
+.mantenimiento {
+  background-color: var(--ver);
+}
+
 .cont_actions {
   display: flex;
   gap: 8px;
@@ -146,4 +170,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.numeros li button {
+  color: var(--text) !important;
 }

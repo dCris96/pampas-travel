@@ -24,9 +24,10 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import { FaUserCog } from "react-icons/fa";
 import { FaKey } from "react-icons/fa6";
 import { IoLogOut } from "react-icons/io5";
-import Skeleton from "@mui/material/Skeleton";
-import Stack from "@mui/material/Stack";
 import useScreenSize from "@/app/hooks/useScreenSize";
+
+import { AcountSkeleton } from "../../skeletons";
+import { Suspense } from "react";
 
 export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
   const [isToggled, setIsToggled] = useState(false);
@@ -174,10 +175,9 @@ export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
                   <p className={styles.rol}>{user.rol}</p>
                 </div>
               ) : (
-                <Stack spacing={1}>
-                  <Skeleton variant="rectangular" width={150} height={10} />
-                  <Skeleton variant="rectangular" width={150} height={10} />
-                </Stack>
+                <Suspense>
+                  <AcountSkeleton />
+                </Suspense>
               )}
             </div>
 

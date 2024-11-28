@@ -3,8 +3,8 @@ import styles from "./card.module.css";
 import DashboardCard from "@/app/ui/dashboard/dashboardCard/card";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Skeleton from "@mui/material/Skeleton";
 import useAuth from "@/app/hooks/useAuth";
+import { CardsSkeleton } from "../../skeletons";
 
 const dashboardBoxes = [
   {
@@ -185,12 +185,7 @@ export default function DashboardCardsContainer() {
         {loading
           ? // Renderiza el Skeleton mientras está cargando
             Array.from({ length: 6 }).map((_, index) => (
-              <Skeleton
-                key={`skeleton-${index}`}
-                variant="rectangular"
-                height={80}
-                width="32.47%"
-              />
+              <CardsSkeleton key={`skeleton-${index}`} />
             ))
           : filteredCards.map((box, index) => (
               <DashboardCard

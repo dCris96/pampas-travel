@@ -109,7 +109,9 @@ export default function FormLogin() {
       )}
 
       <div className={styles.terminos}>
-        ¿Olvidaste tu contraseña?<Link href="#">Clic aquí</Link>
+        <p>
+          ¿Olvidaste tu contraseña? <Link href="#">Clic aquí</Link>
+        </p>
       </div>
       {errors.general && <p className={styles.text_error}>{errors.general}</p>}
       <button type="submit" className={styles.btn_enviar}>
