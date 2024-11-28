@@ -1,5 +1,4 @@
 /* CODIGO DEL FORMULARIO */
-
 .cont_form {
   background-color: var(--primary);
   color: var(--text);
@@ -56,122 +55,9 @@
   color: var(--text);
 }
 
-/* CODIGO DE LA TABLA */
-
-.cont_tabla {
-  background-color: var(--primary);
-  color: var(--text);
-  flex: 1;
-  border-radius: 10px;
-  padding: 20px;
-  overflow: auto;
-}
-
-.cont_table {
-  width: 100%;
-  overflow-x: auto;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 10px;
-  /* table-layout: fixed; */
-}
-
-.thead {
-  background-color: var(--hover);
-  text-align: left;
-}
-
-.thead th {
-  padding: 12px 15px;
-  font-weight: bold;
-  color: var(--text);
-  border-bottom: 2px solid var(--background-color);
-}
-
-.tbody tr {
-  border-bottom: 1px solid var(--background-color);
-}
-
-/* .tbody tr:nth-child(even) {
-  background-color: var(--acent-color);
-} */
-
-.tbody td {
-  padding: 12px 15px;
-  color: var(--text);
-}
-
-.tbody tr:hover {
-  background-color: var(--hover);
-}
-
-.desc {
-  min-width: 300px;
-}
-
-.estado {
-  font-size: 0.7rem;
-  color: #fff;
-  padding: 5px;
-  border-radius: 50px;
-}
-
-.activo {
-  background-color: var(--editar);
-  color: #fff;
-}
-
-.inactivo {
-  background-color: var(--eliminar);
-}
-
-.mantenimiento {
-  background-color: var(--ver);
-}
-
-.cont_actions {
-  display: flex;
-  gap: 8px;
-}
-
-.cont_actions button {
-  border: none;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.cont_actions button:nth-child(1) {
-  background-color: var(--editar);
-}
-
-.cont_actions button:nth-child(1):hover {
-  background-color: var(--editar-hover);
-}
-
-.cont_actions button:nth-child(2) {
-  background-color: var(--eliminar);
-}
-
-.cont_actions button:nth-child(2):hover {
-  background-color: var(--eliminar-hover);
-}
-
-.paginacion {
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.numeros li button {
-  color: var(--text) !important;
+@media screen and (max-width: 760px) {
+  .cont_form {
+    width: 100%;
+    min-width: 100%;
+  }
 }
