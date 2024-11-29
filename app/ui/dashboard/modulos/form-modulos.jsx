@@ -6,13 +6,13 @@ import { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-export default function FormModulos() {
+export default function FormModulos({ onRegistroCreado }) {
   const [formData, setFormData] = useState({
     nombre_modulo: "",
     descripcion: "",
     ruta: "",
     icono: "",
-    id_estado_modulo: "",
+    id_estado_modulo: 0,
   });
   const [isEnviado, setIsEnviado] = useState(false);
 
@@ -27,6 +27,10 @@ export default function FormModulos() {
 
     try {
       const response = await axios.post("/api/modulo", formData);
+      // Notificar al padre con el nuevo registro
+      if (onRegistroCreado) {
+        onRegistroCreado(response.data); // `response.data` contiene el nuevo registro
+      }
       Swal.fire({
         title: "Creado correctamente!",
         icon: "success",

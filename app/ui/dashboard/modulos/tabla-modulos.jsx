@@ -13,7 +13,6 @@ import Stack from "@mui/material/Stack";
 import axios from "axios";
 
 // ESTILOS DEL COMPONENTE
-import styles from "./modulos.module.css";
 import clsx from "clsx";
 
 // COMPONENTE DE BUSQUEDA EN TABLAS
@@ -23,7 +22,10 @@ import Search from "../../Search";
 import { TablasSkeleton } from "../../skeletons";
 import { Suspense } from "react"; //No es necesario si la información no se carga desde una base de datos
 
-export default function TablaModulos() {
+//IMPORTAR SWEETALERT PARA NOTIFICAR
+import Swal from "sweetalert2";
+
+export default function TablaModulos({ onActualizarRegistros }) {
   // Variables / Constantes para traer la información de los módulos de la base de datos y comprobrarla
   const [modulos, setModulos] = useState([]);
   const [estadosModulo, setEstadosModulo] = useState([]);
@@ -56,7 +58,17 @@ export default function TablaModulos() {
     };
 
     fetchModulos();
-  }, []);
+    // Pasar función al componente padre
+    if (onActualizarRegistros) {
+      onActualizarRegistros(agregarRegistro);
+    }
+  }, [onActualizarRegistros]);
+
+  //Funcion para actualizar la tabla al crear un nuevo modulo en el formulario
+  const agregarRegistro = (nuevoRegistro) => {
+    setModulos((prev) => [...prev, nuevoRegistro]);
+    setFilteredModulos((prev) => [...prev, nuevoRegistro]);
+  };
 
   // Búsqueda en la tabla
   const handleSearch = (term) => {
@@ -87,6 +99,53 @@ export default function TablaModulos() {
   // Manejar el cambio de página
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
+  };
+
+  //Función para eliminar / marcar como inactivo un módulo
+  const handleDelete = async (id) => {
+    const confirm = await Swal.fire({
+      title: "¿Estás seguro?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (confirm.isConfirmed) {
+      try {
+        const response = await axios.delete(`/api/modulo/${id}`);
+        Swal.fire({
+          title: "Éxito!",
+          icon: "success",
+          text: "Módulo marcado como inactivo",
+          confirmButtonText: "Genial",
+        });
+        // Actualiza el estado local de la tabla
+        setModulos((prevModulos) =>
+          prevModulos.map((modulo) =>
+            modulo.id_modulo === id
+              ? { ...modulo, id_estado_modulo: 2 } // Cambiar el estado del módulo
+              : modulo
+          )
+        );
+
+        // Si también tienes `filteredModulos` (para búsqueda), actualiza también ese estado
+        setFilteredModulos((prevFiltered) =>
+          prevFiltered.map((modulo) =>
+            modulo.id_modulo === id
+              ? { ...modulo, id_estado_modulo: 2 }
+              : modulo
+          )
+        );
+      } catch (error) {
+        Swal.fire({
+          title: "Error!",
+          icon: "error",
+          text: "Error al intentar eliminar el módulo.",
+          confirmButtonText: "Ok",
+        });
+      }
+    }
   };
 
   return (
@@ -143,7 +202,7 @@ export default function TablaModulos() {
                       <button>
                         <FaPencilAlt />
                       </button>
-                      <button>
+                      <button onClick={() => handleDelete(modulo.id_modulo)}>
                         <IoMdTrash />
                       </button>
                     </div>

@@ -38,18 +38,21 @@ export async function POST(request) {
     const nombreReady = formatName(sanitizeString(nombre_modulo));
     const descReady = sanitizeString(capitalizeFirstLetter(descripcion));
 
+    // Convertir id_estado_modulo a entero
+    const idEstadoModuloInt = parseInt(id_estado_modulo, 10);
+
     const [result] = await myConexion.query(
       "INSERT INTO modulos (nombre_modulo, descripcion, ruta, icono, id_estado_modulo) VALUES (?,?,?,?,?)",
-      [nombreReady, descReady, ruta, icono, id_estado_modulo]
+      [nombreReady, descReady, ruta, icono, idEstadoModuloInt]
     );
 
     return NextResponse.json({
-      id: result.insertId,
-      nombreReady,
-      descReady,
+      id_modulo: result.insertId,
+      nombre_modulo,
+      descripcion,
       ruta,
       icono,
-      id_estado_modulo,
+      id_estado_modulo: idEstadoModuloInt,
     });
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 500 });
