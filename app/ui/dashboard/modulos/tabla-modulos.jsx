@@ -90,20 +90,20 @@ export default function TablaModulos() {
   };
 
   return (
-    <div className={styles.cont_tabla}>
+    <div className="cont_tabla">
       <h4 className="subtitulos-dashboard">
         <LuClipboardList /> Listado de Módulos
       </h4>
       <Search placeholder="Buscar modulos..." onSearch={handleSearch} />
-      <div className={styles.cont_table}>
+      <div className="cont_table">
         {/* Mientras carga la tabla muestra el skeleton traido del componente skeletons */}
         {loading ? (
           <Suspense>
             <TablasSkeleton></TablasSkeleton>
           </Suspense>
         ) : (
-          <table className={styles.table}>
-            <thead className={styles.thead}>
+          <table className="table">
+            <thead className="thead">
               <tr>
                 <th>ID</th>
                 <th>NOMBRE</th>
@@ -114,23 +114,23 @@ export default function TablaModulos() {
                 <th>ACTION</th>
               </tr>
             </thead>
-            <tbody className={styles.tbody}>
+            <tbody className="tbody">
               {currentItems.map((modulo) => (
                 <tr key={modulo.id_modulo}>
                   <td>{modulo.id_modulo}</td>
                   <td>{modulo.nombre_modulo}</td>
-                  <td className={styles.desc}>{modulo.descripcion}</td>
+                  <td className="desc">{modulo.descripcion}</td>
                   <td>{modulo.ruta}</td>
                   <td>{modulo.icono}</td>
                   <td>
                     <span
-                      className={clsx(styles.estado, {
-                        [styles.activo]:
+                      className={clsx("estado", {
+                        activo:
                           getEstadoNombre(modulo.id_estado_modulo) === "Activo",
-                        [styles.inactivo]:
+                        inactivo:
                           getEstadoNombre(modulo.id_estado_modulo) ===
                           "Inactivo",
-                        [styles.mantenimiento]:
+                        mantenimiento:
                           getEstadoNombre(modulo.id_estado_modulo) ===
                           "Mantenimiento",
                       })}
@@ -139,7 +139,7 @@ export default function TablaModulos() {
                     </span>
                   </td>
                   <td>
-                    <div className={styles.cont_actions}>
+                    <div className="cont_actions">
                       <button>
                         <FaPencilAlt />
                       </button>
@@ -153,9 +153,9 @@ export default function TablaModulos() {
             </tbody>
           </table>
         )}
-        <div className={styles.paginacion}>
+        <div className="paginacion">
           <div>
-            Mostrando{" "}
+            Mostrando
             <span>
               {indexOfFirstItem + 1} a{" "}
               {Math.min(indexOfLastItem, filteredModulos.length)} de{" "}
@@ -170,7 +170,7 @@ export default function TablaModulos() {
               showFirstButton
               showLastButton
               color="primary"
-              className={styles.numeros}
+              className="numeros"
             />
           </Stack>
         </div>

@@ -104,7 +104,7 @@ export default function NavLinks() {
               const permiso = userPermissions.find(
                 (permiso) => permiso.id_modulo === modulo.id_modulo
               );
-              return permiso && permiso.r;
+              return permiso && permiso.r && modulo.id_estado_modulo === 1; // Filtrar por id_estado_modulo igual a 1
             })
             .map((modulo) => {
               const LinkIcon = icons[modulo.icono];
