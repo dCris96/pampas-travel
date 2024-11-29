@@ -25,6 +25,8 @@ import { Suspense } from "react"; //No es necesario si la información no se car
 //IMPORTAR SWEETALERT PARA NOTIFICAR
 import Swal from "sweetalert2";
 
+import EditModuloModal from "./modal-modulos";
+
 export default function TablaModulos({ onActualizarRegistros }) {
   // Variables / Constantes para traer la información de los módulos de la base de datos y comprobrarla
   const [modulos, setModulos] = useState([]);
@@ -38,6 +40,10 @@ export default function TablaModulos({ onActualizarRegistros }) {
 
   // Variables / Constantes para la búsqueda en la tabla
   const [filteredModulos, setFilteredModulos] = useState([]);
+
+  //Variables para abrir el modal con los datos a editar
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedModulo, setSelectedModulo] = useState(null);
 
   // Llamada de la información desde la API de Módulos
   useEffect(() => {
@@ -148,6 +154,40 @@ export default function TablaModulos({ onActualizarRegistros }) {
     }
   };
 
+  //Funcion para abrir el modal con los datos del modulo seleccionado
+  const handleEditClick = (modulo) => {
+    setSelectedModulo(modulo);
+    setIsModalOpen(true);
+  };
+
+  //Funcion para guardar los datos actualizados
+  const handleSave = async (updatedData) => {
+    try {
+      await axios.put(`/api/modulo/${updatedData.id_modulo}`, updatedData);
+
+      // Recarga los datos de la API
+      const response = await axios.get("/api/modulo");
+      setModulos(response.data);
+      setFilteredModulos(response.data);
+
+      setIsModalOpen(false);
+      setSelectedModulo(null);
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        icon: "error",
+        text: "Error al guardar los cambios.",
+        confirmButtonText: "Ok",
+      });
+    }
+  };
+
+  //Cerrar el modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedModulo(null);
+  };
+
   return (
     <div className="cont_tabla">
       <h4 className="subtitulos-dashboard">
@@ -199,7 +239,7 @@ export default function TablaModulos({ onActualizarRegistros }) {
                   </td>
                   <td>
                     <div className="cont_actions">
-                      <button>
+                      <button onClick={() => handleEditClick(modulo)}>
                         <FaPencilAlt />
                       </button>
                       <button onClick={() => handleDelete(modulo.id_modulo)}>
@@ -234,6 +274,13 @@ export default function TablaModulos({ onActualizarRegistros }) {
           </Stack>
         </div>
       </div>
+      {isModalOpen && (
+        <EditModuloModal
+          modulo={selectedModulo}
+          onClose={handleCloseModal}
+          onSave={handleSave}
+        />
+      )}
     </div>
   );
 }

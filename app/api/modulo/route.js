@@ -18,7 +18,7 @@ export async function POST(request) {
 
     // Convertir la primera letra de cada palabra en mayúscula
     const formatName = (str) =>
-      str.replace(/\b\w/g, (char) => char.toUpperCase());
+      str.replace(/(?:^|\s|["'([{¿¡])+\S/g, (match) => match.toUpperCase());
 
     // Función para sanitizar cadenas, Eliminar caracteres no alfanuméricos y múltiples espacios
     const sanitizeString = (str) => {

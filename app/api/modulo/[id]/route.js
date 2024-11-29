@@ -33,7 +33,7 @@ export async function PUT(request) {
 
     // Convertir la primera letra de cada palabra en mayúscula
     const formatName = (str) =>
-      str.replace(/\b\w/g, (char) => char.toUpperCase());
+      str.replace(/(?:^|\s|["'([{¿¡])+\S/g, (match) => match.toUpperCase());
 
     // Función para sanitizar cadenas, Eliminar caracteres no alfanuméricos y múltiples espacios
     const sanitizeString = (str) => {
@@ -51,7 +51,7 @@ export async function PUT(request) {
     }
 
     if (data.nombre_modulo) {
-      data.nombre_modulo = formatName(sanitizeString(data.nombre_modulo));
+      data.nombre_modulo = sanitizeString(formatName(data.nombre_modulo));
     }
 
     if (data.descripcion) {

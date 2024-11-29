@@ -12,7 +12,7 @@ export default function FormModulos({ onRegistroCreado }) {
     descripcion: "",
     ruta: "",
     icono: "",
-    id_estado_modulo: 0,
+    id_estado_modulo: "",
   });
   const [isEnviado, setIsEnviado] = useState(false);
 
