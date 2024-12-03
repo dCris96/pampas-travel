@@ -39,7 +39,9 @@ export default function TablaRoles({ onActualizarRegistros }) {
   //Variables para abrir el modal con los datos a editar
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  //Variables para llevar el id y el nombre del rol
   const [selectRolId, setSelectRolId] = useState(null);
+  const [nombreRol, setNombreRol] = useState("");
 
   // Llamada de la información desde la API de Módulos
   useEffect(() => {
@@ -80,7 +82,8 @@ export default function TablaRoles({ onActualizarRegistros }) {
   };
 
   //Funcion para abrir el modal con los datos del modulo seleccionado
-  const handleShowModal = (id) => {
+  const handleShowModal = (id, nombreRol) => {
+    setNombreRol(nombreRol);
     setSelectRolId(id);
     setIsModalOpen(true);
   };
@@ -122,7 +125,9 @@ export default function TablaRoles({ onActualizarRegistros }) {
                     <div className="cont_actions">
                       <button
                         className={styles.boton1}
-                        onClick={() => handleShowModal(rol.id_rol)}
+                        onClick={() =>
+                          handleShowModal(rol.id_rol, rol.nombre_rol)
+                        }
                       >
                         <IoMdKey />
                       </button>
@@ -156,7 +161,11 @@ export default function TablaRoles({ onActualizarRegistros }) {
         </div>
       </div>
       {isModalOpen && (
-        <ModalRoles selectRolId={selectRolId} onClose={handleCloseModal} />
+        <ModalRoles
+          selectRolId={selectRolId}
+          nombreRol={nombreRol}
+          onClose={handleCloseModal}
+        />
       )}
     </div>
   );

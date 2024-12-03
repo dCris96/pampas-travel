@@ -80,6 +80,7 @@
   display: flex;
   gap: 20px;
   justify-content: center;
+  margin-top: 20px;
 }
 
 .botones button {
@@ -87,4 +88,24 @@
   cursor: pointer;
   padding: 15px 40px;
   border-radius: 5px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all ease 100ms;
+}
+
+.botones button:nth-child(1) {
+  background-color: var(--editar);
+}
+
+.botones button:nth-child(1):hover {
+  background-color: var(--editar-hover);
+}
+
+.botones button:nth-child(2) {
+  background-color: var(--eliminar);
+}
+
+.botones button:nth-child(2):hover {
+  background-color: var(--eliminar-hover);
 }

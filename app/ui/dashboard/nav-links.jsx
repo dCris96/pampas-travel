@@ -7,6 +7,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useUserPermissions } from "@/app/hooks/useUserPermissions";
+import { Skeleton } from "@mui/material";
 import { SidebarSkeleton } from "../skeletons";
 import { Suspense } from "react";
 
