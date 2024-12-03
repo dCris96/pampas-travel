@@ -15,26 +15,60 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    const { id_rol, id_modulo, r, w, u, d } = await request.json();
+    const permisos = await request.json();
 
-    const [result] = await myConexion.query(
-      "INSERT INTO permisos (id_rol, id_modulo, r, w, u, d) VALUES (?,?,?,?,?,?)",
-      [id_rol, id_modulo, r, w, u, d]
-    );
-
-    return NextResponse.json({
-      id: result.insertId,
+    const values = permisos.map(({ id_rol, id_modulo, r, w, u, d }) => [
       id_rol,
       id_modulo,
       r,
       w,
       u,
       d,
+    ]);
+
+    const query =
+      "INSERT INTO permisos (id_rol, id_modulo, r, w, u, d) VALUES ?";
+    const [result] = await myConexion.query(query, [values]);
+
+    return NextResponse.json({
+      success: true,
+      insertedRows: result.affectedRows,
     });
   } catch (error) {
     return NextResponse.json(
       { message: error.message },
-      { status: error.status }
+      { status: error.status || 500 }
+    );
+  }
+}
+
+export async function PUT(request) {
+  try {
+    const permisos = await request.json();
+
+    const query = `
+      INSERT INTO permisos (id_rol, id_modulo, r, w, u, d)
+      VALUES (?, ?, ?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+        r = VALUES(r),
+        w = VALUES(w),
+        u = VALUES(u),
+        d = VALUES(d)
+    `;
+
+    for (const permiso of permisos) {
+      const { id_rol, id_modulo, r, w, u, d } = permiso;
+      await myConexion.query(query, [id_rol, id_modulo, r, w, u, d]);
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Permisos actualizados correctamente",
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { message: error.message },
+      { status: error.status || 500 }
     );
   }
 }
