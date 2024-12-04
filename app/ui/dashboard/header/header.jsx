@@ -32,6 +32,7 @@ import { Suspense } from "react";
 export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
   const [isToggled, setIsToggled] = useState(false);
   const { width, height } = useScreenSize();
+  const router = useRouter();
 
   const handleIconClick = () => {
     toggleSidebar();
@@ -50,13 +51,13 @@ export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
   };
 
   // CODIGO PARA CERRAR SESION
-  const router = useRouter();
-
   const handleLogout = () => {
     Cookies.remove("token");
 
     router.push("/auth/login");
   };
+
+  // CODIGO PAR ABRIR EL PANEL DE PERFIL DEL USUARIO
 
   // CODIGO PARA VER EL USUARIO Y SU ROL
   const [user, setUser] = useState(null);

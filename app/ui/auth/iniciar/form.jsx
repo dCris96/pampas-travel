@@ -61,8 +61,6 @@ export default function FormLogin() {
         secure: process.env.NODE_ENV === "production",
         httpOnly: false,
       });
-
-      setLoading(false);
       // Redirigir al usuario a la página principal o dashboard
       router.push("/dashboard"); // Asegúrate de hacer el redireccionamiento aquí
     } catch (error) {
@@ -110,7 +108,8 @@ export default function FormLogin() {
 
       <div className={styles.terminos}>
         <p>
-          ¿Olvidaste tu contraseña? <Link href="#">Clic aquí</Link>
+          ¿Olvidaste tu contraseña?{" "}
+          <Link href="/auth/forgot-password">Clic aquí</Link>
         </p>
       </div>
       {errors.general && <p className={styles.text_error}>{errors.general}</p>}
