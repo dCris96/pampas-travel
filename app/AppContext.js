@@ -1,4 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react";
+import { ProfileImageProvider } from "./contextos/ProfileImageContext";
 
 const ThemeContext = createContext();
 const ColorContext = createContext();
@@ -87,7 +88,7 @@ export const AppProvider = ({ children }) => {
       value={{ theme, setLightTheme, setDarkTheme, setSystemTheme }}
     >
       <ColorContext.Provider value={{ color, changeColor }}>
-        {children}
+        <ProfileImageProvider>{children}</ProfileImageProvider>
       </ColorContext.Provider>
     </ThemeContext.Provider>
   );

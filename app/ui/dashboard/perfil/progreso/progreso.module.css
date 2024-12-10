@@ -1,0 +1,37 @@
+.barra_full {
+  width: 100%;
+  height: 10px;
+  background-color: var(--background-color);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.barra_progres {
+  width: 40%;
+  height: 100%;
+  border-radius: 20px;
+  background-color: var(--acent-color);
+}
+
+.contenedor {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.titulo {
+  line-height: 0;
+  margin-bottom: 10px;
+}
+
+.parrafo {
+  font-size: 1rem;
+  line-height: 1.1rem;
+}
+
+.cont_barra p {
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+}

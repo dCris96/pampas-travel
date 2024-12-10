@@ -7,7 +7,7 @@ import {
 } from "react-icons/md";
 import Image from "next/image";
 import styles from "./header.module.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { montserrat } from "../../fonts";
 import { useRouter } from "next/navigation";
 
@@ -28,8 +28,11 @@ import useScreenSize from "@/app/hooks/useScreenSize";
 
 import { AcountSkeleton } from "../../skeletons";
 import { Suspense } from "react";
+import Link from "next/link";
+import { ProfileImageContext } from "@/app/contextos/ProfileImageContext";
 
 export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
+  const { profileImage } = useContext(ProfileImageContext);
   const [isToggled, setIsToggled] = useState(false);
   const { width, height } = useScreenSize();
   const router = useRouter();
@@ -53,11 +56,11 @@ export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
   // CODIGO PARA CERRAR SESION
   const handleLogout = () => {
     Cookies.remove("token");
-
     router.push("/auth/login");
   };
 
   // CODIGO PAR ABRIR EL PANEL DE PERFIL DEL USUARIO
+  const handlePerfil = () => {};
 
   // CODIGO PARA VER EL USUARIO Y SU ROL
   const [user, setUser] = useState(null);
@@ -155,32 +158,31 @@ export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
           <MenuNotificaciones />
 
           <div className={styles.myAccWrapper}>
-            <div className={styles.my_acount} onClick={handleClick}>
-              <div className={styles.user_img}>
-                <span className={styles.rounded_circle}>
-                  <Image
-                    src="/contri.jpeg"
-                    alt="perfil de stich"
-                    width={70}
-                    height={70}
-                    // layout="responsive"
-                  />
-                </span>
-              </div>
+            {user ? (
+              <div className={styles.my_acount} onClick={handleClick}>
+                <div className={styles.user_img}>
+                  <span className={styles.rounded_circle}>
+                    <Image
+                      src={profileImage || "/Default-Profile.jpg"}
+                      alt="perfil de stich"
+                      width={70}
+                      height={70}
+                    />
+                  </span>
+                </div>
 
-              {user ? (
                 <div className={styles.acount_info}>
                   <h4 className={styles.acountName}>
                     {user.primerNombre} {user.primerApellido}
                   </h4>
                   <p className={styles.rol}>{user.rol}</p>
                 </div>
-              ) : (
-                <Suspense>
-                  <AcountSkeleton />
-                </Suspense>
-              )}
-            </div>
+              </div>
+            ) : (
+              <Suspense>
+                <AcountSkeleton />
+              </Suspense>
+            )}
 
             {/* CODIGO DEL MENU DEL USUARIO */}
             <Menu
@@ -222,10 +224,12 @@ export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
               disableScrollLock
             >
               <MenuItem onClick={handleClose}>
-                <ListItemIcon>
-                  <FaUserCog />
-                </ListItemIcon>
-                Mi cuenta
+                <Link href="/dashboard/perfil">
+                  <ListItemIcon>
+                    <FaUserCog />
+                  </ListItemIcon>
+                  Mi cuenta
+                </Link>
               </MenuItem>
               <MenuItem onClick={handleClose}>
                 <ListItemIcon>
