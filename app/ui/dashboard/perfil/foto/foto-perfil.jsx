@@ -52,7 +52,7 @@ export default function FotoPerfil() {
           <div className={styles.foto}>
             <div className={styles.imagen}>
               <Image
-                src={profileImage || "/Default-Profile.jpg"}
+                src={profileImage || usuario.foto_perfil}
                 alt="Imagen de perfil"
                 width={400}
                 height={400}

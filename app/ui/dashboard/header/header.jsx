@@ -163,7 +163,7 @@ export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
                 <div className={styles.user_img}>
                   <span className={styles.rounded_circle}>
                     <Image
-                      src={profileImage || "/Default-Profile.jpg"}
+                      src={profileImage || usuario.foto_perfil}
                       alt="perfil de stich"
                       width={70}
                       height={70}
