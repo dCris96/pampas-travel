@@ -32,7 +32,7 @@ import Link from "next/link";
 import { ProfileImageContext } from "@/app/contextos/ProfileImageContext";
 
 export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
-  const { profileImage } = useContext(ProfileImageContext);
+  const { profileImage, setProfileImage } = useContext(ProfileImageContext);
   const [isToggled, setIsToggled] = useState(false);
   const { width, height } = useScreenSize();
   const router = useRouter();
@@ -85,6 +85,7 @@ export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
         // Llamar a la API para obtener los datos del usuario usando el id extraído del token
         const response = await axios.get(`/api/usuario/${payload.id}`);
         const userData = response.data[0];
+        setProfileImage(response.data[0].foto_perfil);
 
         // Obtener los datos del rol: id y nombre
         const idRol = response.data[0].id_rol;
@@ -163,7 +164,7 @@ export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
                 <div className={styles.user_img}>
                   <span className={styles.rounded_circle}>
                     <Image
-                      src={profileImage || usuario.foto_perfil}
+                      src={profileImage || "/Default-Profile.jpg"}
                       alt="perfil de stich"
                       width={70}
                       height={70}

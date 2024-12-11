@@ -29,6 +29,7 @@ export default function FotoPerfil() {
       try {
         const response = await axios.get(`/api/usuario/${user.id}`);
         setUsuario(response.data[0]);
+        setProfileImage(response.data[0].foto_perfil);
       } catch (error) {
         console.error("No se pudo traer el usuario", error);
       } finally {
@@ -52,7 +53,7 @@ export default function FotoPerfil() {
           <div className={styles.foto}>
             <div className={styles.imagen}>
               <Image
-                src={profileImage || usuario.foto_perfil}
+                src={profileImage || "/Default-Profile.jpg"}
                 alt="Imagen de perfil"
                 width={400}
                 height={400}
