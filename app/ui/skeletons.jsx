@@ -29,3 +29,21 @@ export const TablasSkeleton = () => {
     </Stack>
   );
 };
+
+export const FotoPerfilSkeleton = () => {
+  return (
+    <Stack
+      spacing={0.7}
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Skeleton variant="rectangular" height={16} width="80%" />
+      <Skeleton variant="circular" width={150} height={150} />
+      <Skeleton variant="rectangular" height={16} width="80%" />
+      <Skeleton variant="rectangular" height={16} width="80%" />
+    </Stack>
+  );
+};

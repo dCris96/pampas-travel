@@ -7,6 +7,7 @@ import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import useAuth from "@/app/hooks/useAuth";
 import { ProfileImageContext } from "@/app/contextos/ProfileImageContext";
+import { FotoPerfilSkeleton } from "@/app/ui/skeletons";
 
 export default function FotoPerfil() {
   const { profileImage, setProfileImage } = useContext(ProfileImageContext);
@@ -43,7 +44,7 @@ export default function FotoPerfil() {
   // Renderizado condicional
   if (authLoading) return <div>Cargando autenticación...</div>;
   if (!user) return <div>No hay usuario autenticado</div>;
-  if (isLoadingUserData) return <div>Cargando datos del usuario...</div>;
+  if (isLoadingUserData) return <FotoPerfilSkeleton />;
 
   return (
     <div className={styles.contenedor}>

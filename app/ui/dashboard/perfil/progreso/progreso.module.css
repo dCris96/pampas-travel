@@ -7,10 +7,20 @@
 }
 
 .barra_progres {
-  width: 40%;
+  /* width: 40%; */
   height: 100%;
   border-radius: 20px;
   background-color: var(--acent-color);
+  animation: barra 2s ease-out forwards;
+}
+
+@keyframes barra {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--target-width);
+  }
 }
 
 .contenedor {
