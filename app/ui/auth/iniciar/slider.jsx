@@ -22,8 +22,8 @@ export default function SliderLogin() {
         <Image
           src="/logo.png"
           alt="Logo de pampas travel"
-          width={40}
-          height={50}
+          width={100}
+          height={100}
         />
       </div>
       <div className={styles.link}>
