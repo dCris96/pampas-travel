@@ -7,7 +7,6 @@ import axios from "axios";
 export default function ProgresoPerfil() {
   const { user } = useAuth();
   const [emptyFieldsCount, setEmptyFieldsCount] = useState(0);
-  const [style, setStyle] = useState({});
 
   useEffect(() => {
     const getUserData = async () => {
@@ -24,7 +23,7 @@ export default function ProgresoPerfil() {
           "id_usuario",
           "reset_password_expires",
           "reset_password_token",
-          "token confirmation",
+          "token_confirmacion",
         ];
 
         const emptyFields = Object.keys(userData).filter(
@@ -38,7 +37,7 @@ export default function ProgresoPerfil() {
         );
 
         const porcentaje = Math.round(
-          (emptyFields.length / totalFields.length) * 100
+          ((totalFields.length - emptyFields.length) / totalFields.length) * 100
         );
 
         setEmptyFieldsCount(porcentaje);
