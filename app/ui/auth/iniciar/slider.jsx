@@ -27,7 +27,7 @@ export default function SliderLogin() {
         />
       </div>
       <div className={styles.link}>
-        <Link href="#">
+        <Link href="/">
           Regresar al sitio <FaArrowRight />
         </Link>
       </div>

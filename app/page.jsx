@@ -1,3 +1,9 @@
+import Link from "next/link";
+
 export default function Inicio() {
-  return <div>Pagina de inicio</div>;
+  return (
+    <div>
+      <Link href="/auth/login">Iniciar sesion</Link>
+    </div>
+  );
 }
