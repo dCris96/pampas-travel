@@ -9,7 +9,7 @@
 .barra_progres {
   /* width: 40%; */
   height: 100%;
-  border-radius: 20px;
+  border-radius: 20px 0 0 20px;
   background-color: var(--acent-color);
   animation: barra 2s ease-out forwards;
 }
@@ -31,8 +31,8 @@
 }
 
 .titulo {
-  line-height: 0;
-  margin-bottom: 10px;
+  line-height: 1.3rem;
+  margin-bottom: 5px;
 }
 
 .parrafo {

@@ -8,6 +8,7 @@ import axios from "axios";
 import useAuth from "@/app/hooks/useAuth";
 import { ProfileImageContext } from "@/app/contextos/ProfileImageContext";
 import { FotoPerfilSkeleton } from "@/app/ui/skeletons";
+import dayjs from "dayjs";
 
 export default function FotoPerfil() {
   const { profileImage, setProfileImage } = useContext(ProfileImageContext);
@@ -15,6 +16,7 @@ export default function FotoPerfil() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [usuario, setUsuario] = useState(null);
   const [isLoadingUserData, setIsLoadingUserData] = useState(false); // Control de carga
+  const [fechaStart, setFechaStart] = useState("");
 
   const handleShowModal = () => setIsModalOpen(true);
   const handleClose = () => setIsModalOpen(false);
@@ -29,6 +31,9 @@ export default function FotoPerfil() {
       setIsLoadingUserData(true); // Comienza a cargar
       try {
         const response = await axios.get(`/api/usuario/${user.id}`);
+        const fechaInicio = response.data[0].fecha_registro;
+        const fechaFormateada = dayjs(fechaInicio).format("DD/MM/YYYY");
+        setFechaStart(fechaFormateada);
         setUsuario(response.data[0]);
         setProfileImage(response.data[0].foto_perfil);
       } catch (error) {
@@ -67,6 +72,10 @@ export default function FotoPerfil() {
           <div className={styles.nombres}>
             <p>{usuario.nombre}</p>
             <p>{usuario.apellido}</p>
+            <div className={styles.fecha_start}>
+              Miembro desde:
+              <p>{fechaStart}</p>
+            </div>
           </div>
         </div>
       ) : (

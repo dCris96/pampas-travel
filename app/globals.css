@@ -270,6 +270,37 @@ a {
 .css-1rju2q6-MuiButtonBase-root-MuiMenuItem-root:hover {
   background-color: var(--hover);
 }
+.css-1usuzwp-MuiButtonBase-root-MuiTab-root.Mui-selected,
+.css-4k4mmf-MuiButtonBase-root-MuiPickersDay-root,
+.css-1588512-MuiButtonBase-root-MuiButton-root {
+  color: var(--text) !important;
+}
+.css-1qltlow-MuiTabs-indicator {
+  background-color: var(--acent-color) !important;
+}
+.css-1usuzwp-MuiButtonBase-root-MuiTab-root {
+  color: var(--text-secondary) !important;
+}
+.css-1dune0f-MuiInputBase-input-MuiOutlinedInput-input {
+  color: var(--text-secondary) !important;
+  height: 1rem !important;
+  padding: 8px !important;
+}
+.css-10d30g3-MuiPaper-root-MuiDialog-paper {
+  background-color: var(--primary) !important;
+  color: var(--text);
+}
+.css-6mw38q-MuiTypography-root,
+.css-17f9e7e-MuiTypography-root-MuiDayCalendar-weekDayLabel {
+  color: var(--text-secondary) !important;
+}
+.css-14yom7c-MuiSvgIcon-root-MuiPickersCalendarHeader-switchViewIcon,
+.css-1ckov0h-MuiSvgIcon-root {
+  fill: var(--text) !important;
+}
+.css-qct7wd-MuiButtonBase-root-MuiPickersDay-root.Mui-selected {
+  background-color: var(--acent-color) !important;
+}
 
 /* Estilos de las ventanas de sweetalert */
 div:where(.swal2-container) div:where(.swal2-popup) {
@@ -289,4 +320,34 @@ div:where(.swal2-container) .swal2-html-container {
 .auth_mid {
   display: flex;
   justify-content: center;
+}
+
+/* ESTILOS DEL INPUT DE CELULAR EN LA PAGINA DE PERFIL */
+.react-tel-input .flag-dropdown {
+  background-color: var(--primary) !important;
+  border: 1px solid var(--background-color) !important;
+}
+.react-tel-input .selected-flag:hover,
+.react-tel-input .selected-flag:focus {
+  background-color: var(--primary) !important;
+  border: 1px solid var(--background-color) !important;
+}
+.react-tel-input .form-control {
+  background-color: var(--primary) !important;
+  border: 1px solid var(--background-color) !important;
+  color: var(--text);
+  width: 100% !important;
+}
+.react-tel-input .country-list {
+  background-color: var(--primary) !important;
+}
+.react-tel-input .country-list .country:hover {
+  background-color: var(--hover) !important;
+}
+.react-tel-input .country-list .country.highlight {
+  background-color: var(--background-color) !important;
+  color: var(--text) !important;
+}
+.react-tel-input .flag-dropdown.open .selected-flag {
+  background-color: var(--primary) !important;
 }

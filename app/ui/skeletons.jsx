@@ -11,7 +11,7 @@ export const AcountSkeleton = () => {
 };
 
 export const SidebarSkeleton = () => {
-  return <Skeleton variant="rectangular" width="100%" height={30} />;
+  return <Skeleton variant="rectangular" width="100%" height={50} />;
 };
 
 export const CardsSkeleton = () => {

@@ -232,12 +232,6 @@ export default function HeaderDashboard({ toggleSidebar, toggleDrawer }) {
                   Mi cuenta
                 </Link>
               </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <ListItemIcon>
-                  <FaKey />
-                </ListItemIcon>
-                Cambiar contraseña
-              </MenuItem>
               <MenuItem onClick={handleLogout}>
                 <ListItemIcon>
                   <IoLogOut />

@@ -60,6 +60,15 @@
   font-weight: 600;
 }
 
+.fecha_start {
+  margin-top: 10px;
+  color: var(--text-secondary);
+}
+
+.fecha_start p {
+  color: var(--text);
+}
+
 /* ESTILOS DEL MODAL */
 .modal_container {
   position: fixed;
