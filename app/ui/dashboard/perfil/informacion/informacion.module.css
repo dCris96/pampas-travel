@@ -67,8 +67,53 @@
   background-color: transparent;
 }
 
+/* Cambio de contraseña==================== */
+.cont_change {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.input_box {
+  width: 47%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.input_box input {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--foreground);
+  border: 2px solid var(--background-color);
+  border-radius: 5px;
+  color: var(--text);
+  font-size: 1rem;
+  transition: all ease 200ms;
+}
+
+.input_box input:focus {
+  outline: none;
+  border: 2px solid var(--hover);
+}
+
+.boton_change {
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: var(--acent-color);
+  border: none;
+  border-radius: 5px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
 @media screen and (max-width: 1272px) {
   .input_exclude {
+    width: 100%;
+  }
+  .input_box {
     width: 100%;
   }
 }

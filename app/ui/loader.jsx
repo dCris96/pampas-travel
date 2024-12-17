@@ -4,13 +4,21 @@ export default function LoaderGeneral() {
   return (
     <div className={styles.contenedor}>
       <svg
-        id="Capa_2"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 220.74 180.54"
         className={styles.loader}
+        id="Capa_2"
+        data-name="Capa 2"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 243.39 224.75"
       >
-        <polygon points="110.56 179.12 1.41 69.97 69.97 1.41 111.33 42.78 152.31 1.8 219.33 68.82 110.56 179.12" />
-        <path d="M104.44,55.8l-49.79,49.79s-41.74-32.55-12.26-62.04,62.04,12.26,62.04,12.26Z" />
+        <polygon points="215.92 84.08 134.72 221.88 239.58 128.15 215.92 84.08" />
+        <polygon points="241.9 106.35 239.58 128.15 215.92 84.08 241.9 106.35" />
+        <polygon points="192.25 100.31 134.72 221.88 215.92 84.08 192.25 100.31" />
+        <polygon points="119.41 1.49 119.41 221.88 183.9 54.38 119.41 1.49" />
+        <polygon points="160.24 6.59 183.9 54.38 119.41 1.49 160.24 6.59" />
+        <polygon points="98.07 18.19 119.41 221.88 119.41 1.49 98.07 18.19" />
+        <polygon points="8.52 66.91 75.33 33.04 105.49 223.73 8.52 66.91" />
+        <polygon points="17.34 38.61 75.33 33.04 8.52 66.91 17.34 38.61" />
+        <polygon points="1.1 111.68 105.49 223.73 8.52 66.91 1.1 111.68" />
       </svg>
 
       {/* LOADER ALTERNATIVO */}

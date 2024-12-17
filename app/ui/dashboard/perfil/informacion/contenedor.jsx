@@ -5,6 +5,7 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { useState } from "react";
 import InformacionPerfil from "./informacion";
+import ChangeContraseña from "./change-contraseña";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -58,7 +59,7 @@ export default function ContenedorTabsInformacion() {
         <InformacionPerfil />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        Item Two
+        <ChangeContraseña />
       </CustomTabPanel>
     </Box>
   );

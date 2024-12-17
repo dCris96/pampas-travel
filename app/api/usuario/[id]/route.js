@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { myConexion } from "@/libs/mysql";
+import bcrypt from "bcrypt";
 
 export async function GET(request) {
   try {
@@ -33,6 +34,10 @@ export async function PUT(request) {
     const id = url.pathname.split("/").pop();
 
     const data = await request.json();
+
+    if (data.contraseña) {
+      data.contraseña = await bcrypt.hash(data.contraseña, 10);
+    }
 
     const [updateUsuario] = await myConexion.query(
       "UPDATE usuarios SET ? WHERE id_usuario = ?",
