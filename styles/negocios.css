@@ -1,0 +1,492 @@
+/* styles/negocios.css */
+/* ─────────────────────────────────────────────────────
+   ESTILOS: Negocios — Lista, Cards, Filtros
+   Replica el diseño de la imagen de referencia (Hoteles)
+   ───────────────────────────────────────────────────── */
+
+/* ─────────────────────────────────────────────────────
+   CARD DE NEGOCIO — Variante Normal (como la referencia)
+   Layout vertical: imagen arriba, info abajo
+   ───────────────────────────────────────────────────── */
+
+.card-negocio {
+  display: block;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.card-negocio:hover {
+  transform: translateY(-4px);
+  border-color: #2a2a2a;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
+}
+
+/* ── Imagen ── */
+.card-negocio-img-wrapper {
+  position: relative;
+  height: 210px;
+  overflow: hidden;
+  background-color: #111;
+}
+
+.card-negocio-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.card-negocio:hover .card-negocio-img {
+  transform: scale(1.06);
+}
+
+/* Badge de tipo (hotel, restaurante, etc.) */
+.card-negocio-tipo-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  z-index: 2;
+  backdrop-filter: blur(8px);
+}
+
+/* Estrella de destacado */
+.card-negocio-star {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: var(--color-yellow);
+  font-size: 16px;
+  z-index: 2;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Cuerpo ── */
+.card-negocio-body {
+  padding: 18px 18px 14px;
+}
+
+.card-negocio-nombre {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 7px;
+  line-height: 1.3;
+}
+
+.card-negocio-desc {
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+/* ── Precio ── */
+/* Replicando exactamente el estilo amarillo de la imagen */
+.card-negocio-precio {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-yellow);
+  margin-bottom: 12px;
+}
+
+.card-negocio-precio span {
+  font-size: 11px;
+  font-weight: 400;
+  color: #666;
+  margin-left: 2px;
+}
+
+/* Sin precio */
+.card-negocio-precio.sin-precio {
+  color: #555;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+/* ── Amenidades (tags) ── */
+/* Los chips pequeños bajo el precio: WiFi, Estacionamiento, etc. */
+.card-negocio-amenidades {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.amenidad-tag {
+  padding: 3px 9px;
+  background-color: #161616;
+  border: 1px solid #222;
+  border-radius: 20px;
+  font-size: 10px;
+  font-family: var(--font-display);
+  color: #777;
+  white-space: nowrap;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.card-negocio:hover .amenidad-tag {
+  border-color: #2a2a2a;
+  color: #999;
+}
+
+/* ─────────────────────────────────────────────────────
+   CARD DE NEGOCIO — Variante Horizontal
+   Para páginas específicas: /hoteles, /restaurantes
+   ───────────────────────────────────────────────────── */
+
+.card-negocio-h {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.card-negocio-h:hover {
+  transform: translateY(-3px);
+  border-color: #2a2a2a;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+}
+
+/* Imagen lateral izquierda */
+.card-negocio-h-img-wrapper {
+  position: relative;
+  overflow: hidden;
+  min-height: 200px;
+}
+
+.card-negocio-h-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.card-negocio-h:hover .card-negocio-h-img {
+  transform: scale(1.05);
+}
+
+/* Cuerpo derecho */
+.card-negocio-h-body {
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-negocio-h-top {
+}
+
+.card-negocio-h-nombre {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+
+.card-negocio-h-desc {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+/* Dirección + horario en la parte inferior */
+.card-negocio-h-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.card-negocio-h-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #555;
+  font-family: var(--font-display);
+}
+
+.card-negocio-h-meta-item svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  color: #444;
+}
+
+/* Footer: precio + amenidades */
+.card-negocio-h-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* ─────────────────────────────────────────────────────
+   PÁGINA DE LISTA DE NEGOCIOS
+   ───────────────────────────────────────────────────── */
+
+/* Header con título y botón de "Iniciar sesión" (como en la referencia) */
+.negocios-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  gap: 16px;
+}
+
+.negocios-page-header-text h1 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.negocios-page-header-text p {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+/* Botón de login en el header (replica la imagen) */
+.btn-header-login {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-header-login:hover {
+  border-color: #444;
+  color: var(--color-text);
+}
+
+.btn-header-login svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── Barra de filtros ── */
+.negocios-filtros {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.negocio-filtro-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.negocio-filtro-btn:hover {
+  border-color: #333;
+  color: var(--color-text);
+}
+
+.negocio-filtro-btn.activo {
+  background-color: var(--color-btn-primary);
+  border-color: var(--color-btn-primary);
+  color: white;
+}
+
+.negocio-filtro-btn .filtro-icon {
+  font-size: 13px;
+  line-height: 1;
+}
+
+/* Contador */
+.negocios-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
+}
+
+/* ── Grid de cards ── */
+/* Vista normal: 2 columnas (como en la referencia de hoteles) */
+.negocios-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+/* Vista de lista: 1 columna con cards horizontales */
+.negocios-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Toggle de vista (grid / lista) */
+.vista-toggle {
+  display: flex;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+.vista-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vista-btn:hover,
+.vista-btn.activo {
+  border-color: #333;
+  color: var(--color-text);
+  background: var(--color-bg-hover);
+}
+
+.vista-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── Estado vacío ── */
+.empty-negocios {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.empty-negocios-icon {
+  font-size: 42px;
+  margin-bottom: 14px;
+  opacity: 0.4;
+}
+
+.empty-negocios h3 {
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--color-text);
+  margin-bottom: 6px;
+}
+
+.empty-negocios p {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* ── Skeleton ── */
+.skeleton-negocio {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+}
+
+.skeleton-negocio-img {
+  height: 210px;
+  background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-negocio-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .negocios-grid {
+    grid-template-columns: 1fr;
+  }
+  .card-negocio-h {
+    grid-template-columns: 200px 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .card-negocio-h {
+    grid-template-columns: 1fr;
+  }
+  .card-negocio-h-img-wrapper {
+    min-height: 180px;
+    max-height: 180px;
+  }
+  .negocios-page-header {
+    flex-direction: column;
+  }
+  .negocios-filtros {
+    gap: 6px;
+  }
+}

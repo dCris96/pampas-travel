@@ -1,0 +1,382 @@
+/* styles/layout.css */
+/* ─────────────────────────────────────────────────────
+   LAYOUT PRINCIPAL: Sidebar + Área de contenido
+   Replica el diseño de las imágenes de referencia
+   ───────────────────────────────────────────────────── */
+
+/* ── CONTENEDOR RAÍZ ── */
+/* Divide la pantalla en sidebar fijo + contenido scrolleable */
+.app-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ─────────────────────────────────────────────────────
+   SIDEBAR
+   ───────────────────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-width);
+  min-height: 100vh;
+  background-color: var(--color-bg-sidebar);
+  border-right: 1px solid var(--color-border);
+
+  /* Fijo a la izquierda mientras el contenido hace scroll */
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+
+  /* Flex column para apilar logo + nav + footer */
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ── LOGO / HEADER DEL SIDEBAR ── */
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 16px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+/* Ícono cuadrado del logo */
+.sidebar-logo-icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #2a5fff, #1a3fd0);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sidebar-logo-icon svg {
+  width: 16px;
+  height: 16px;
+  color: white;
+}
+
+/* Textos del logo */
+.sidebar-logo-text {
+  overflow: hidden;
+}
+
+.sidebar-logo-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-logo-subtitle {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  margin-top: 1px;
+}
+
+/* ── NAVEGACIÓN ── */
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 0;
+  overflow-y: auto;
+}
+
+/* Grupo de sección (PRINCIPAL, CULTURA, etc.) */
+.nav-group {
+  margin-bottom: 4px;
+}
+
+/* Etiqueta de sección */
+.nav-group-label {
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-label);
+  padding: 10px 16px 4px;
+}
+
+/* ── ITEM DE NAVEGACIÓN ── */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  margin: 1px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--color-text-dim);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-weight: 400;
+}
+
+/* Hover */
+.nav-item:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-text);
+}
+
+/* Item activo (página actual) */
+.nav-item.active {
+  background-color: var(--color-bg-active);
+  color: var(--color-blue);
+}
+
+/* Íconos del nav */
+.nav-item svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.nav-item.active svg {
+  opacity: 1;
+}
+
+/* ── FOOTER DEL SIDEBAR ── */
+/* Zona inferior con login */
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+/* Texto de "Inicia sesión para publicar" */
+.sidebar-footer-hint {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+/* Botón de iniciar sesión */
+.btn-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 16px;
+  background-color: var(--color-btn-primary);
+  color: white;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  transition:
+    background-color 0.15s ease,
+    transform 0.1s ease;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-login:hover {
+  background-color: var(--color-btn-primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-login svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ─────────────────────────────────────────────────────
+   ÁREA DE CONTENIDO PRINCIPAL
+   ───────────────────────────────────────────────────── */
+.main-content {
+  /* Empuja el contenido para que no quede detrás del sidebar */
+  margin-left: var(--sidebar-width);
+  flex: 1;
+  min-height: 100vh;
+  padding: var(--content-padding);
+  background-color: var(--color-bg);
+}
+
+/* ─────────────────────────────────────────────────────
+   RESPONSIVE — Móvil
+   ───────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Sidebar se oculta por defecto en móvil */
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  /* Clase que se agrega con JS para mostrar el sidebar */
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* El contenido ocupa todo el ancho */
+  .main-content {
+    margin-left: 0;
+    padding: 20px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 16px 12px;
+  }
+}
+
+/* ── AGREGAR AL FINAL DE styles/layout.css ── */
+
+/* ── ESTADO DE CARGA EN SIDEBAR ── */
+.sidebar-loading {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px 0;
+}
+
+/* Tres puntitos animados */
+.loading-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #444;
+  animation: blink 1.2s infinite;
+}
+
+.loading-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.loading-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0%,
+  80%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ── USUARIO LOGUEADO EN SIDEBAR ── */
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Link que envuelve avatar + nombre */
+.sidebar-user-info {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 1;
+  min-width: 0;
+  text-decoration: none;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.15s ease;
+}
+
+.sidebar-user-info:hover {
+  background-color: var(--color-bg-hover);
+}
+
+/* Círculo del avatar */
+.sidebar-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2a5fff, #1a3fd0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.sidebar-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sidebar-avatar span {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+}
+
+.sidebar-user-text {
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Nombre del usuario */
+.sidebar-user-name {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Rol del usuario */
+.sidebar-user-role {
+  display: block;
+  font-size: 10px;
+  color: var(--color-text-muted);
+  margin-top: 1px;
+}
+
+/* Botón de logout (ícono solo) */
+.btn-logout {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.btn-logout:hover {
+  background-color: rgba(255, 74, 74, 0.1);
+  border-color: var(--color-red);
+  color: var(--color-red);
+}
+
+.btn-logout svg {
+  width: 14px;
+  height: 14px;
+}

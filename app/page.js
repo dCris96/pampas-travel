@@ -1,66 +1,119 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+// app/page.js — VERSIÓN ACTUALIZADA CON SUPABASE
+// ─────────────────────────────────────────────────────
+// Ahora los lugares destacados vienen de Supabase
+// ─────────────────────────────────────────────────────
 
-export default function Home() {
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { supabase } from "@/lib/supabaseClient";
+import CardLugar from "@/components/CardLugar";
+import "@/styles/home.css";
+
+// Estadísticas estáticas (en Fase 8 las hacemos dinámicas con COUNT)
+// 🔧 PERSONALIZABLE
+const STATS = [
+  { value: "45,200", label: "Habitantes", color: "blue" },
+  { value: "320 km²", label: "Extensión", color: "yellow" },
+  { value: "12", label: "Festividades/año", color: "cyan" },
+  { value: "8", label: "Sitios turísticos", color: "red" },
+];
+
+export default function HomePage() {
+  const [destacados, setDestacados] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // ── CARGAR LUGARES DESTACADOS ──
+  // 🔧 Conecta con: tabla public.lugares WHERE destacado = true
+  useEffect(() => {
+    async function cargarDestacados() {
+      const { data } = await supabase
+        .from("lugares")
+        .select("*")
+        .eq("activo", true)
+        .eq("destacado", true) // Solo los marcados como destacados
+        .limit(3) // Máximo 3 en el home
+        .order("created_at", { ascending: false });
+
+      setDestacados(data || []);
+      setLoading(false);
+    }
+    cargarDestacados();
+  }, []);
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div>
+      {/* ── HERO ── */}
+      {/* 🔧 PERSONALIZABLE: Cambia la imagen por tu distrito */}
+      <section className="hero">
+        <img
+          src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80"
+          alt="Valle de los Vientos"
+          className="hero-image"
         />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
+        <div className="hero-overlay" />
+        <div className="hero-content">
+          <h1 className="hero-title">Valle de los Vientos</h1>
+          <p className="hero-description">
+            Un distrito envuelto en montañas, brumas y tradiciones milenarias.
+            Sus valles fértiles, sus fiestas vibrantes y la calidez de su gente
+            lo convierten en un destino que no olvidas.
           </p>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* ── ESTADÍSTICAS ── */}
+      <div className="stats-grid">
+        {STATS.map((stat, i) => (
+          <div key={i} className="stat-card">
+            <div className={`stat-value ${stat.color}`}>{stat.value}</div>
+            <div className="stat-label">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── SITIOS DESTACADOS ── */}
+      <section className="section">
+        <div className="section-header">
+          <h2 className="section-title">Sitios Destacados</h2>
+          <Link href="/lugares" className="section-link">
+            Ver todos →
+          </Link>
         </div>
-      </main>
+
+        {loading ? (
+          // Skeleton de 3 cards
+          <div className="cards-grid">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                style={{
+                  height: 280,
+                  borderRadius: 12,
+                  background:
+                    "linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%)",
+                  backgroundSize: "200% 100%",
+                  animation: "shimmer 1.5s infinite",
+                  border: "1px solid #1f1f1f",
+                }}
+              />
+            ))}
+          </div>
+        ) : destacados.length > 0 ? (
+          // Cards reales de Supabase
+          <div className="cards-grid">
+            {destacados.map((lugar) => (
+              <CardLugar key={lugar.id} lugar={lugar} variante="normal" />
+            ))}
+          </div>
+        ) : (
+          // Si no hay destacados aún
+          <div className="empty-state">
+            <p>No hay sitios destacados todavía.</p>
+          </div>
+        )}
+      </section>
     </div>
   );
 }

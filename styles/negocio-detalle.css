@@ -1,0 +1,327 @@
+/* styles/negocio-detalle.css */
+/* ─────────────────────────────────────────────────────
+   ESTILOS: Página de detalle de negocio
+   ───────────────────────────────────────────────────── */
+
+/* ── HERO ── */
+.negocio-hero {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+
+.negocio-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.negocio-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.88) 0%,
+    rgba(0, 0, 0, 0.25) 55%,
+    transparent 100%
+  );
+}
+
+.negocio-hero-content {
+  position: absolute;
+  bottom: 26px;
+  left: 28px;
+  right: 28px;
+  z-index: 2;
+}
+
+.negocio-hero-tipo-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  backdrop-filter: blur(8px);
+}
+
+.negocio-hero-nombre {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  margin-bottom: 8px;
+  line-height: 1.15;
+}
+
+.negocio-hero-dir {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── LAYOUT DETALLE ── */
+.negocio-detalle-layout {
+  display: grid;
+  grid-template-columns: 1fr 310px;
+  gap: 22px;
+  align-items: start;
+}
+
+/* ── COLUMNA PRINCIPAL ── */
+.negocio-detalle-main {
+}
+
+.negocio-seccion {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--card-radius);
+  padding: 24px 26px;
+  margin-bottom: 16px;
+}
+
+.negocio-seccion h2 {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-label);
+  margin-bottom: 14px;
+}
+
+.negocio-descripcion {
+  font-size: 15px;
+  color: #ccc;
+  line-height: 1.75;
+}
+
+/* ── AMENIDADES EN DETALLE ── */
+.amenidades-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.amenidad-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background-color: #111;
+  border: 1px solid #1f1f1f;
+  border-radius: 20px;
+  font-size: 12px;
+  font-family: var(--font-display);
+  color: #aaa;
+}
+
+.amenidad-chip::before {
+  content: "✓";
+  font-size: 10px;
+  color: var(--color-green);
+}
+
+/* ── SIDEBAR DERECHO ── */
+.negocio-detalle-sidebar {
+}
+
+.negocio-panel {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  margin-bottom: 14px;
+  position: sticky;
+  top: 24px;
+}
+
+/* Precio destacado en el panel */
+.negocio-panel-precio {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--color-border);
+  background: linear-gradient(135deg, #0f1a10 0%, #0a0a0a 100%);
+}
+
+.negocio-panel-precio-label {
+  font-size: 10px;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.negocio-panel-precio-valor {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-yellow);
+  line-height: 1;
+}
+
+.negocio-panel-precio-unidad {
+  font-size: 12px;
+  color: #555;
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+/* Filas de datos en el panel */
+.negocio-panel-filas {
+  padding: 4px 0;
+}
+
+.negocio-panel-fila {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color 0.15s ease;
+}
+
+.negocio-panel-fila:last-child {
+  border-bottom: none;
+}
+
+.negocio-panel-fila:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.negocio-panel-fila-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background-color: #111;
+  border: 1px solid #1f1f1f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.negocio-panel-fila-icon svg {
+  width: 14px;
+  height: 14px;
+  color: #555;
+}
+
+.negocio-panel-fila-info {
+}
+
+.negocio-panel-fila-label {
+  font-size: 10px;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #444;
+  margin-bottom: 2px;
+}
+
+.negocio-panel-fila-value {
+  font-size: 13px;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  line-height: 1.4;
+}
+
+/* ── BOTONES DE CONTACTO ── */
+.negocio-contacto-btns {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-whatsapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background-color: #075e54;
+  color: white;
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background-color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.btn-whatsapp:hover {
+  background-color: #128c7e;
+  transform: translateY(-1px);
+}
+
+.btn-llamar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px;
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-size: 13px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.btn-llamar:hover {
+  border-color: #444;
+  color: var(--color-text);
+}
+
+.btn-whatsapp svg,
+.btn-llamar svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .negocio-detalle-layout {
+    grid-template-columns: 1fr;
+  }
+  .negocio-panel {
+    position: static;
+  }
+  .negocio-hero {
+    height: 260px;
+  }
+  .negocio-hero-nombre {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 600px) {
+  .negocio-hero {
+    height: 210px;
+  }
+  .negocio-hero-nombre {
+    font-size: 18px;
+  }
+  .negocio-hero-content {
+    bottom: 16px;
+    left: 18px;
+    right: 18px;
+  }
+  .negocio-seccion {
+    padding: 18px 16px;
+  }
+}

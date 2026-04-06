@@ -1,0 +1,289 @@
+/* styles/auth.css */
+/* ─────────────────────────────────────────────────────
+   ESTILOS DE PÁGINAS DE LOGIN Y REGISTRO
+   Diseño de pantalla completa centrada, oscura y refinada
+   ───────────────────────────────────────────────────── */
+
+/* ── WRAPPER DE AUTH ── */
+/* Ocupa todo el alto de la pantalla, centrado */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  /* Fondo con textura sutil */
+  background:
+    radial-gradient(
+      ellipse at 20% 50%,
+      rgba(30, 95, 255, 0.06) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse at 80% 20%,
+      rgba(0, 212, 255, 0.04) 0%,
+      transparent 50%
+    ),
+    var(--color-bg);
+}
+
+/* ── TARJETA DEL FORMULARIO ── */
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 40px 36px;
+  /* Sombra para profundidad */
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 24px 48px rgba(0, 0, 0, 0.4);
+}
+
+/* ── LOGO EN LA TARJETA ── */
+.auth-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.auth-logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #2a5fff, #1a3fd0);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-logo-icon svg {
+  width: 18px;
+  height: 18px;
+  color: white;
+}
+
+.auth-logo-text {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.auth-logo-sub {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+}
+
+/* ── TÍTULO Y SUBTÍTULO ── */
+.auth-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 6px;
+}
+
+.auth-subtitle {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+/* ── FORMULARIO ── */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Grupo: label + input */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-dim);
+  letter-spacing: 0.02em;
+}
+
+/* ── INPUT ── */
+.form-input {
+  width: 100%;
+  padding: 11px 14px;
+  background-color: #0f0f0f;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+  outline: none;
+  /* Quita el estilo amarillo de autofill */
+  -webkit-box-shadow: 0 0 0 30px #0f0f0f inset !important;
+  -webkit-text-fill-color: var(--color-text) !important;
+}
+
+.form-input::placeholder {
+  color: #444;
+}
+
+/* Focus: borde azul con glow sutil */
+.form-input:focus {
+  border-color: var(--color-blue);
+  box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.12);
+}
+
+/* ── INPUT CON CONTRASEÑA (wrapper para mostrar/ocultar) ── */
+.input-password-wrapper {
+  position: relative;
+}
+
+.input-password-wrapper .form-input {
+  padding-right: 44px;
+}
+
+/* Botón ojo para mostrar/ocultar contraseña */
+.btn-toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+}
+
+.btn-toggle-password:hover {
+  color: var(--color-text);
+}
+
+.btn-toggle-password svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── BOTÓN PRINCIPAL DEL FORM ── */
+.btn-auth-submit {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--color-btn-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease,
+    opacity 0.2s ease;
+  margin-top: 4px;
+}
+
+.btn-auth-submit:hover:not(:disabled) {
+  background-color: var(--color-btn-primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-auth-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Estado desactivado mientras carga */
+.btn-auth-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── MENSAJES DE ERROR / ÉXITO ── */
+.auth-message {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+.auth-message.error {
+  background-color: rgba(255, 74, 74, 0.1);
+  border: 1px solid rgba(255, 74, 74, 0.3);
+  color: #ff8a8a;
+}
+
+.auth-message.success {
+  background-color: rgba(74, 255, 138, 0.08);
+  border: 1px solid rgba(74, 255, 138, 0.25);
+  color: #6bffab;
+}
+
+/* ── LINK AL FINAL ── */
+/* "¿Ya tienes cuenta? Inicia sesión" */
+.auth-footer-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.auth-footer-link a {
+  color: var(--color-blue);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.15s ease;
+}
+
+.auth-footer-link a:hover {
+  opacity: 0.7;
+}
+
+/* ── DIVISOR ── */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: var(--color-border);
+}
+
+.auth-divider span {
+  font-size: 11px;
+  color: var(--color-text-label);
+  white-space: nowrap;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 28px 20px;
+  }
+
+  .auth-title {
+    font-size: 20px;
+  }
+}

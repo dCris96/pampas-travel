@@ -1,0 +1,433 @@
+/* styles/lugares.css */
+/* ─────────────────────────────────────────────────────
+   ESTILOS: Lista de lugares + Componente CardLugar
+   Replica el diseño de cards con imagen de la referencia
+   ───────────────────────────────────────────────────── */
+
+/* ─────────────────────────────────────────────────────
+   CARD VARIANTE NORMAL
+   ───────────────────────────────────────────────────── */
+
+/* Link wrapper de la card */
+.card-lugar {
+  display: block;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.card-lugar:hover {
+  transform: translateY(-4px);
+  border-color: #2a2a2a;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* ── Imagen ── */
+.card-lugar-img-wrapper {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.card-lugar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.card-lugar:hover .card-lugar-img {
+  transform: scale(1.07);
+}
+
+/* Overlay oscuro que aparece en hover */
+.card-lugar-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.5) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.card-lugar:hover .card-lugar-overlay {
+  opacity: 1;
+}
+
+/* Badge de categoría */
+.card-badge-cat {
+  position: absolute;
+  bottom: 10px;
+  left: 12px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-transform: lowercase;
+  z-index: 2;
+}
+
+/* Estrella de destacado */
+.card-lugar-star {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  color: var(--color-yellow);
+  font-size: 14px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+/* ── Cuerpo de texto ── */
+.card-lugar-body {
+  padding: 16px;
+}
+
+.card-lugar-titulo {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 7px;
+  line-height: 1.3;
+}
+
+.card-lugar-desc {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+  /* Mostrar máximo 3 líneas */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+/* Footer con dirección */
+.card-lugar-footer {
+  border-top: 1px solid var(--color-border);
+  padding-top: 10px;
+}
+
+.card-lugar-dir {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #555;
+  font-family: var(--font-display);
+}
+
+/* ─────────────────────────────────────────────────────
+   CARD VARIANTE HORIZONTAL
+   ───────────────────────────────────────────────────── */
+
+.card-lugar-h {
+  display: flex;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-card);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.card-lugar-h:hover {
+  border-color: #2a2a2a;
+  transform: translateY(-2px);
+}
+
+.card-lugar-h-img-wrapper {
+  position: relative;
+  width: 160px;
+  min-height: 120px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.card-lugar-h-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.card-lugar-h:hover .card-lugar-h-img {
+  transform: scale(1.05);
+}
+
+.card-lugar-h .card-badge-cat {
+  bottom: auto;
+  top: 8px;
+  left: 8px;
+  font-size: 9px;
+}
+
+.card-lugar-h-body {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+}
+
+.card-lugar-h-titulo {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.card-lugar-h-desc {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+
+.card-lugar-h-dir {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #555;
+  font-family: var(--font-display);
+  margin-top: 4px;
+}
+
+/* ─────────────────────────────────────────────────────
+   CARD VARIANTE MINI (para sidebar del mapa)
+   ───────────────────────────────────────────────────── */
+
+.card-lugar-mini {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.15s ease;
+}
+
+.card-lugar-mini:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.card-lugar-mini-img {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.card-lugar-mini-titulo {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text);
+  line-height: 1.3;
+  margin-bottom: 3px;
+}
+
+.card-lugar-mini-dir {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: #555;
+}
+
+/* ─────────────────────────────────────────────────────
+   PÁGINA DE LISTA /lugares
+   ───────────────────────────────────────────────────── */
+
+/* ── Cabecera de página ── */
+.page-header {
+  margin-bottom: 28px;
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+/* ── Barra de filtros ── */
+.filtros-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+/* Botón de filtro (cada categoría) */
+.filtro-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.filtro-btn:hover {
+  border-color: #333;
+  color: var(--color-text);
+}
+
+/* Filtro activo */
+.filtro-btn.activo {
+  background-color: var(--color-blue);
+  border-color: var(--color-blue);
+  color: white;
+}
+
+/* Contador de resultados */
+.resultados-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  white-space: nowrap;
+}
+
+/* ── Grid de cards ── */
+.lugares-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+/* ── Estado vacío ── */
+.empty-lugares {
+  grid-column: 1 / -1; /* Ocupa todas las columnas */
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.empty-lugares-icon {
+  font-size: 40px;
+  margin-bottom: 14px;
+  opacity: 0.4;
+}
+
+.empty-lugares h3 {
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--color-text);
+  margin-bottom: 6px;
+}
+
+.empty-lugares p {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* ── Estado de carga (skeleton) ── */
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.skeleton-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+}
+
+.skeleton-img {
+  height: 200px;
+  background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeleton-line {
+  height: 12px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-line.short {
+  width: 60%;
+}
+.skeleton-line.medium {
+  width: 80%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ── Responsive ── */
+@media (max-width: 1000px) {
+  .lugares-grid,
+  .skeleton-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .lugares-grid,
+  .skeleton-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filtros-bar {
+    gap: 6px;
+  }
+
+  .resultados-count {
+    width: 100%;
+    margin-left: 0;
+  }
+}

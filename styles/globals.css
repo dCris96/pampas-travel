@@ -1,0 +1,151 @@
+/* styles/globals.css */
+/* ─────────────────────────────────────────────────────
+   VARIABLES GLOBALES Y RESET BASE
+   Inspirado en el diseño oscuro de las referencias
+   ───────────────────────────────────────────────────── */
+
+/* ── FUENTES DE GOOGLE ── */
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap");
+
+/* ── VARIABLES DE DISEÑO ── */
+:root {
+  /* Colores principales */
+  --color-bg: #0a0a0a; /* Negro profundo (fondo general) */
+  --color-bg-card: #111111; /* Negro card */
+  --color-bg-sidebar: #0d0d0d; /* Sidebar */
+  --color-bg-hover: #1a1a1a; /* Hover en sidebar */
+  --color-bg-active: #1c2a3a; /* Item activo sidebar */
+  --color-border: #1f1f1f; /* Bordes sutiles */
+  --color-border-card: #222222; /* Bordes de cards */
+
+  /* Texto */
+  --color-text: #ffffff; /* Texto principal */
+  --color-text-muted: #666666; /* Texto secundario */
+  --color-text-dim: #999999; /* Texto terciario */
+  --color-text-label: #444444; /* Labels de sección */
+
+  /* Acentos (colores de stats del diseño) */
+  --color-blue: #4a9eff; /* Azul (habitantes) */
+  --color-yellow: #f5c542; /* Amarillo (extensión, precios) */
+  --color-red: #ff4a4a; /* Rojo (sitios turísticos) */
+  --color-green: #4aff8a; /* Verde (éxito) */
+  --color-cyan: #00d4ff; /* Cyan (badges) */
+
+  /* Badges de categoría */
+  --badge-naturaleza: #2a5c3a;
+  --badge-patrimonio: #3a2a1a;
+  --badge-mirador: #1a2a5c;
+
+  /* Botón login */
+  --color-btn-primary: #1e5fff;
+  --color-btn-primary-hover: #2d6fff;
+
+  /* Tipografías */
+  --font-display: "Sora", sans-serif; /* Títulos y UI */
+  --font-body: "DM Sans", sans-serif; /* Texto corrido */
+
+  /* Espaciados */
+  --sidebar-width: 215px;
+  --content-padding: 40px;
+  --card-radius: 12px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+}
+
+/* ── RESET UNIVERSAL ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+  /* Suaviza el renderizado de texto */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── TIPOGRAFÍA BASE ── */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: var(--font-body);
+  border: none;
+  background: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+/* ── UTILIDADES GLOBALES ── */
+
+/* Texto cortado con ellipsis */
+.text-truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Ocultar visualmente pero accesible */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* ── SCROLLBAR PERSONALIZADA ── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
