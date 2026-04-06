@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌾 Pampas Travel
 
-## Getting Started
+**Pampas Travel** es un portal web diseñado para mostrar **todo lo que tiene Pampas**: sus paisajes, cultura, gastronomía, actividades al aire libre y rincones ocultos. El objetivo es convertirse en la guía definitiva para viajeros que deseen explorar esta región única.
 
-First, run the development server:
+![Vista de las pampas al atardecer](https://picsum.photos/id/104/800/400 "Paisaje de Pampas")
+_Ejemplo de imagen — reemplazar con fotografía real de las llanuras pampeanas._
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 ¿Qué ofrece el proyecto?
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Descubrimiento local** – puntos de interés, estancias, reservas naturales y pueblos auténticos.
+- **Planificación de viajes** – rutas recomendadas, épocas ideales y consejos de transporte.
+- **Galería multimedia** – imágenes y videos que capturan la esencia de Pampas.
+- **Directorio de servicios** – hospedaje, gastronomía, guías y actividades.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+![Gaucho en la pampa](https://picsum.photos/id/15/400/300 "Tradición gauchesca")
+_Cultura gauchesca — reemplazar con imagen propia._
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Tecnologías utilizadas (ejemplo)
 
-## Learn More
+- **Frontend:** HTML5, CSS3, JavaScript (React / Vue según implementación)
+- **Backend:** Node.js + Express o Django (según versión)
+- **Base de datos:** PostgreSQL / MongoDB
+- **Mapas:** Leaflet o Google Maps API
 
-To learn more about Next.js, take a look at the following resources:
+## 📸 Galería visual
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Paisajes                                       | Cultura                                                    | Aventura                                          |
+| ---------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------- |
+| ![Campo](https://picsum.photos/id/116/200/150) | ![Fiesta tradicional](https://picsum.photos/id/30/200/150) | ![Cabalgata](https://picsum.photos/id/59/200/150) |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+\*Todas las imágenes de esta documentación son marcadores de posición.  
+**👉 Reemplaza las URLs con tus propias imágenes alojadas en línea o en el repositorio.\***
 
-## Deploy on Vercel
+## 🌐 Estado actual
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+El portal se encuentra en fase de desarrollo / MVP. Próximamente se agregará sección de reseñas de usuarios y un blog de viajes.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+> **Nota para el equipo:** Las rutas de las imágenes (`https://picsum.photos/...`) deben actualizarse con las imágenes finales del proyecto. Se recomienda usar una CDN o la carpeta `/assets/img` del repositorio.
