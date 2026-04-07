@@ -1,0 +1,198 @@
+/* styles/modal-admin.css */
+/* ─────────────────────────────────────────────────────
+   ESTILOS: Modales de formularios para admin
+   Crear y editar lugares, negocios, etc.
+   ───────────────────────────────────────────────────── */
+
+/* Reutilizamos .modal-overlay y .modal-card de formulario-exp.css */
+
+/* ── FORMULARIO ADMIN ── */
+.form-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px;
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
+/* Grupo de campo */
+.form-admin-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Label */
+.form-admin-label {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.form-admin-label .requerido {
+  color: var(--color-red);
+  margin-left: 3px;
+}
+
+/* Input genérico */
+.form-admin-input {
+  width: 100%;
+  padding: 9px 12px;
+  background-color: #0d0d0d;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+  -webkit-box-shadow: 0 0 0 30px #0d0d0d inset !important;
+  -webkit-text-fill-color: var(--color-text) !important;
+}
+
+.form-admin-input::placeholder {
+  color: #333;
+}
+
+.form-admin-input:focus {
+  border-color: var(--color-blue);
+  box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.1);
+}
+
+/* Textarea */
+.form-admin-textarea {
+  width: 100%;
+  padding: 9px 12px;
+  background-color: #0d0d0d;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  outline: none;
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.5;
+  transition: border-color 0.2s ease;
+}
+
+.form-admin-textarea::placeholder {
+  color: #333;
+}
+
+.form-admin-textarea:focus {
+  border-color: var(--color-blue);
+}
+
+/* Select */
+.form-admin-select {
+  width: 100%;
+  padding: 9px 32px 9px 12px;
+  background-color: #0d0d0d;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2'%3E%3Cpolyline points='6,9 12,15 18,9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  transition: border-color 0.2s ease;
+}
+
+.form-admin-select:focus {
+  border-color: var(--color-blue);
+}
+
+.form-admin-select option {
+  background-color: #111;
+  color: var(--color-text);
+}
+
+/* Fila de dos columnas */
+.form-admin-fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Checkbox con estilo */
+.form-admin-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background-color: #0d0d0d;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.form-admin-check:hover {
+  border-color: #333;
+}
+
+.form-admin-check input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--color-blue);
+}
+
+.form-admin-check-label {
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+/* Input URL con preview */
+.form-admin-url-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-admin-img-preview {
+  width: 100%;
+  height: 120px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  background-color: #0d0d0d;
+}
+
+/* Ayuda bajo el campo */
+.form-admin-ayuda {
+  font-size: 10px;
+  color: #444;
+  font-family: var(--font-display);
+  line-height: 1.4;
+}
+
+/* Separador */
+.form-admin-sep {
+  height: 1px;
+  background-color: var(--color-border);
+  margin: 4px 0;
+}
+
+/* Error en el form */
+.form-admin-error {
+  padding: 9px 12px;
+  background-color: rgba(255, 74, 74, 0.08);
+  border: 1px solid rgba(255, 74, 74, 0.25);
+  border-radius: var(--radius-sm);
+  color: #ff8a8a;
+  font-size: 12px;
+}

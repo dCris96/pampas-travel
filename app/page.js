@@ -14,7 +14,7 @@ import "@/styles/home.css";
 // Estadísticas estáticas (en Fase 8 las hacemos dinámicas con COUNT)
 // 🔧 PERSONALIZABLE
 const STATS = [
-  { value: "45,200", label: "Habitantes", color: "blue" },
+  { value: "4500", label: "Habitantes", color: "blue" },
   { value: "320 km²", label: "Extensión", color: "yellow" },
   { value: "12", label: "Festividades/año", color: "cyan" },
   { value: "8", label: "Sitios turísticos", color: "red" },
@@ -26,18 +26,42 @@ export default function HomePage() {
 
   // ── CARGAR LUGARES DESTACADOS ──
   // 🔧 Conecta con: tabla public.lugares WHERE destacado = true
+  // useEffect(() => {
+  //   async function cargarDestacados() {
+  //     const { data } = await supabase
+  //       .from("lugares")
+  //       .select("*")
+  //       .eq("activo", true)
+  //       .eq("destacado", true) // Solo los marcados como destacados
+  //       .limit(3) // Máximo 3 en el home
+  //       .order("created_at", { ascending: false });
+
+  //     setDestacados(data || []);
+  //     setLoading(false);
+  //   }
+  //   cargarDestacados();
+  // }, []);
+
   useEffect(() => {
     async function cargarDestacados() {
-      const { data } = await supabase
-        .from("lugares")
-        .select("*")
-        .eq("activo", true)
-        .eq("destacado", true) // Solo los marcados como destacados
-        .limit(3) // Máximo 3 en el home
-        .order("created_at", { ascending: false });
+      try {
+        const { data, error } = await supabase
+          .from("lugares")
+          .select("*")
+          .eq("activo", true)
+          .eq("destacado", true)
+          .limit(3)
+          .order("created_at", { ascending: false });
 
-      setDestacados(data || []);
-      setLoading(false);
+        if (error) throw error;
+
+        setDestacados(data || []);
+      } catch (err) {
+        console.error("Error cargando destacados:", err);
+        // Opcional: muestra un mensaje amigable al usuario
+      } finally {
+        setLoading(false);
+      }
     }
     cargarDestacados();
   }, []);
@@ -57,7 +81,7 @@ export default function HomePage() {
           <h1 className="hero-title">Valle de los Vientos</h1>
           <p className="hero-description">
             Un distrito envuelto en montañas, brumas y tradiciones milenarias.
-            Sus valles fértiles, sus fiestas vibrantes y la calidez de su gente
+            Sus tierras fértiles, sus fiestas vibrantes y la calidez de su gente
             lo convierten en un destino que no olvidas.
           </p>
         </div>
@@ -113,6 +137,14 @@ export default function HomePage() {
             <p>No hay sitios destacados todavía.</p>
           </div>
         )}
+      </section>
+
+      <section className="section">
+        <h2 className="section-title">Próximamente...</h2>
+        <p>
+          ¡Estamos preparando más contenido para ti! Estadísticas dinámicas,
+          eventos en vivo y mucho más.
+        </p>
       </section>
     </div>
   );

@@ -258,6 +258,7 @@ const NAV_SECTIONS = [
     items: [
       { href: "/experiencias", label: "Experiencias", Icon: IconStar },
       { href: "/productos", label: "Productos", Icon: IconShop },
+      // "Mis publicaciones" solo para usuarios logueados (se muestra condicionalmente abajo)
     ],
   },
   {
@@ -309,6 +310,62 @@ export default function Navbar() {
             })}
           </div>
         ))}
+
+        {/* "Mis publicaciones" solo para usuarios logueados */}
+        {user && (
+          <div className="nav-group">
+            <div className="nav-group-label">Mi cuenta</div>
+            <Link
+              href="/mis-publicaciones"
+              className={`nav-item ${pathname === "/mis-publicaciones" ? "active" : ""}`}
+            >
+              <IconStar />
+              <span>Mis publicaciones</span>
+            </Link>
+          </div>
+        )}
+
+        {/* Admin */}
+        {isAdmin && (
+          <div className="nav-group">
+            <div className="nav-group-label">Administración</div>
+            <Link
+              href="/admin"
+              className={`nav-item ${pathname === "/admin" ? "active" : ""}`}
+            >
+              <IconUser />
+              <span>Dashboard</span>
+            </Link>
+            <Link
+              href="/admin/moderacion"
+              className={`nav-item ${pathname.startsWith("/admin/moderacion") ? "active" : ""}`}
+            >
+              <IconUser />
+              <span>Moderación</span>
+            </Link>
+            <Link
+              href="/admin/lugares"
+              className={`nav-item ${pathname.startsWith("/admin/lugares") ? "active" : ""}`}
+            >
+              <IconCompass />
+              <span>Lugares</span>
+            </Link>
+            <Link
+              href="/admin/negocios"
+              className={`nav-item ${pathname.startsWith("/admin/negocios") ? "active" : ""}`}
+            >
+              <IconBriefcase />
+              <span>Negocios</span>
+            </Link>
+            <Link
+              href="/admin/usuarios"
+              className={`nav-item ${pathname.startsWith("/admin/usuarios") ? "active" : ""}`}
+            >
+              <IconUser />
+              <span>Usuarios</span>
+            </Link>
+          </div>
+        )}
 
         {/*
           Sección Admin: solo visible si el usuario tiene rol 'admin'

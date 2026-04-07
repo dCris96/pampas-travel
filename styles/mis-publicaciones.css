@@ -1,0 +1,186 @@
+/* styles/mis-publicaciones.css */
+
+.mispub-header {
+  margin-bottom: 24px;
+}
+
+.mispub-header h1 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.mispub-header p {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* ── TABS DE TIPO ── */
+.mispub-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--card-radius);
+  padding: 5px;
+  flex-wrap: wrap;
+}
+
+.mispub-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.mispub-tab:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text);
+}
+.mispub-tab.activo {
+  background: var(--color-btn-primary);
+  color: white;
+}
+
+.mispub-tab-count {
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ── ITEM DE PUBLICACIÓN ── */
+.mispub-item {
+  display: flex;
+  gap: 14px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--card-radius);
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  align-items: flex-start;
+  transition: border-color 0.2s ease;
+}
+
+.mispub-item:hover {
+  border-color: #252525;
+}
+
+/* Borde por estado */
+.mispub-item.pendiente {
+  border-left: 3px solid #f5c542;
+}
+.mispub-item.aprobado {
+  border-left: 3px solid #4aff8a;
+}
+.mispub-item.rechazado {
+  border-left: 3px solid #ff6b6b;
+}
+
+.mispub-item-img {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #111;
+}
+
+.mispub-item-img-placeholder {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #111, #1a1a1a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.mispub-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mispub-item-titulo {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mispub-item-preview {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.mispub-item-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.mispub-fecha {
+  font-size: 11px;
+  color: #444;
+  font-family: var(--font-display);
+}
+
+.mispub-nota-rechazo {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(255, 74, 74, 0.06);
+  border: 1px solid rgba(255, 74, 74, 0.2);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: #ff8a8a;
+  line-height: 1.4;
+}
+
+/* Vacio */
+.mispub-vacio {
+  text-align: center;
+  padding: 60px 20px;
+  color: #444;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--card-radius);
+}
+
+.mispub-vacio-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+  opacity: 0.3;
+}
+
+.mispub-vacio p {
+  font-size: 13px;
+  font-family: var(--font-display);
+  line-height: 1.5;
+}

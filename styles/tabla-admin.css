@@ -1,0 +1,340 @@
+/* styles/tabla-admin.css */
+/* ─────────────────────────────────────────────────────
+   ESTILOS: Tabla de administración con acciones CRUD
+   ───────────────────────────────────────────────────── */
+
+/* ── BARRA SUPERIOR DE LA TABLA ── */
+.tabla-admin-barra {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+/* Búsqueda dentro de la tabla */
+.tabla-buscar {
+  position: relative;
+  flex: 1;
+  min-width: 180px;
+  max-width: 300px;
+}
+
+.tabla-buscar-input {
+  width: 100%;
+  padding: 7px 10px 7px 30px;
+  background-color: #0d0d0d;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.tabla-buscar-input::placeholder {
+  color: #333;
+}
+.tabla-buscar-input:focus {
+  border-color: var(--color-blue);
+}
+
+.tabla-buscar-icon {
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #444;
+  pointer-events: none;
+  font-size: 12px;
+}
+
+/* Contador de registros */
+.tabla-count {
+  font-size: 11px;
+  color: #555;
+  font-family: var(--font-display);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* ── TABLA ── */
+.tabla-admin-wrapper {
+  width: 100%;
+  overflow-x: auto; /* Scroll horizontal en móvil */
+}
+
+.tabla-admin {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+/* Cabecera */
+.tabla-admin thead tr {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tabla-admin th {
+  padding: 10px 16px;
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-label);
+  white-space: nowrap;
+  background-color: #0a0a0a;
+}
+
+/* Columna de acciones siempre a la derecha */
+.tabla-admin th:last-child,
+.tabla-admin td:last-child {
+  text-align: right;
+}
+
+/* Filas */
+.tabla-admin tbody tr {
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color 0.12s ease;
+}
+
+.tabla-admin tbody tr:last-child {
+  border-bottom: none;
+}
+
+.tabla-admin tbody tr:hover {
+  background-color: var(--color-bg-hover);
+}
+
+/* Celdas */
+.tabla-admin td {
+  padding: 12px 16px;
+  color: var(--color-text-muted);
+  vertical-align: middle;
+}
+
+/* Thumbnail en la tabla */
+.tabla-thumbnail {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  background-color: #111;
+  flex-shrink: 0;
+}
+
+.tabla-thumbnail-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background-color: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* Celda con nombre + thumbnail */
+.tabla-celda-nombre {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tabla-nombre-texto {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.tabla-nombre-sub {
+  font-size: 11px;
+  color: #555;
+  margin-top: 2px;
+  display: block;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Badge de estado activo/inactivo */
+.tabla-badge-activo {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-family: var(--font-display);
+  font-weight: 500;
+}
+
+.tabla-badge-activo.si {
+  background-color: rgba(74, 255, 138, 0.1);
+  color: var(--color-green);
+  border: 1px solid rgba(74, 255, 138, 0.2);
+}
+
+.tabla-badge-activo.no {
+  background-color: rgba(100, 100, 100, 0.1);
+  color: #555;
+  border: 1px solid #222;
+}
+
+/* Badge destacado */
+.tabla-badge-star {
+  color: var(--color-yellow);
+  font-size: 14px;
+}
+
+/* Acciones de fila */
+.tabla-acciones {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.btn-tabla-editar {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-tabla-editar:hover {
+  border-color: var(--color-blue);
+  color: var(--color-blue);
+}
+
+.btn-tabla-editar svg {
+  width: 12px;
+  height: 12px;
+}
+
+.btn-tabla-borrar {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  background: none;
+  border: 1px solid rgba(255, 74, 74, 0.2);
+  border-radius: var(--radius-sm);
+  color: #884444;
+  font-family: var(--font-display);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-tabla-borrar:hover {
+  border-color: var(--color-red);
+  color: var(--color-red);
+  background-color: rgba(255, 74, 74, 0.05);
+}
+
+.btn-tabla-borrar svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Toggle activo/inactivo */
+.btn-toggle-activo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: #555;
+}
+
+.btn-toggle-activo:hover {
+  border-color: #333;
+  color: var(--color-text);
+}
+
+/* Estado vacío de la tabla */
+.tabla-vacia {
+  text-align: center;
+  padding: 60px 20px;
+  color: #444;
+}
+
+.tabla-vacia-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+  opacity: 0.4;
+}
+
+.tabla-vacia p {
+  font-size: 13px;
+  font-family: var(--font-display);
+}
+
+/* ── PAGINACIÓN ── */
+.tabla-paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-top: 1px solid var(--color-border);
+  font-size: 12px;
+  color: #555;
+  font-family: var(--font-display);
+}
+
+.tabla-paginacion-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-pag {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: var(--font-display);
+  transition: all 0.15s ease;
+}
+
+.btn-pag:hover:not(:disabled) {
+  border-color: #333;
+  color: var(--color-text);
+}
+
+.btn-pag:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn-pag.activo {
+  background-color: var(--color-btn-primary);
+  border-color: var(--color-btn-primary);
+  color: white;
+}
