@@ -1,9 +1,4 @@
-// app/layout.js — VERSIÓN ACTUALIZADA CON AuthProvider
-// ─────────────────────────────────────────────────────
-// Agrega AuthProvider para que toda la app tenga acceso
-// al estado de autenticación
-// ─────────────────────────────────────────────────────
-
+// app/layout.js — ACTUALIZAR: agregar CSS de Leaflet
 import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/context/AuthContext";
 import "@/styles/globals.css";
@@ -17,11 +12,20 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="es" data-scroll-behavior="smooth">
-      <body>
+      <head>
         {/*
-          AuthProvider envuelve TODO para que cualquier
-          componente pueda usar useAuth()
+          CSS de Leaflet — NECESARIO para que el mapa se vea correctamente
+          Sin esto los tiles y controles se muestran rotos
+          🔧 Versión: 1.9.4 (la misma que instala npm)
         */}
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossOrigin=""
+        />
+      </head>
+      <body>
         <AuthProvider>
           <div className="app-wrapper">
             <Navbar />

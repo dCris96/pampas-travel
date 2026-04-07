@@ -1,0 +1,324 @@
+/* styles/mapa-sidebar.css */
+/* ─────────────────────────────────────────────────────
+   ESTILOS: Sidebar del mapa — filtros y lista de puntos
+   ───────────────────────────────────────────────────── */
+
+/* ── SIDEBAR CONTENEDOR ── */
+.mapa-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+}
+
+/* ── PANEL GENÉRICO ── */
+.mapa-panel {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+}
+
+.mapa-panel-header {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mapa-panel-titulo {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-label);
+}
+
+/* ── FILTROS DE CAPAS ── */
+/* Checkboxes para mostrar/ocultar capas del mapa */
+.mapa-filtros-lista {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Fila de filtro */
+.mapa-filtro-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  user-select: none;
+}
+
+.mapa-filtro-item:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.mapa-filtro-izq {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Punto de color del filtro */
+.mapa-filtro-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mapa-filtro-label {
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  transition: color 0.15s ease;
+}
+
+.mapa-filtro-item.activo .mapa-filtro-label {
+  color: var(--color-text);
+}
+
+/* Contador de puntos */
+.mapa-filtro-count {
+  font-family: var(--font-display);
+  font-size: 10px;
+  color: #444;
+  background-color: #111;
+  padding: 2px 7px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.mapa-filtro-item.activo .mapa-filtro-count {
+  color: #666;
+}
+
+/* Toggle switch visual */
+.mapa-filtro-toggle {
+  width: 28px;
+  height: 16px;
+  border-radius: 8px;
+  background-color: #1f1f1f;
+  border: 1px solid #2a2a2a;
+  position: relative;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease;
+}
+
+.mapa-filtro-toggle::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #444;
+  top: 2px;
+  left: 2px;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.mapa-filtro-item.activo .mapa-filtro-toggle {
+  background-color: rgba(74, 158, 255, 0.2);
+  border-color: rgba(74, 158, 255, 0.4);
+}
+
+.mapa-filtro-item.activo .mapa-filtro-toggle::after {
+  transform: translateX(12px);
+  background-color: var(--color-blue);
+}
+
+/* ── BUSCADOR ── */
+.mapa-buscar {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-border);
+  position: relative;
+}
+
+.mapa-buscar-input {
+  width: 100%;
+  padding: 8px 12px 8px 32px;
+  background-color: #0d0d0d;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.mapa-buscar-input::placeholder {
+  color: #333;
+}
+
+.mapa-buscar-input:focus {
+  border-color: var(--color-blue);
+}
+
+/* Ícono lupa */
+.mapa-buscar-icon {
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #444;
+  pointer-events: none;
+}
+
+.mapa-buscar-icon svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* ── LISTA DE PUNTOS EN EL SIDEBAR ── */
+.mapa-lista-puntos {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  max-height: 400px;
+}
+
+/* Item de punto en la lista */
+.mapa-punto-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.mapa-punto-item:last-child {
+  border-bottom: none;
+}
+
+.mapa-punto-item:hover {
+  background-color: var(--color-bg-hover);
+}
+
+/* Item activo (seleccionado) */
+.mapa-punto-item.activo {
+  background-color: rgba(74, 158, 255, 0.07);
+  border-left: 2px solid var(--color-blue);
+  padding-left: 12px;
+}
+
+/* Ícono/emoji del punto */
+.mapa-punto-emoji {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* Info del punto */
+.mapa-punto-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mapa-punto-nombre {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.mapa-punto-tipo {
+  font-size: 10px;
+  color: #555;
+  font-family: var(--font-display);
+  text-transform: capitalize;
+}
+
+/* Flecha derecha */
+.mapa-punto-arrow {
+  color: #333;
+  font-size: 12px;
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+}
+
+.mapa-punto-item:hover .mapa-punto-arrow,
+.mapa-punto-item.activo .mapa-punto-arrow {
+  color: var(--color-blue);
+}
+
+/* Estado vacío en la lista */
+.mapa-lista-vacia {
+  padding: 24px 16px;
+  text-align: center;
+  color: #444;
+  font-size: 12px;
+  font-family: var(--font-display);
+}
+
+/* ── STATS BAR (abajo del sidebar) ── */
+.mapa-stats-bar {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--card-radius);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-around;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.mapa-stat {
+  text-align: center;
+}
+
+.mapa-stat-valor {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-blue);
+  display: block;
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+.mapa-stat-label {
+  font-size: 10px;
+  color: #555;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .mapa-sidebar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+
+  .mapa-panel {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .mapa-lista-puntos {
+    max-height: 200px;
+  }
+}
