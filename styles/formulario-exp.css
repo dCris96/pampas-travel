@@ -1,0 +1,397 @@
+/* styles/formulario-exp.css */
+/* ─────────────────────────────────────────────────────
+   ESTILOS: Formulario para publicar experiencia
+   Aparece como panel expandible sobre el feed
+   ───────────────────────────────────────────────────── */
+
+/* ── OVERLAY (fondo oscuro del modal) ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── MODAL CARD ── */
+.modal-card {
+  background-color: #111;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── HEADER DEL MODAL ── */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.modal-titulo {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Botón cerrar (X) */
+.btn-cerrar-modal {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-cerrar-modal:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-text);
+  border-color: #333;
+}
+
+.btn-cerrar-modal svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* ── CUERPO DEL MODAL ── */
+.modal-body {
+  padding: 22px;
+}
+
+/* Autor en la parte superior del form */
+.form-exp-autor {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.form-exp-nombre {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* ── TEXTAREA DEL CONTENIDO ── */
+.textarea-exp {
+  width: 100%;
+  min-height: 130px;
+  padding: 14px;
+  background-color: #0d0d0d;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+  margin-bottom: 16px;
+}
+
+.textarea-exp::placeholder {
+  color: #333;
+}
+
+.textarea-exp:focus {
+  border-color: var(--color-blue);
+  box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.1);
+}
+
+/* Contador de caracteres */
+.chars-counter {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 11px;
+  font-family: var(--font-display);
+  color: #444;
+  margin-top: -12px;
+  margin-bottom: 16px;
+}
+
+.chars-counter.warning {
+  color: var(--color-yellow);
+}
+.chars-counter.limit {
+  color: var(--color-red);
+}
+
+/* ── ZONA DE SUBIDA DE IMAGEN ── */
+.upload-zona {
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.upload-zona:hover,
+.upload-zona.drag-over {
+  border-color: var(--color-blue);
+  background-color: rgba(74, 158, 255, 0.04);
+}
+
+/* Input file oculto */
+.upload-zona input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.upload-zona-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+
+.upload-zona-texto {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+
+.upload-zona-subtext {
+  font-size: 11px;
+  color: #444;
+}
+
+/* ── PREVIEW DE LA IMAGEN SELECCIONADA ── */
+.upload-preview {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 16px;
+  border: 1px solid var(--color-border);
+}
+
+.upload-preview-img {
+  width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Botón para quitar la imagen */
+.btn-quitar-imagen {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.15s ease;
+}
+
+.btn-quitar-imagen:hover {
+  background-color: rgba(255, 74, 74, 0.8);
+}
+
+/* ── SELECTOR DE LUGAR VINCULADO ── */
+.form-select {
+  width: 100%;
+  padding: 10px 14px;
+  background-color: #0d0d0d;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: border-color 0.2s ease;
+  /* Quita el estilo por defecto del select */
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2'%3E%3Cpolyline points='6,9 12,15 18,9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+.form-select:focus {
+  border-color: var(--color-blue);
+}
+
+.form-select option {
+  background-color: #111;
+  color: var(--color-text);
+}
+
+/* ── BARRA DE PROGRESO DE SUBIDA ── */
+.upload-progress {
+  margin-bottom: 16px;
+}
+
+.upload-progress-label {
+  font-size: 11px;
+  font-family: var(--font-display);
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.upload-progress-bar {
+  height: 3px;
+  background-color: #1f1f1f;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.upload-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-blue), var(--color-cyan));
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* ── ERROR EN EL FORM ── */
+.form-exp-error {
+  padding: 10px 14px;
+  background-color: rgba(255, 74, 74, 0.1);
+  border: 1px solid rgba(255, 74, 74, 0.3);
+  border-radius: var(--radius-sm);
+  color: #ff8a8a;
+  font-size: 13px;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+/* ── FOOTER DEL MODAL ── */
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 22px;
+  border-top: 1px solid var(--color-border);
+}
+
+.btn-cancelar {
+  padding: 9px 18px;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-cancelar:hover {
+  border-color: #444;
+  color: var(--color-text);
+}
+
+.btn-submit-exp {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 20px;
+  background-color: var(--color-btn-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    opacity 0.2s ease;
+}
+
+.btn-submit-exp:hover:not(:disabled) {
+  background-color: var(--color-btn-primary-hover);
+}
+
+.btn-submit-exp:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-card {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    max-height: 92vh;
+    animation: slideUpMobile 0.25s ease;
+  }
+
+  @keyframes slideUpMobile {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+}
