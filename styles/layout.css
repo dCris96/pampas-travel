@@ -177,17 +177,16 @@
    ───────────────────────────────────────────────────── */
 .sidebar {
   width: var(--sidebar-width);
-  height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
+  bottom: 0; /* ← en lugar de height: 100vh */
   background-color: var(--color-bg-sidebar);
   border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   z-index: 1000;
-  /* El sidebar en sí NO hace scroll (overflow visible) */
-  overflow: visible;
+  overflow: visible; /* el scroll se maneja en .sidebar-nav */
 }
 
 /* ── LOGO / HEADER DEL SIDEBAR ── */

@@ -97,6 +97,14 @@ export default function HomePage() {
         ))}
       </div>
 
+      {/* INFORMACION DE PORQUE LOGUEARCE */}
+      <section className="section">
+        <p>
+          Para poder acceder a todas las funcionalidades, por favor inicia
+          sesión.
+        </p>
+      </section>
+
       {/* ── SITIOS DESTACADOS ── */}
       <section className="section">
         <div className="section-header">
