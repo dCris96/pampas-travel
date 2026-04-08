@@ -1,7 +1,8 @@
-// app/layout.js — ACTUALIZAR: agregar CSS de Leaflet
-import Navbar from "@/components/Navbar";
+// app/layout.js
 import { AuthProvider } from "@/context/AuthContext";
+import LayoutClient from "@/components/LayoutClient"; // ← nuevo
 import "@/styles/globals.css";
+import "@/styles/layout.css"; // ← asegúrate de importar layout.css
 import "@/styles/lugares.css";
 
 export const metadata = {
@@ -14,11 +15,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="es" data-scroll-behavior="smooth">
       <head>
-        {/*
-          CSS de Leaflet — NECESARIO para que el mapa se vea correctamente
-          Sin esto los tiles y controles se muestran rotos
-          🔧 Versión: 1.9.4 (la misma que instala npm)
-        */}
         <link
           rel="stylesheet"
           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -28,10 +24,7 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <AuthProvider>
-          <div className="app-wrapper">
-            <Navbar />
-            <main className="main-content">{children}</main>
-          </div>
+          <LayoutClient>{children}</LayoutClient>
         </AuthProvider>
       </body>
     </html>

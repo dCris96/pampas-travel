@@ -271,14 +271,14 @@ const NAV_SECTIONS = [
   },
 ];
 
-export default function Navbar() {
+export default function Navbar({ isOpen = false }) {
   const pathname = usePathname();
 
   // 🔧 Conecta con: context/AuthContext.js
   const { user, perfil, loading, logout, isAdmin } = useAuth();
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isOpen ? "open" : ""}`}>
       {/* ── LOGO ── */}
       <div className="sidebar-logo">
         <div className="sidebar-logo-icon">
@@ -321,48 +321,6 @@ export default function Navbar() {
             >
               <IconStar />
               <span>Mis publicaciones</span>
-            </Link>
-          </div>
-        )}
-
-        {/* Admin */}
-        {isAdmin && (
-          <div className="nav-group">
-            <div className="nav-group-label">Administración</div>
-            <Link
-              href="/admin"
-              className={`nav-item ${pathname === "/admin" ? "active" : ""}`}
-            >
-              <IconUser />
-              <span>Dashboard</span>
-            </Link>
-            <Link
-              href="/admin/moderacion"
-              className={`nav-item ${pathname.startsWith("/admin/moderacion") ? "active" : ""}`}
-            >
-              <IconUser />
-              <span>Moderación</span>
-            </Link>
-            <Link
-              href="/admin/lugares"
-              className={`nav-item ${pathname.startsWith("/admin/lugares") ? "active" : ""}`}
-            >
-              <IconCompass />
-              <span>Lugares</span>
-            </Link>
-            <Link
-              href="/admin/negocios"
-              className={`nav-item ${pathname.startsWith("/admin/negocios") ? "active" : ""}`}
-            >
-              <IconBriefcase />
-              <span>Negocios</span>
-            </Link>
-            <Link
-              href="/admin/usuarios"
-              className={`nav-item ${pathname.startsWith("/admin/usuarios") ? "active" : ""}`}
-            >
-              <IconUser />
-              <span>Usuarios</span>
             </Link>
           </div>
         )}
