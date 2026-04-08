@@ -85,6 +85,7 @@ const ADMIN_NAV = [
   { href: "/admin/lugares", label: "Lugares", Icon: IconCompass },
   { href: "/admin/negocios", label: "Negocios", Icon: IconShop },
   { href: "/admin/usuarios", label: "Usuarios", Icon: IconUsers },
+  { href: "/admin/moderacion", label: "Moderación", Icon: IconUsers },
 ];
 
 export default function AdminSidebar({ stats = {} }) {

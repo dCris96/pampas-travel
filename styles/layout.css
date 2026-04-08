@@ -177,22 +177,17 @@
    ───────────────────────────────────────────────────── */
 .sidebar {
   width: var(--sidebar-width);
-  min-height: 100vh;
-  background-color: var(--color-bg-sidebar);
-  border-right: 1px solid var(--color-border);
-
-  /* Fijo a la izquierda mientras el contenido hace scroll */
+  height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 100;
-
-  /* Flex column para apilar logo + nav + footer */
+  background-color: var(--color-bg-sidebar);
+  border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
-
-  overflow-y: auto;
-  overflow-x: hidden;
+  z-index: 1000;
+  /* El sidebar en sí NO hace scroll (overflow visible) */
+  overflow: visible;
 }
 
 /* ── LOGO / HEADER DEL SIDEBAR ── */
@@ -249,6 +244,7 @@
   flex: 1;
   padding: 12px 0;
   overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 /* Grupo de sección (PRINCIPAL, CULTURA, etc.) */
