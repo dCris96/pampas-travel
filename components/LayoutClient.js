@@ -3,42 +3,47 @@
 
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
+import MobileHeader from "@/components/MobileHeader";
 
 export default function LayoutClient({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Cerrar sidebar al cambiar de ruta (opcional)
   useEffect(() => {
-    setSidebarOpen(false);
-  }, [children]);
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
-  // Cerrar sidebar si la pantalla pasa a >768px
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 768 && sidebarOpen) {
-        setSidebarOpen(false);
-      }
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [sidebarOpen]);
+    if (isMobile) setSidebarOpen(false);
+  }, [children, isMobile]);
+
+  const closeSidebar = () => isMobile && setSidebarOpen(false);
+  const toggleSidebar = () => isMobile && setSidebarOpen(!sidebarOpen);
 
   return (
     <div className="app-wrapper">
-      <Navbar isOpen={sidebarOpen} />
-      <main className="main-content">
-        {/* Botón hamburguesa que se transforma en X */}
-        <button
-          className={`mobile-menu-btn ${sidebarOpen ? "open" : ""}`}
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          aria-label={sidebarOpen ? "Cerrar menú" : "Abrir menú"}
-        >
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
-        </button>
-        {children}
-      </main>
+      <Navbar
+        isOpen={sidebarOpen}
+        isMobile={isMobile}
+        closeSidebar={closeSidebar}
+      />
+
+      {/* Renderizado condicional: en escritorio no hay wrapper ni header móvil */}
+      {isMobile ? (
+        <div className="main-content-wrapper">
+          <MobileHeader isOpen={sidebarOpen} onToggle={toggleSidebar} />
+          <main className="main-content">{children}</main>
+        </div>
+      ) : (
+        <main className="main-content">{children}</main>
+      )}
+
+      {isMobile && sidebarOpen && (
+        <div className="sidebar-backdrop" onClick={closeSidebar} />
+      )}
     </div>
   );
 }

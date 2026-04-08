@@ -271,11 +271,20 @@ const NAV_SECTIONS = [
   },
 ];
 
-export default function Navbar({ isOpen = false }) {
+export default function Navbar({
+  isOpen = false,
+  isMobile = false,
+  closeSidebar,
+}) {
   const pathname = usePathname();
 
   // 🔧 Conecta con: context/AuthContext.js
   const { user, perfil, loading, logout, isAdmin } = useAuth();
+
+  // Función auxiliar para manejar clic en enlaces
+  const handleLinkClick = () => {
+    if (isMobile) closeSidebar();
+  };
 
   return (
     <aside className={`sidebar ${isOpen ? "open" : ""}`}>
@@ -302,6 +311,7 @@ export default function Navbar({ isOpen = false }) {
                   key={href}
                   href={href}
                   className={`nav-item ${isActive ? "active" : ""}`}
+                  onClick={handleLinkClick}
                 >
                   <Icon />
                   <span>{label}</span>
@@ -318,6 +328,7 @@ export default function Navbar({ isOpen = false }) {
             <Link
               href="/mis-publicaciones"
               className={`nav-item ${pathname === "/mis-publicaciones" ? "active" : ""}`}
+              onClick={handleLinkClick}
             >
               <IconStar />
               <span>Mis publicaciones</span>
@@ -335,6 +346,7 @@ export default function Navbar({ isOpen = false }) {
             <Link
               href="/admin"
               className={`nav-item ${pathname === "/admin" ? "active" : ""}`}
+              onClick={handleLinkClick}
             >
               <IconUser />
               <span>Panel Admin</span>
@@ -356,7 +368,11 @@ export default function Navbar({ isOpen = false }) {
           // ── USUARIO LOGUEADO ──
           <div className="sidebar-user">
             {/* Avatar / Iniciales */}
-            <Link href="/perfil" className="sidebar-user-info">
+            <Link
+              href="/perfil"
+              className="sidebar-user-info"
+              onClick={handleLinkClick}
+            >
               <div className="sidebar-avatar">
                 {perfil?.avatar_url ? (
                   <img src={perfil.avatar_url} alt="Avatar" />
@@ -392,7 +408,7 @@ export default function Navbar({ isOpen = false }) {
             <p className="sidebar-footer-hint">
               Inicia sesión para publicar contenido
             </p>
-            <Link href="/login" className="btn-login">
+            <Link href="/login" className="btn-login" onClick={handleLinkClick}>
               <IconLogin />
               Iniciar Sesión
             </Link>
