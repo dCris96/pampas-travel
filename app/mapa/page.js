@@ -97,27 +97,27 @@ const CAPAS_CONFIG = [
     color: "#ffb86b",
     grupo: "Servicios",
   },
-  // {
-  //   id: "cafe",
-  //   label: "Cafés",
-  //   emoji: "☕",
-  //   color: "#ffd46b",
-  //   grupo: "Servicios",
-  // },
-  // {
-  //   id: "tienda",
-  //   label: "Tiendas",
-  //   emoji: "🛍️",
-  //   color: "#6bffab",
-  //   grupo: "Servicios",
-  // },
-  // {
-  //   id: "servicio",
-  //   label: "Servicios",
-  //   emoji: "⚙️",
-  //   color: "#aaaaaa",
-  //   grupo: "Servicios",
-  // },
+  {
+    id: "cafe",
+    label: "Cafés",
+    emoji: "☕",
+    color: "#ffd46b",
+    grupo: "Servicios",
+  },
+  {
+    id: "tienda",
+    label: "Tiendas",
+    emoji: "🛍️",
+    color: "#6bffab",
+    grupo: "Servicios",
+  },
+  {
+    id: "servicio",
+    label: "Servicios",
+    emoji: "⚙️",
+    color: "#aaaaaa",
+    grupo: "Servicios",
+  },
   {
     id: "transporte",
     label: "Transporte",
@@ -299,97 +299,6 @@ export default function MapaPage() {
             SIDEBAR IZQUIERDO
         ───────────────────────── */}
         <div className="mapa-sidebar">
-          {/* ── Panel de filtros (capas) ── */}
-          <div className="mapa-panel">
-            <div
-              className="mapa-panel-header"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <span className="mapa-panel-titulo">Capas</span>
-              <div style={{ display: "flex", gap: 8 }}>
-                {/* Botón "Todo" */}
-                <button
-                  onClick={() => toggleTodasCapas(true)}
-                  style={{
-                    fontSize: 10,
-                    color: "var(--color-blue)",
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    fontFamily: "var(--font-display)",
-                  }}
-                >
-                  Todo
-                </button>
-                {/* Botón "Nada" */}
-                <button
-                  onClick={() => toggleTodasCapas(false)}
-                  style={{
-                    fontSize: 10,
-                    color: "#555",
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    fontFamily: "var(--font-display)",
-                  }}
-                >
-                  Nada
-                </button>
-              </div>
-            </div>
-
-            <div className="mapa-filtros-lista">
-              {/* Agrupar por grupo */}
-              {["Lugares", "Servicios"].map((grupo) => (
-                <div key={grupo}>
-                  {/* Label del grupo */}
-                  <div
-                    style={{
-                      fontSize: 9,
-                      fontFamily: "var(--font-display)",
-                      fontWeight: 600,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.1em",
-                      color: "#333",
-                      padding: "8px 8px 4px",
-                    }}
-                  >
-                    {grupo}
-                  </div>
-
-                  {/* Items del grupo */}
-                  {CAPAS_CONFIG.filter((c) => c.grupo === grupo).map((capa) => {
-                    const count = conteosPorTipo[capa.id] || 0;
-                    const activa = capasVisibles[capa.id] !== false;
-                    return (
-                      <div
-                        key={capa.id}
-                        className={`mapa-filtro-item ${activa ? "activo" : ""}`}
-                        onClick={() => toggleCapa(capa.id)}
-                      >
-                        <div className="mapa-filtro-izq">
-                          <div
-                            className="mapa-filtro-dot"
-                            style={{ backgroundColor: capa.color }}
-                          />
-                          <span className="mapa-filtro-label">
-                            {capa.label}
-                          </span>
-                          <span className="mapa-filtro-count">{count}</span>
-                        </div>
-                        <div className="mapa-filtro-toggle" />
-                      </div>
-                    );
-                  })}
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* ── Panel de lista de puntos ── */}
           <div
             className="mapa-panel"
@@ -532,34 +441,96 @@ export default function MapaPage() {
               )}
             </div>
           </div>
-
-          {/* ── Stats bar ── */}
-          {!loading && (
-            <div className="mapa-stats-bar">
-              <div className="mapa-stat">
-                <span className="mapa-stat-valor">{totalVisible}</span>
-                <span className="mapa-stat-label">Total</span>
-              </div>
-              <div className="mapa-stat">
-                <span
-                  className="mapa-stat-valor"
-                  style={{ color: "var(--color-green)" }}
+          {/* ── Panel de filtros (capas) ── */}
+          <div className="mapa-panel">
+            <div
+              className="mapa-panel-header"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span className="mapa-panel-titulo">Capas</span>
+              <div style={{ display: "flex", gap: 8 }}>
+                {/* Botón "Todo" */}
+                <button
+                  onClick={() => toggleTodasCapas(true)}
+                  style={{
+                    fontSize: 10,
+                    color: "var(--color-blue)",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    fontFamily: "var(--font-display)",
+                  }}
                 >
-                  {totalLugares}
-                </span>
-                <span className="mapa-stat-label">Lugares</span>
-              </div>
-              <div className="mapa-stat">
-                <span
-                  className="mapa-stat-valor"
-                  style={{ color: "var(--color-yellow)" }}
+                  Todo
+                </button>
+                {/* Botón "Nada" */}
+                <button
+                  onClick={() => toggleTodasCapas(false)}
+                  style={{
+                    fontSize: 10,
+                    color: "#555",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    fontFamily: "var(--font-display)",
+                  }}
                 >
-                  {totalNegocios}
-                </span>
-                <span className="mapa-stat-label">Negocios</span>
+                  Nada
+                </button>
               </div>
             </div>
-          )}
+
+            <div className="mapa-filtros-lista">
+              {/* Agrupar por grupo */}
+              {["Lugares", "Servicios"].map((grupo) => (
+                <div key={grupo}>
+                  {/* Label del grupo */}
+                  <div
+                    style={{
+                      fontSize: 9,
+                      fontFamily: "var(--font-display)",
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.1em",
+                      color: "#333",
+                      padding: "8px 8px 4px",
+                    }}
+                  >
+                    {grupo}
+                  </div>
+
+                  {/* Items del grupo */}
+                  {CAPAS_CONFIG.filter((c) => c.grupo === grupo).map((capa) => {
+                    const count = conteosPorTipo[capa.id] || 0;
+                    const activa = capasVisibles[capa.id] !== false;
+                    return (
+                      <div
+                        key={capa.id}
+                        className={`mapa-filtro-item ${activa ? "activo" : ""}`}
+                        onClick={() => toggleCapa(capa.id)}
+                      >
+                        <div className="mapa-filtro-izq">
+                          <div
+                            className="mapa-filtro-dot"
+                            style={{ backgroundColor: capa.color }}
+                          />
+                          <span className="mapa-filtro-label">
+                            {capa.label}
+                          </span>
+                          <span className="mapa-filtro-count">{count}</span>
+                        </div>
+                        <div className="mapa-filtro-toggle" />
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* ─────────────────────────

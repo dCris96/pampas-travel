@@ -533,3 +533,34 @@
   width: 14px;
   height: 14px;
 }
+
+/* CODIGO PARA LA SECCION DE LOGIN EN EL CONTENEDOR PRINCIPAL */
+.Main_login {
+  width: 50%;
+  min-width: 380px;
+  margin: auto;
+}
+
+.Main_login p {
+  text-align: center;
+  line-height: 1rem;
+  margin-bottom: 20px;
+}
+
+.Main_login .btn-login {
+  width: 150px;
+  margin: auto;
+}
+
+/* CODIGO PARA EL APARTADO DE HISTORIA */
+.section_hitoria {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 80%;
+  margin: 100px auto;
+}
+.title-main {
+  font-size: 2rem;
+}

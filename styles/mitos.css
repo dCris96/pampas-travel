@@ -1,0 +1,747 @@
+/* styles/mitos.css */
+/* ─────────────────────────────────────────────────────
+   MITOS Y LEYENDAS — Layout idéntico a música
+   Reproductor sticky izquierdo + lista paginada derecha
+   ───────────────────────────────────────────────────── */
+
+/* ── HEADER ── */
+.mitos-header {
+  margin-bottom: 28px;
+}
+
+.mitos-header h1 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.mitos-header p {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+/* ── LAYOUT: REPRODUCTOR IZQUIERDO + LISTA DERECHA ── */
+.mitos-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ─────────────────────────────────────────────────────
+   PANEL REPRODUCTOR (izquierdo, sticky)
+   Idéntico al de música pero adaptado a texto/audio
+   ───────────────────────────────────────────────────── */
+
+.mitos-player-panel {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  position: sticky;
+  top: 24px;
+}
+
+/* Cover / imagen del mito activo */
+.mitos-player-cover {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+  background-color: #111;
+}
+
+.mitos-player-cover-placeholder {
+  width: 100%;
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, #0d1117 0%, #1a1020 50%, #0d1117 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.mitos-player-cover-placeholder-icon {
+  font-size: 52px;
+  opacity: 0.2;
+}
+
+.mitos-player-cover-placeholder-texto {
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: #333;
+  text-align: center;
+  padding: 0 24px;
+  line-height: 1.5;
+}
+
+/* Info del mito activo */
+.mitos-player-info {
+  padding: 18px 18px 14px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mitos-player-titulo {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.mitos-player-subtitulo {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.mitos-player-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mitos-player-origen {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 9px;
+  background-color: rgba(74, 158, 255, 0.1);
+  border: 1px solid rgba(74, 158, 255, 0.2);
+  border-radius: 20px;
+  font-size: 10px;
+  font-family: var(--font-display);
+  color: var(--color-blue);
+}
+
+.mitos-player-epoca {
+  font-size: 10px;
+  color: #444;
+  font-family: var(--font-display);
+}
+
+/* ── CONTROLES DE AUDIO ── */
+.mitos-audio-section {
+  padding: 16px 18px;
+  background-color: #0a0a0a;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Barra de progreso custom */
+.mitos-audio-barra-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.mitos-audio-tiempo {
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: #555;
+  white-space: nowrap;
+  min-width: 34px;
+}
+
+.mitos-audio-tiempo.derecha {
+  text-align: right;
+}
+
+/* Barra de progreso clickeable */
+.mitos-progress-bar {
+  flex: 1;
+  height: 4px;
+  background-color: #1f1f1f;
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: height 0.15s ease;
+}
+
+.mitos-progress-bar:hover {
+  height: 6px;
+}
+
+.mitos-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-blue), var(--color-cyan));
+  border-radius: 2px;
+  pointer-events: none;
+  transition: width 0.1s linear;
+}
+
+/* Thumb del progress */
+.mitos-progress-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: white;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.mitos-progress-bar:hover .mitos-progress-thumb {
+  opacity: 1;
+}
+
+/* Fila de botones de control */
+.mitos-audio-controles {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Botón anterior / siguiente */
+.btn-audio-skip {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: none;
+  border: 1px solid #1f1f1f;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-audio-skip:hover:not(:disabled) {
+  border-color: #333;
+  color: var(--color-text);
+}
+
+.btn-audio-skip:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.btn-audio-skip svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Botón play/pausa principal */
+.btn-audio-play {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-blue), #1a3fd0);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.2s ease;
+  box-shadow: 0 4px 16px rgba(74, 158, 255, 0.3);
+}
+
+.btn-audio-play:hover:not(:disabled) {
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(74, 158, 255, 0.4);
+}
+
+.btn-audio-play:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.btn-audio-play:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.btn-audio-play svg {
+  width: 20px;
+  height: 20px;
+  /* El triángulo del play necesita un pequeño offset visual */
+}
+
+.btn-audio-play.playing svg {
+  /* Cuando está en play, el ícono de pausa es cuadrado → no necesita offset */
+  margin-left: 0;
+}
+
+/* Control de volumen */
+.mitos-audio-volumen {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.btn-mute {
+  background: none;
+  border: none;
+  color: #444;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s ease;
+}
+
+.btn-mute:hover {
+  color: var(--color-text);
+}
+.btn-mute svg {
+  width: 14px;
+  height: 14px;
+}
+
+.volumen-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  background: #1f1f1f;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.volumen-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-blue);
+  cursor: pointer;
+}
+
+/* Sin audio disponible */
+.mitos-sin-audio {
+  padding: 14px 18px;
+  background-color: #0a0a0a;
+  border-bottom: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.mitos-sin-audio p {
+  font-size: 11px;
+  color: #333;
+  font-family: var(--font-display);
+  line-height: 1.5;
+}
+
+/* Extracto del contenido en el panel */
+.mitos-player-extracto {
+  padding: 14px 18px;
+  font-size: 12px;
+  color: #555;
+  line-height: 1.7;
+  font-family: var(--font-body);
+  max-height: 140px;
+  overflow-y: auto;
+  border-top: 1px solid var(--color-border);
+
+  /* Scrollbar dentro del extracto */
+  scrollbar-width: thin;
+  scrollbar-color: #222 transparent;
+}
+
+.mitos-player-extracto::-webkit-scrollbar {
+  width: 3px;
+}
+.mitos-player-extracto::-webkit-scrollbar-thumb {
+  background: #222;
+  border-radius: 2px;
+}
+
+/* ── ESTADO VACÍO DEL PANEL ── */
+.mitos-player-vacio {
+  padding: 52px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.mitos-player-vacio-icon {
+  font-size: 40px;
+  opacity: 0.15;
+}
+
+.mitos-player-vacio p {
+  font-size: 12px;
+  color: #333;
+  font-family: var(--font-display);
+  line-height: 1.6;
+}
+
+/* ─────────────────────────────────────────────────────
+   LISTA DE MITOS (derecha)
+   ───────────────────────────────────────────────────── */
+
+.mitos-lista-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.mitos-lista-titulo {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.mitos-lista-count {
+  font-size: 11px;
+  color: #444;
+  font-family: var(--font-display);
+}
+
+/* Contenedor de la lista */
+.mitos-lista {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+}
+
+/* ── CARD DE MITO EN LA LISTA ── */
+.card-mito {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  position: relative;
+}
+
+.card-mito:last-child {
+  border-bottom: none;
+}
+
+.card-mito:hover {
+  background-color: var(--color-bg-hover);
+}
+
+/* Mito activo */
+.card-mito.activo {
+  background-color: rgba(74, 158, 255, 0.05);
+  border-left: 2px solid var(--color-blue);
+  padding-left: 16px;
+}
+
+/* Número o ícono de play */
+.card-mito-num {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: #444;
+  margin-top: 2px;
+}
+
+/* Barras animadas "reproduciendo" */
+.card-mito-playing {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+
+.card-mito-playing .bar {
+  width: 2px;
+  background-color: var(--color-blue);
+  border-radius: 1px;
+  animation: playing 0.8s ease-in-out infinite;
+}
+
+.card-mito-playing .bar:nth-child(1) {
+  animation-delay: 0s;
+}
+.card-mito-playing .bar:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.card-mito-playing .bar:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* Cover miniatura */
+.card-mito-cover {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: #111;
+}
+
+.card-mito-cover-placeholder {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #0d1117, #1a1020);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+/* Info del mito */
+.card-mito-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-mito-titulo {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+  transition: color 0.15s ease;
+}
+
+.card-mito.activo .card-mito-titulo {
+  color: var(--color-blue);
+}
+
+.card-mito-subtitulo {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-style: italic;
+  display: block;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Preview del contenido (primeras palabras) */
+.card-mito-preview {
+  font-size: 11px;
+  color: #444;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Meta derecha */
+.card-mito-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.card-mito-duracion {
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: #555;
+}
+
+.card-mito-origen {
+  font-size: 10px;
+  color: #333;
+  font-family: var(--font-display);
+  text-align: right;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Badge de audio disponible */
+.badge-audio {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-size: 9px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  background-color: rgba(74, 255, 138, 0.08);
+  color: #4aff8a;
+  border: 1px solid rgba(74, 255, 138, 0.2);
+}
+
+.badge-sin-audio {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-size: 9px;
+  font-family: var(--font-display);
+  color: #333;
+  border: 1px solid #1f1f1f;
+}
+
+/* ─────────────────────────────────────────────────────
+   PAGINACIÓN
+   ───────────────────────────────────────────────────── */
+
+.mitos-paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-top: 1px solid var(--color-border);
+  background-color: #0a0a0a;
+}
+
+.mitos-paginacion-info {
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: #444;
+}
+
+.mitos-paginacion-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-pag-mito {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.btn-pag-mito:hover:not(:disabled) {
+  border-color: #333;
+  color: var(--color-text);
+  background-color: var(--color-bg-hover);
+}
+
+.btn-pag-mito:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+.btn-pag-mito.activo {
+  background-color: var(--color-btn-primary);
+  border-color: var(--color-btn-primary);
+  color: white;
+}
+
+/* ─────────────────────────────────────────────────────
+   ESTADOS
+   ───────────────────────────────────────────────────── */
+
+/* Skeleton */
+.skeleton-mito {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Vacío */
+.mitos-vacio {
+  text-align: center;
+  padding: 60px 20px;
+  color: #444;
+}
+
+.mitos-vacio-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  opacity: 0.3;
+}
+
+.mitos-vacio p {
+  font-size: 13px;
+  font-family: var(--font-display);
+}
+
+/* ─────────────────────────────────────────────────────
+   RESPONSIVE
+   ───────────────────────────────────────────────────── */
+
+@media (max-width: 1000px) {
+  .mitos-layout {
+    grid-template-columns: 300px 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .mitos-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .mitos-player-panel {
+    position: static;
+  }
+
+  .mitos-player-cover,
+  .mitos-player-cover-placeholder {
+    aspect-ratio: 16 / 7;
+  }
+
+  .mitos-player-cover-placeholder {
+    flex-direction: row;
+    padding: 0 24px;
+    gap: 16px;
+  }
+
+  .mitos-player-cover-placeholder-icon {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 500px) {
+  .card-mito {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+  .card-mito-cover,
+  .card-mito-cover-placeholder {
+    width: 46px;
+    height: 46px;
+  }
+  .mitos-paginacion {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

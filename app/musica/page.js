@@ -201,46 +201,6 @@ export default function MusicaPage() {
             LISTA DE TRACKS
         ───────────────────────── */}
         <div>
-          {/* Grid de destacados */}
-          {!loading && trackDestacados.length > 0 && (
-            <div className="musica-destacados">
-              <div className="musica-destacados-titulo">Destacados</div>
-              <div className="musica-destacados-grid">
-                {trackDestacados.map((track) => (
-                  <div
-                    key={track.id}
-                    className="musica-destacado-item"
-                    onClick={() => handleTrackClick(track)}
-                    title={`${track.titulo} — ${track.artista}`}
-                  >
-                    {track.cover_url ? (
-                      <img src={track.cover_url} alt={track.titulo} />
-                    ) : (
-                      <div
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          background: "linear-gradient(135deg,#111,#1a1a2a)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: 32,
-                        }}
-                      >
-                        🎵
-                      </div>
-                    )}
-                    <div className="musica-destacado-overlay">
-                      <div className="musica-destacado-nombre">
-                        {track.titulo}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* Header de la lista completa */}
           <div className="musica-lista-header">
             <span className="musica-lista-titulo">Todos los tracks</span>
