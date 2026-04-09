@@ -31,7 +31,7 @@
   padding: 12px 16px;
   align-items: center;
   gap: 12px;
-  z-index: 90;
+  z-index: 10000;
 }
 
 .mobile-header-title {
@@ -159,13 +159,13 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 95; /* Debajo del sidebar (100) y del botón (101), pero encima del contenido */
+  z-index: 10100; /* Debajo del sidebar (100) y del botón (101), pero encima del contenido */
   transition: opacity 0.3s ease;
 }
 
 /* Asegurar que el sidebar tenga z-index mayor que el backdrop */
 .sidebar {
-  z-index: 100;
+  z-index: 10110;
 }
 
 /* ─────────────────────────────────────────────────────
@@ -182,7 +182,7 @@
   border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
-  z-index: 1000;
+  z-index: 10110;
   overflow: visible; /* el scroll se maneja en .sidebar-nav */
 }
 

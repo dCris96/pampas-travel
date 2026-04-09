@@ -769,7 +769,7 @@ export default function MitosPage() {
                     <div className="card-mito-meta">
                       {mito.duracion && (
                         <span className="card-mito-duracion">
-                          {mito.duracion}
+                          {mito.duracion} min
                         </span>
                       )}
 
