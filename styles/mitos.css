@@ -695,21 +695,28 @@
   font-family: var(--font-display);
 }
 
+.ver-mas {
+  display: none;
+  font-size: 0.875rem;
+  background-color: var(--color-btn-primary);
+  color: white;
+  border: 1px solid var(--color-btn-primary);
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
 /* ─────────────────────────────────────────────────────
    RESPONSIVE
    ───────────────────────────────────────────────────── */
 
 @media (max-width: 1000px) {
   .mitos-layout {
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 800px) {
-  .mitos-layout {
-    grid-template-columns: 1fr;
-  }
-
   .mitos-player-panel {
     position: static;
   }
@@ -727,6 +734,30 @@
 
   .mitos-player-cover-placeholder-icon {
     font-size: 36px;
+  }
+
+  .card-mito {
+    display: block;
+  }
+
+  .card-mito-titulo {
+    margin-top: 10px;
+  }
+
+  .card-mito-num {
+    display: none;
+  }
+
+  .card-mito-meta {
+    align-items: flex-start;
+  }
+
+  .card-mito-origen {
+    display: none;
+  }
+
+  .ver-mas {
+    display: block;
   }
 }
 

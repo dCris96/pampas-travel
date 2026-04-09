@@ -22,6 +22,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import "@/styles/mitos.css";
+import Link from "next/link";
 
 // ── Cuántos mitos por página ──
 // 🔧 PERSONALIZABLE
@@ -775,7 +776,12 @@ export default function MitosPage() {
                       {tieneAudio ? (
                         <span className="badge-audio">🔊 audio</span>
                       ) : (
-                        <span className="badge-sin-audio">📖 lectura</span>
+                        <>
+                          <span className="badge-sin-audio">📖 lectura</span>
+                          <Link href={`/mitos/${mito.id}`} className="ver-mas">
+                            Leer historia completa
+                          </Link>
+                        </>
                       )}
 
                       {mito.origen && (
