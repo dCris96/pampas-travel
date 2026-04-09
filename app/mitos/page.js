@@ -524,6 +524,19 @@ export default function MitosPage() {
     });
   }
 
+  // Limpiar reproductor al hacer clic fuera de las tarjetas y fuera de la paginación
+  function handleBackgroundClick(e) {
+    // Si el clic ocurrió dentro de una tarjeta, no hacemos nada (selección normal)
+    if (e.target.closest(".card-mito")) return;
+    // Si el clic ocurrió dentro de la paginación (botones), no limpiamos
+    if (e.target.closest(".mitos-paginacion")) return;
+    // Si el clic ocurrió en el encabezado de la lista, no limpiamos (opcional)
+    if (e.target.closest(".mitos-lista-header")) return;
+
+    // En cualquier otro caso (fondo vacío, skeleton, mensaje de error, etc.) limpiamos el reproductor
+    setMitoActivo(null);
+  }
+
   // ─────────────────────────────────────────────────────
   // RENDER
   // ─────────────────────────────────────────────────────
@@ -591,8 +604,22 @@ export default function MitosPage() {
               />
 
               {mitoActivo.contenido && (
-                <div className="mitos-player-extracto">
-                  {mitoActivo.contenido}
+                <div className="mitos-player-acciones">
+                  <Link
+                    href=""
+                    className="btn-cerrar"
+                    onClick={(e) => {
+                      setMitoActivo(null);
+                    }}
+                  >
+                    Cerrar Cuento
+                  </Link>
+                  <Link
+                    href={`/mitos/${mitoActivo.id}`}
+                    className="btn-ver-mas"
+                  >
+                    Leer cuento
+                  </Link>
                 </div>
               )}
             </>
