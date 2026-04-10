@@ -78,6 +78,19 @@ const IconArrowLeft = () => (
     <polyline points="12,19 5,12 12,5" />
   </svg>
 );
+const IconBell = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+  </svg>
+);
 
 // Items del panel admin
 const ADMIN_NAV = [
@@ -85,7 +98,7 @@ const ADMIN_NAV = [
   { href: "/admin/lugares", label: "Lugares", Icon: IconCompass },
   { href: "/admin/negocios", label: "Negocios", Icon: IconShop },
   { href: "/admin/usuarios", label: "Usuarios", Icon: IconUsers },
-  { href: "/admin/moderacion", label: "Moderación", Icon: IconUsers },
+  { href: "/admin/moderacion", label: "Moderación", Icon: IconBell },
 ];
 
 export default function AdminSidebar({ stats = {} }) {

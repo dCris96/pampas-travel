@@ -1,34 +1,12 @@
-// components/admin/ModalLugar.js
-// ─────────────────────────────────────────────────────
-// Modal para CREAR o EDITAR un lugar turístico
-//
-// Props:
-//   lugar     → null (crear) | objeto (editar)
-//   onClose   → cerrar modal
-//   onGuardado → callback con el lugar guardado
-// ─────────────────────────────────────────────────────
-
+// components/FormularioLugar.js
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
+import { subirImagenWebP, validarArchivo } from "@/lib/imageUtils";
 import "@/styles/formulario-exp.css";
 import "@/styles/modal-admin.css";
-
-const IconX = () => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <line x1="18" y1="6" x2="6" y2="18" />
-    <line x1="6" y1="6" x2="18" y2="18" />
-  </svg>
-);
 
 const CATEGORIAS = [
   "naturaleza",
@@ -39,87 +17,116 @@ const CATEGORIAS = [
   "gastronomia",
 ];
 
-export default function ModalLugar({ lugar = null, onClose, onGuardado }) {
+const IconX = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
+export default function FormularioLugar({ onClose, onPublicado }) {
   const { user } = useAuth();
-  const esEdicion = !!lugar;
-
-  // ── ESTADO DEL FORMULARIO ──
-  // Si es edición, precarga los datos existentes
   const [form, setForm] = useState({
-    titulo: lugar?.titulo || "",
-    descripcion: lugar?.descripcion || "",
-    categoria: lugar?.categoria || "naturaleza",
-    imagen_url: lugar?.imagen_url || "",
-    direccion: lugar?.direccion || "",
-    latitud: lugar?.latitud || "",
-    longitud: lugar?.longitud || "",
-    destacado: lugar?.destacado || false,
-    activo: lugar?.activo !== undefined ? lugar.activo : true,
+    titulo: "",
+    descripcion: "",
+    categoria: "naturaleza",
+    direccion: "",
+    latitud: "",
+    longitud: "",
   });
-
-  const [loading, setLoading] = useState(false);
+  const [imagen, setImagen] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [dragOver, setDragOver] = useState(false);
+  const [progreso, setProgreso] = useState(0);
+  const [subiendo, setSubiendo] = useState(false);
   const [error, setError] = useState("");
+  const fileInputRef = useRef(null);
 
-  // ── ACTUALIZAR CAMPO ──
-  function setField(key, value) {
-    setForm((prev) => ({ ...prev, [key]: value }));
+  function setField(k, v) {
+    setForm((p) => ({ ...p, [k]: v }));
   }
 
-  // ── GUARDAR ──
-  // 🔧 Conecta con: tabla public.lugares → INSERT o UPDATE
-  async function handleGuardar() {
+  // Procesar imagen seleccionada (validación + preview)
+  function procesarImagen(file) {
+    const errorMsg = validarArchivo(file);
+    if (errorMsg) {
+      setError(errorMsg);
+      return;
+    }
     setError("");
+    setImagen(file);
+    const previewUrl = URL.createObjectURL(file);
+    setPreview(previewUrl);
+  }
 
-    // Validaciones
+  // Drag & Drop
+  function handleDragOver(e) {
+    e.preventDefault();
+    setDragOver(true);
+  }
+  function handleDragLeave() {
+    setDragOver(false);
+  }
+  function handleDrop(e) {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files[0];
+    if (file) procesarImagen(file);
+  }
+  function handleFileChange(e) {
+    const file = e.target.files[0];
+    if (file) procesarImagen(file);
+  }
+  function quitarImagen() {
+    if (preview) URL.revokeObjectURL(preview);
+    setImagen(null);
+    setPreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  // Publicar lugar (con subida de imagen a Storage)
+  async function handlePublicar() {
+    setError("");
     if (!form.titulo.trim()) {
       setError("El título es obligatorio.");
       return;
     }
-
-    setLoading(true);
+    setSubiendo(true);
+    setProgreso(0);
 
     try {
-      const payload = {
+      let imagenUrl = null;
+      if (imagen) {
+        imagenUrl = await subirImagenWebP(
+          imagen,
+          supabase,
+          "experiencias", // bucket para imágenes de lugares
+          user.id,
+          (p) => setProgreso(Math.round(p * 0.8)), // 80% del progreso para la imagen
+        );
+      }
+
+      setProgreso(85);
+      const { error: insertError } = await supabase.from("lugares").insert({
         titulo: form.titulo.trim(),
         descripcion: form.descripcion.trim() || null,
         categoria: form.categoria,
-        imagen_url: form.imagen_url.trim() || null,
         direccion: form.direccion.trim() || null,
+        imagen_url: imagenUrl,
         latitud: form.latitud ? parseFloat(form.latitud) : null,
         longitud: form.longitud ? parseFloat(form.longitud) : null,
-        destacado: form.destacado,
-        activo: form.activo,
-      };
+        creado_por: user.id,
+      });
+      if (insertError) throw insertError;
 
-      if (esEdicion) {
-        // ── ACTUALIZAR ──
-        // 🔧 UPDATE WHERE id = lugar.id
-        const { data, error } = await supabase
-          .from("lugares")
-          .update(payload)
-          .eq("id", lugar.id)
-          .select()
-          .single();
-
-        if (error) throw error;
-        onGuardado(data, "actualizado");
-      } else {
-        // ── CREAR ──
-        // 🔧 INSERT con creado_por = user.id
-        const { data, error } = await supabase
-          .from("lugares")
-          .insert({ ...payload, creado_por: user.id })
-          .select()
-          .single();
-
-        if (error) throw error;
-        onGuardado(data, "creado");
-      }
+      setProgreso(100);
+      onPublicado();
     } catch (err) {
-      console.error(err);
-      setError(err.message || "Error al guardar. Verifica los datos.");
+      console.error("Error al publicar lugar:", err);
+      setError(err.message || "Error al enviar. Intenta de nuevo.");
+      setProgreso(0);
     } finally {
-      setLoading(false);
+      setSubiendo(false);
     }
   }
 
@@ -128,186 +135,198 @@ export default function ModalLugar({ lugar = null, onClose, onGuardado }) {
       className="modal-overlay"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="modal-card" style={{ maxWidth: 580 }}>
-        {/* Header */}
+      <div className="modal-card" style={{ maxWidth: 560 }}>
         <div className="modal-header">
           <span className="modal-titulo">
-            {esEdicion ? "✏️ Editar lugar" : "➕ Nuevo lugar turístico"}
+            🗺️ Sugerir lugar turísticossssssss
           </span>
           <button
             className="btn-cerrar-modal"
             onClick={onClose}
-            disabled={loading}
+            disabled={subiendo}
           >
             <IconX />
           </button>
         </div>
 
-        {/* Formulario */}
-        <div className="form-admin">
-          {/* Título */}
-          <div className="form-admin-grupo">
-            <label className="form-admin-label">
-              Título <span className="requerido">*</span>
-            </label>
-            <input
-              type="text"
-              className="form-admin-input"
-              placeholder="Nombre del lugar turístico"
-              value={form.titulo}
-              onChange={(e) => setField("titulo", e.target.value)}
-              disabled={loading}
-            />
+        <div className="modal-body">
+          {/* Aviso de revisión */}
+          <div
+            style={{
+              marginBottom: 20,
+              padding: "10px 14px",
+              background: "rgba(245,197,66,0.07)",
+              border: "1px solid rgba(245,197,66,0.2)",
+              borderRadius: 8,
+              fontSize: 12,
+              color: "#888",
+            }}
+          >
+            ⏳ Tu sugerencia quedará{" "}
+            <strong style={{ color: "#f5c542" }}>pendiente de revisión</strong>.
+            El equipo verificará y la publicará en el mapa.
           </div>
 
-          {/* Descripción */}
-          <div className="form-admin-grupo">
-            <label className="form-admin-label">Descripción</label>
-            <textarea
-              className="form-admin-textarea"
-              placeholder="Descripción detallada del lugar..."
-              value={form.descripcion}
-              onChange={(e) => setField("descripcion", e.target.value)}
-              disabled={loading}
-            />
-          </div>
-
-          {/* Categoría */}
-          <div className="form-admin-grupo">
-            <label className="form-admin-label">Categoría</label>
-            <select
-              className="form-admin-select"
-              value={form.categoria}
-              onChange={(e) => setField("categoria", e.target.value)}
-              disabled={loading}
-            >
-              {CATEGORIAS.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* URL de imagen */}
-          <div className="form-admin-grupo">
-            <label className="form-admin-label">URL de imagen</label>
-            <div className="form-admin-url-wrapper">
+          {/* Campos del formulario */}
+          <div className="form-admin">
+            <div className="form-admin-grupo">
+              <label className="form-admin-label">
+                Nombre del lugar <span className="requerido">*</span>
+              </label>
               <input
-                type="url"
+                type="text"
                 className="form-admin-input"
-                placeholder="https://..."
-                value={form.imagen_url}
-                onChange={(e) => setField("imagen_url", e.target.value)}
-                disabled={loading}
+                placeholder="¿Cómo se llama?"
+                value={form.titulo}
+                onChange={(e) => setField("titulo", e.target.value)}
+                disabled={subiendo}
               />
-              {/* Preview de la imagen */}
-              {form.imagen_url && (
+            </div>
+
+            <div className="form-admin-grupo">
+              <label className="form-admin-label">Descripción</label>
+              <textarea
+                className="form-admin-textarea"
+                placeholder="¿Qué hay ahí? ¿Por qué vale la pena visitarlo?"
+                value={form.descripcion}
+                onChange={(e) => setField("descripcion", e.target.value)}
+                disabled={subiendo}
+              />
+            </div>
+
+            <div className="form-admin-grupo">
+              <label className="form-admin-label">Categoría</label>
+              <select
+                className="form-admin-select"
+                value={form.categoria}
+                onChange={(e) => setField("categoria", e.target.value)}
+                disabled={subiendo}
+              >
+                {CATEGORIAS.map((c) => (
+                  <option key={c} value={c}>
+                    {c.charAt(0).toUpperCase() + c.slice(1)}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-admin-grupo">
+              <label className="form-admin-label">Dirección o referencia</label>
+              <input
+                type="text"
+                className="form-admin-input"
+                placeholder="Cómo llegar..."
+                value={form.direccion}
+                onChange={(e) => setField("direccion", e.target.value)}
+                disabled={subiendo}
+              />
+            </div>
+
+            {/* DRAG & DROP / PREVIEW DE IMAGEN */}
+            {preview ? (
+              <div className="upload-preview">
                 <img
-                  src={form.imagen_url}
+                  src={preview}
                   alt="Preview"
-                  className="form-admin-img-preview"
-                  onError={(e) => (e.target.style.display = "none")}
+                  className="upload-preview-img"
                 />
-              )}
+                <button
+                  className="btn-quitar-imagen"
+                  onClick={quitarImagen}
+                  disabled={subiendo}
+                  title="Quitar imagen"
+                >
+                  ✕
+                </button>
+              </div>
+            ) : (
+              <div
+                className={`upload-zona ${dragOver ? "drag-over" : ""}`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  onChange={handleFileChange}
+                  disabled={subiendo}
+                />
+                <div className="upload-zona-icon">📷</div>
+                <div className="upload-zona-texto">
+                  Arrastra una imagen o haz clic para seleccionar
+                </div>
+                <div className="upload-zona-subtext">
+                  JPG, PNG, WEBP o GIF — máximo 10MB (se convertirá a WebP)
+                </div>
+              </div>
+            )}
+
+            {/* Barra de progreso */}
+            {subiendo && progreso > 0 && (
+              <div className="upload-progress">
+                <div className="upload-progress-label">
+                  <span>
+                    {imagen ? "Procesando imagen..." : "Publicando..."}
+                  </span>
+                  <span>{progreso}%</span>
+                </div>
+                <div className="upload-progress-bar">
+                  <div
+                    className="upload-progress-fill"
+                    style={{ width: `${progreso}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Coordenadas */}
+            <div className="form-admin-fila">
+              <div className="form-admin-grupo">
+                <label className="form-admin-label">Latitud (opcional)</label>
+                <input
+                  type="number"
+                  step="any"
+                  className="form-admin-input"
+                  placeholder="-13.5175"
+                  value={form.latitud}
+                  onChange={(e) => setField("latitud", e.target.value)}
+                  disabled={subiendo}
+                />
+              </div>
+              <div className="form-admin-grupo">
+                <label className="form-admin-label">Longitud (opcional)</label>
+                <input
+                  type="number"
+                  step="any"
+                  className="form-admin-input"
+                  placeholder="-72.9721"
+                  value={form.longitud}
+                  onChange={(e) => setField("longitud", e.target.value)}
+                  disabled={subiendo}
+                />
+              </div>
             </div>
-            <span className="form-admin-ayuda">
-              Usa una URL de Unsplash o sube una imagen a Supabase Storage y
-              pega la URL pública.
-            </span>
+
+            {error && <div className="form-admin-error">⚠️ {error}</div>}
           </div>
-
-          {/* Dirección */}
-          <div className="form-admin-grupo">
-            <label className="form-admin-label">Dirección</label>
-            <input
-              type="text"
-              className="form-admin-input"
-              placeholder="Calle, sector o referencia"
-              value={form.direccion}
-              onChange={(e) => setField("direccion", e.target.value)}
-              disabled={loading}
-            />
-          </div>
-
-          {/* Coordenadas */}
-          <div className="form-admin-fila">
-            <div className="form-admin-grupo">
-              <label className="form-admin-label">Latitud</label>
-              <input
-                type="number"
-                step="any"
-                className="form-admin-input"
-                placeholder="-13.5175"
-                value={form.latitud}
-                onChange={(e) => setField("latitud", e.target.value)}
-                disabled={loading}
-              />
-            </div>
-            <div className="form-admin-grupo">
-              <label className="form-admin-label">Longitud</label>
-              <input
-                type="number"
-                step="any"
-                className="form-admin-input"
-                placeholder="-72.9721"
-                value={form.longitud}
-                onChange={(e) => setField("longitud", e.target.value)}
-                disabled={loading}
-              />
-            </div>
-          </div>
-
-          <span className="form-admin-ayuda" style={{ marginTop: -8 }}>
-            💡 Para obtener coordenadas: busca el lugar en Google Maps → click
-            derecho → "¿Qué hay aquí?" → copia lat, lng
-          </span>
-
-          <div className="form-admin-sep" />
-
-          {/* Checkboxes */}
-          <div className="form-admin-fila">
-            <label className="form-admin-check">
-              <input
-                type="checkbox"
-                checked={form.destacado}
-                onChange={(e) => setField("destacado", e.target.checked)}
-                disabled={loading}
-              />
-              <span className="form-admin-check-label">⭐ Lugar destacado</span>
-            </label>
-            <label className="form-admin-check">
-              <input
-                type="checkbox"
-                checked={form.activo}
-                onChange={(e) => setField("activo", e.target.checked)}
-                disabled={loading}
-              />
-              <span className="form-admin-check-label">
-                ✅ Activo (visible)
-              </span>
-            </label>
-          </div>
-
-          {/* Error */}
-          {error && <div className="form-admin-error">⚠️ {error}</div>}
         </div>
 
-        {/* Footer */}
         <div className="modal-footer">
-          <button className="btn-cancelar" onClick={onClose} disabled={loading}>
+          <button
+            className="btn-cancelar"
+            onClick={onClose}
+            disabled={subiendo}
+          >
             Cancelar
           </button>
           <button
             className="btn-submit-exp"
-            onClick={handleGuardar}
-            disabled={loading || !form.titulo.trim()}
+            onClick={handlePublicar}
+            disabled={subiendo || !form.titulo.trim()}
           >
-            {loading
-              ? "Guardando..."
-              : esEdicion
-                ? "💾 Actualizar lugar"
-                : "➕ Crear lugar"}
+            {subiendo ? "Enviando..." : "🗺️ Enviar para revisión"}
           </button>
         </div>
       </div>
