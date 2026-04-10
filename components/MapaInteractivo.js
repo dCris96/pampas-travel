@@ -54,7 +54,7 @@ export default function MapaInteractivo({
   puntoActivo = null,
   onPuntoClick = () => {},
   // 🔧 PERSONALIZABLE: Cambia estas coordenadas al centro de TU distrito
-  centro = [-13.5175, -72.9721],
+  centro = [-8.187377, -77.845393],
   zoom = 13,
 }) {
   // Ref al div donde se monta el mapa

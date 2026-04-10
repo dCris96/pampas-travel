@@ -159,6 +159,8 @@ export default function AdminLugaresPage() {
       .eq("id", lugar.id);
 
     if (!error) {
+      console.log(error);
+
       setLugares((prev) => prev.filter((l) => l.id !== lugar.id));
       mostrarToast(`"${lugar.titulo}" eliminado`);
     } else {
