@@ -1,0 +1,563 @@
+/* styles/festividad-detalle.css */
+/* ─────────────────────────────────────────────────────
+   DETALLE DE FESTIVIDAD
+   Temática: periódico vintage, pergamino, tinta oscura
+   ───────────────────────────────────────────────────── */
+
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap");
+
+/* ── VARIABLES ── */
+.festividad-root {
+  --acento: #c8952a; /* Se sobreescribe con el color de la festividad */
+  --acento-dim: #8a6520;
+  --papel: #0c0906;
+  --tinta: #ede5d4;
+  --tinta-suave: #9a8e7a;
+  --borde-sutil: rgba(200, 149, 42, 0.18);
+  --sombra-foto: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* ── BOTÓN VOLVER ── */
+.fest-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--tinta-suave);
+  text-decoration: none;
+  margin-bottom: 36px;
+  transition: color 0.2s ease;
+  letter-spacing: 0.03em;
+}
+
+.fest-volver:hover {
+  color: var(--acento);
+}
+
+.fest-volver svg {
+  width: 15px;
+  height: 15px;
+  transition: transform 0.2s ease;
+}
+
+.fest-volver:hover svg {
+  transform: translateX(-3px);
+}
+
+/* ── HERO ── */
+.fest-hero {
+  width: 100%;
+  height: clamp(280px, 45vw, 480px);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 0;
+}
+
+.fest-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /* Filtro vintage: desatura levemente, oscurece, calienta */
+  filter: sepia(0.15) contrast(1.05) brightness(0.88);
+  transition: transform 6s ease;
+}
+
+.fest-hero:hover .fest-hero-img {
+  transform: scale(1.03);
+}
+
+/* Overlay con gradiente */
+.fest-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(10, 7, 4, 0.95) 0%,
+    rgba(10, 7, 4, 0.4) 45%,
+    rgba(10, 7, 4, 0.05) 100%
+  );
+}
+
+/* Contenido sobre el hero */
+.fest-hero-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 32px 36px;
+  z-index: 2;
+}
+
+/* Badge de fecha */
+.fest-fecha-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border: 1px solid rgba(200, 149, 42, 0.4);
+  border-radius: 20px;
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--acento);
+  background-color: rgba(12, 9, 6, 0.6);
+  backdrop-filter: blur(6px);
+  margin-bottom: 14px;
+}
+
+/* Título principal */
+.fest-titulo {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(26px, 5vw, 52px);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.08;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
+  letter-spacing: -0.02em;
+}
+
+.fest-subtitulo {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 18px;
+  font-style: italic;
+  color: rgba(237, 229, 212, 0.75);
+  letter-spacing: 0.04em;
+}
+
+/* ── DIVIDER ORNAMENTAL ── */
+.fest-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 40px 0;
+}
+
+.fest-divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--borde-sutil),
+    transparent
+  );
+}
+
+.fest-divider-symbol {
+  font-size: 20px;
+  color: var(--acento-dim);
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+/* ── LAYOUT EDITORIAL ── */
+.fest-contenido {
+  max-width: 840px;
+  margin: 0 auto;
+}
+
+/* ── PRIMER BLOQUE DE TEXTO ── */
+.fest-texto-bloque {
+  margin-bottom: 36px;
+}
+
+/* Primera letra capital (drop cap) */
+.fest-texto-bloque.primero p:first-child::first-letter {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 5.5em;
+  font-weight: 700;
+  color: var(--acento);
+  float: left;
+  line-height: 0.72;
+  margin-right: 8px;
+  margin-top: 8px;
+  /* Sombra de texto sutil */
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.fest-texto-bloque p {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 19px;
+  color: var(--tinta);
+  line-height: 1.78;
+  margin-bottom: 18px;
+  text-align: justify;
+  hyphens: auto;
+}
+
+/* ── LAYOUT: TEXTO + IMAGEN AL COSTADO ── */
+.fest-layout-con-imagen {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 36px;
+  align-items: start;
+  margin-bottom: 40px;
+}
+
+.fest-layout-con-imagen.imagen-izquierda {
+  grid-template-columns: 280px 1fr;
+}
+
+/* Foto al costado */
+.fest-foto-lateral {
+  position: sticky;
+  top: 32px;
+}
+
+.fest-foto-lateral-img {
+  width: 100%;
+  border-radius: 10px;
+  display: block;
+  /* Filtro vintage */
+  filter: sepia(0.12) contrast(1.05) brightness(0.9);
+  box-shadow: var(--sombra-foto);
+  transition: filter 0.4s ease;
+}
+
+.fest-foto-lateral:hover .fest-foto-lateral-img {
+  filter: sepia(0) contrast(1.02) brightness(0.95);
+}
+
+/* Pie de foto */
+.fest-foto-caption {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--tinta-suave);
+  text-align: center;
+  margin-top: 8px;
+  letter-spacing: 0.04em;
+}
+
+/* Marco decorativo alrededor de la foto lateral */
+.fest-foto-marco {
+  position: relative;
+}
+
+.fest-foto-marco::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(200, 149, 42, 0.15);
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+/* ── SECCIÓN DE AUDIOS ── */
+.fest-audios-seccion {
+  margin: 48px 0;
+  background: linear-gradient(
+    135deg,
+    rgba(200, 149, 42, 0.05) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  border: 1px solid var(--borde-sutil);
+  border-radius: 14px;
+  padding: 32px 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Textura de fondo decorativa */
+.fest-audios-seccion::before {
+  content: "♪";
+  position: absolute;
+  right: 24px;
+  top: 16px;
+  font-size: 80px;
+  color: rgba(200, 149, 42, 0.04);
+  font-family: serif;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.fest-audios-titulo {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--tinta);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fest-audios-titulo::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--borde-sutil);
+}
+
+.fest-audios-subtitulo {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 15px;
+  font-style: italic;
+  color: var(--tinta-suave);
+  margin-bottom: 28px;
+}
+
+/* Lista de audios */
+.fest-audios-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── ITEM DE AUDIO ── */
+.audio-item {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(200, 149, 42, 0.1);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.audio-item:hover {
+  background-color: rgba(200, 149, 42, 0.06);
+  border-color: rgba(200, 149, 42, 0.25);
+}
+
+.audio-item.reproduciendo {
+  background-color: rgba(200, 149, 42, 0.08);
+  border-color: rgba(200, 149, 42, 0.4);
+}
+
+/* Botón play/pausa */
+.audio-btn-play {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: none;
+  border: 1.5px solid rgba(200, 149, 42, 0.4);
+  color: var(--acento);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.audio-btn-play:hover {
+  background-color: rgba(200, 149, 42, 0.12);
+  border-color: var(--acento);
+  transform: scale(1.06);
+}
+
+.audio-item.reproduciendo .audio-btn-play {
+  background-color: rgba(200, 149, 42, 0.15);
+  border-color: var(--acento);
+}
+
+.audio-btn-play svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Onda de audio (animación cuando reproduce) */
+.audio-ondas {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 18px;
+}
+
+.audio-onda-barra {
+  width: 3px;
+  border-radius: 2px;
+  background-color: var(--acento);
+  animation: onda 0.9s ease-in-out infinite;
+}
+
+.audio-onda-barra:nth-child(1) {
+  animation-delay: 0s;
+  height: 35%;
+}
+.audio-onda-barra:nth-child(2) {
+  animation-delay: 0.15s;
+  height: 80%;
+}
+.audio-onda-barra:nth-child(3) {
+  animation-delay: 0.3s;
+  height: 55%;
+}
+.audio-onda-barra:nth-child(4) {
+  animation-delay: 0.1s;
+  height: 95%;
+}
+.audio-onda-barra:nth-child(5) {
+  animation-delay: 0.25s;
+  height: 40%;
+}
+
+@keyframes onda {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.audio-titulo {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--tinta);
+  display: block;
+  margin-bottom: 3px;
+  line-height: 1.3;
+}
+
+.audio-descripcion {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--tinta-suave);
+  display: block;
+}
+
+/* Duración */
+.audio-duracion {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 13px;
+  color: var(--tinta-suave);
+  white-space: nowrap;
+  align-self: center;
+}
+
+/* Barra de progreso del audio */
+.audio-progreso-wrapper {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 6px;
+}
+
+.audio-tiempo {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 11px;
+  color: var(--tinta-suave);
+  white-space: nowrap;
+  min-width: 36px;
+}
+
+.audio-barra-fondo {
+  flex: 1;
+  height: 3px;
+  background-color: rgba(200, 149, 42, 0.15);
+  border-radius: 2px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+
+.audio-barra-progreso {
+  height: 100%;
+  background-color: var(--acento);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+  pointer-events: none;
+}
+
+.audio-barra-fondo:hover .audio-barra-progreso {
+  background-color: #e0a82e;
+}
+
+/* ── FOTO FINAL (full width) ── */
+.fest-foto-final-wrapper {
+  margin: 48px 0;
+  position: relative;
+}
+
+.fest-foto-final {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+  filter: sepia(0.12) contrast(1.04) brightness(0.88);
+  box-shadow: var(--sombra-foto);
+}
+
+/* Overlay con gradiente de colores del acento */
+.fest-foto-final-wrapper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: linear-gradient(to top, rgba(10, 7, 4, 0.5) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* ── COLOFÓN FINAL ── */
+.fest-colofonFinal {
+  text-align: center;
+  padding: 40px 20px 20px;
+}
+
+.fest-colofonFinal p {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 16px;
+  font-style: italic;
+  color: var(--tinta-suave);
+  max-width: 420px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.fest-colofonFinal strong {
+  color: var(--acento);
+  font-style: normal;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 740px) {
+  .fest-layout-con-imagen {
+    grid-template-columns: 1fr;
+  }
+
+  .fest-layout-con-imagen.imagen-izquierda {
+    grid-template-columns: 1fr;
+  }
+
+  .fest-foto-lateral {
+    position: static;
+    max-width: 340px;
+    margin: 0 auto;
+  }
+
+  .fest-audios-seccion {
+    padding: 24px 18px;
+  }
+
+  .audio-item {
+    grid-template-columns: 42px 1fr auto;
+    gap: 10px;
+    padding: 12px 14px;
+  }
+
+  .fest-hero-content {
+    padding: 20px 20px;
+  }
+
+  .fest-titulo {
+    font-size: 26px;
+  }
+
+  .fest-texto-bloque.primero p:first-child::first-letter {
+    font-size: 4em;
+  }
+}

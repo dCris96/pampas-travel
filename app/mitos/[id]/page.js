@@ -1,31 +1,17 @@
-// app/lugares/[id]/page.js
+// app/calendario/[id]/page.js
 // ─────────────────────────────────────────────────────
-// PÁGINA: Detalle de un lugar turístico
-// Ruta dinámica: /lugares/[id]
-//
-// El [id] en el nombre de la carpeta es el parámetro
-// dinámico de Next.js — se pasa como prop "params"
-//
-// 🔧 Conecta con: tabla public.lugares → SELECT por id
+// DETALLE DE FESTIVIDAD
+// Diseño editorial: texto + fotos intercaladas + audios
 // ─────────────────────────────────────────────────────
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
-import "@/styles/lugar-detalle.css";
-
-// ── MAPA DE ESTILOS DE CATEGORÍA ──
-const CATEGORIA_STYLES = {
-  naturaleza: { bg: "#1a3a26", color: "#6bffab", label: "Naturaleza" },
-  patrimonio: { bg: "#3a2a1a", color: "#ffb86b", label: "Patrimonio" },
-  mirador: { bg: "#1a2a5c", color: "#6babff", label: "Mirador" },
-  aventura: { bg: "#3a1a1a", color: "#ff8a6b", label: "Aventura" },
-  cultura: { bg: "#2a1a3a", color: "#c46bff", label: "Cultura" },
-  gastronomia: { bg: "#3a2a10", color: "#ffd46b", label: "Gastronomía" },
-};
+import "@/styles/mitos-detalle.css";
+import "@/styles/festividad-detalle.css";
 
 // ── ÍCONOS ──
 const IconArrowLeft = () => (
@@ -42,315 +28,258 @@ const IconArrowLeft = () => (
   </svg>
 );
 
-const IconPin = () => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-    <circle cx="12" cy="10" r="3" />
+const IconPlay = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor">
+    <polygon points="5,3 19,12 5,21" />
   </svg>
 );
 
-const IconCalendar = () => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    style={{ width: 14, height: 14 }}
-  >
-    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-    <line x1="3" y1="10" x2="21" y2="10" />
+const IconPausa = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor">
+    <rect x="6" y="4" width="4" height="16" />
+    <rect x="14" y="4" width="4" height="16" />
   </svg>
 );
 
-export default function MitoDetallePage() {
-  // useParams() obtiene el { id } de la URL dinámica
+// ── HELPER: Formatear segundos → mm:ss ──
+function formatTiempo(seg) {
+  if (!seg || isNaN(seg)) return "0:00";
+  const m = Math.floor(seg / 60);
+  const s = Math.floor(seg % 60);
+  return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
+// ── HELPER: Formatear fecha ──
+function formatFechaLarga(fechaStr, fechaFinStr) {
+  const opciones = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  const f = new Date(fechaStr + "T12:00:00").toLocaleDateString(
+    "es-MX",
+    opciones,
+  );
+  if (!fechaFinStr) return f;
+  const ff = new Date(fechaFinStr + "T12:00:00").toLocaleDateString("es-MX", {
+    day: "numeric",
+    month: "long",
+  });
+  return `${f} al ${ff}`;
+}
+
+// ── PÁGINA PRINCIPAL ──
+export default function MitosDetallePage() {
   const { id } = useParams();
 
-  // ── ESTADO ──
   const [mito, setMito] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // ── CARGAR MITO POR ID ──
-  // 🔧 Conecta con: tabla public.mitos → SELECT WHERE id = [id]
+  // ── CARGAR FESTIVIDAD + AUDIOS ──
+  // 🔧 Conecta con: tablas festividades + festividad_audios
   useEffect(() => {
-    async function cargarMito() {
+    async function cargar() {
       try {
-        const { data, error } = await supabase
+        // Mito
+        const { data: mitoData, error: mitoErr } = await supabase
           .from("mitos")
           .select("*")
-          .eq("id", id) // Filtramos por el ID de la URL
-          .eq("activo", true) // Solo si está activo
-          .single(); // Esperamos un solo resultado
+          .eq("id", id)
+          .eq("activo", true)
+          .single();
 
-        if (error) {
-          // .single() lanza error si no encuentra nada
-          if (error.code === "PGRST116") {
-            setError("Mito no encontrado.");
-          } else {
-            throw error;
-          }
+        if (mitoErr || !mitoData) {
+          setError("Mito no encontrado.");
           return;
         }
 
-        setMito(data);
+        setMito(mitoData);
       } catch (err) {
-        console.error("Error cargando mito:", err);
-        setError("Error al cargar el mito. Intenta de nuevo.");
+        console.error(err);
+        setError("Error al cargar el mito.");
       } finally {
         setLoading(false);
       }
     }
-
-    if (id) cargarMito();
+    if (id) cargar();
   }, [id]);
 
-  // ── FORMATEAR FECHA ──
-  function formatearFecha(iso) {
-    return new Date(iso).toLocaleDateString("es-MX", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  }
-
-  // ── ESTADOS DE CARGA Y ERROR ──
-
+  // ── ESTADOS DE CARGA / ERROR ──
   if (loading) {
     return (
-      <div>
-        <Link href="/mitos" className="btn-volver">
+      <div className="festividad-root">
+        <Link href="/mitos" className="fest-volver">
           <IconArrowLeft /> Mitos y Leyendas
         </Link>
-        {/* Skeleton del hero */}
         <div
           style={{
-            height: 400,
-            borderRadius: 12,
-            background:
-              "linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%)",
+            height: "clamp(280px, 45vw, 480px)",
+            borderRadius: 14,
+            background: "linear-gradient(90deg,#111 25%,#1a1a1a 50%,#111 75%)",
             backgroundSize: "200% 100%",
             animation: "shimmer 1.5s infinite",
-            marginBottom: 32,
+            marginBottom: 40,
           }}
         />
+        <div
+          style={{
+            maxWidth: 840,
+            margin: "0 auto",
+            display: "flex",
+            flexDirection: "column",
+            gap: 16,
+          }}
+        >
+          {[100, 80, 90, 70, 85].map((w, i) => (
+            <div
+              key={i}
+              style={{
+                height: 16,
+                borderRadius: 6,
+                width: `${w}%`,
+                background:
+                  "linear-gradient(90deg,#111 25%,#1a1a1a 50%,#111 75%)",
+                backgroundSize: "200% 100%",
+                animation: "shimmer 1.5s infinite",
+              }}
+            />
+          ))}
+        </div>
       </div>
     );
   }
 
   if (error || !mito) {
     return (
-      <div>
-        <Link href="/mitos" className="btn-volver">
+      <div className="festividad-root">
+        <Link href="/mitos" className="fest-volver">
           <IconArrowLeft /> Mitos y Leyendas
         </Link>
-        <div className="not-found-page">
-          <h2>🗺️ {error || "Mito no encontrado"}</h2>
-          <p>Es posible que este mito haya sido eliminado o no exista.</p>
+        <div style={{ textAlign: "center", padding: "80px 20px" }}>
+          <p
+            style={{
+              fontFamily: "Crimson Text,Georgia,serif",
+              fontSize: 20,
+              fontStyle: "italic",
+              color: "#666",
+            }}
+          >
+            {error || "Mito no encontrado."}
+          </p>
           <Link
             href="/mitos"
-            className="btn-primary-link"
             style={{
-              display: "inline-block",
-              padding: "11px 24px",
-              background: "var(--color-btn-primary)",
-              color: "white",
-              borderRadius: 8,
-              fontFamily: "var(--font-display)",
-              fontSize: 14,
+              color: "var(--cal-gold)",
+              fontFamily: "Crimson Text,Georgia,serif",
+              fontSize: 16,
+              marginTop: 16,
+              display: "block",
               textDecoration: "none",
             }}
           >
-            Ver todos los mitos
+            ← Volver a mitos y leyendas
           </Link>
         </div>
       </div>
     );
   }
 
-  // Estilos de la categoría del mito cargado
-  const catStyle =
-    CATEGORIA_STYLES[mito.categoria] || CATEGORIA_STYLES.naturaleza;
+  // Color de acento de esta festividad (con fallback)
+  const acento = mito.color_acento || "#c8952a";
 
-  // ── RENDER PRINCIPAL ──
   return (
-    <div>
-      {/* ── BREADCRUMB / BOTÓN VOLVER ── */}
-      <Link href="/mitos" className="btn-volver">
-        <IconArrowLeft /> Mitos y Leyendas
+    <div
+      className="festividad-root"
+      style={{ "--acento": acento, "--acento-dim": acento + "99" }}
+    >
+      {/* ── BOTÓN VOLVER ── */}
+      <Link href="/mitos" className="fest-volver">
+        <IconArrowLeft />
+        Mitos y Leyendas
       </Link>
 
       {/* ── HERO CON IMAGEN ── */}
-      <div className="detalle-hero">
-        <img
-          src={
-            mito.imagen_url ||
-            "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80"
-          }
-          alt={mito.titulo}
-          className="detalle-hero-img"
-        />
-        <div className="detalle-hero-overlay" />
-
-        {/* Contenido sobre la imagen */}
-        <div className="detalle-hero-content">
-          <div className="detalle-hero-meta">
-            {/* Badge de categoría */}
-            <span
-              className="badge-cat-lg"
-              style={{ backgroundColor: catStyle.bg, color: catStyle.color }}
-            >
-              {catStyle.label}
-            </span>
-
-            {/* Título */}
-            <h1 className="detalle-hero-titulo">{mito.titulo}</h1>
-
-            {/* Dirección */}
-            {mito.direccion && (
-              <div className="detalle-hero-dir">
-                <IconPin />
-                {mito.direccion}
-              </div>
-            )}
+      <div className="fest-hero">
+        {mito.cover_url ? (
+          <img
+            src={mito.cover_url}
+            alt={mito.titulo}
+            className="fest-hero-img"
+          />
+        ) : (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              background: `linear-gradient(135deg, ${acento}22, #0c090600)`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 64,
+            }}
+          >
+            📖
           </div>
+        )}
+        <div className="fest-hero-overlay" />
 
-          {/* Estrella de destacado */}
-          {mito.destacado && (
-            <div
-              style={{
-                background: "rgba(245,197,66,0.15)",
-                border: "1px solid rgba(245,197,66,0.3)",
-                color: "var(--color-yellow)",
-                padding: "6px 14px",
-                borderRadius: 20,
-                fontSize: 12,
-                fontFamily: "var(--font-display)",
-                fontWeight: 500,
-                flexShrink: 0,
-              }}
-            >
-              ★ Mito Destacado
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* ── LAYOUT: MAIN + SIDEBAR ── */}
-      <div className="detalle-layout">
-        {/* ── COLUMNA PRINCIPAL ── */}
-        <div className="detalle-main">
-          {/* Descripción completa */}
-          <div className="detalle-seccion">
-            <h2 className="detalle-seccion-titulo">Descripción</h2>
-            <p className="detalle-descripcion">
-              {mito.descripcion || "Sin descripción disponible."}
+        <div className="fest-hero-content">
+          {/* Badge de fecha */}
+          <div className="fest-fecha-badge">
+            <p>
+              Origen: {mito.origen}, | Autor: {mito.epoca}
             </p>
           </div>
 
-          {/*
-            🔧 EN FASES FUTURAS puedes agregar aquí:
-            - Galería de fotos (cuando tengas storage)
-            - Experiencias relacionadas (Fase 5)
-            - Mapa embebido (Fase 6)
-          */}
+          {/* Título y subtítulo */}
+          <h1 className="fest-titulo">{mito.titulo}</h1>
+          {mito.subtitulo && <p className="fest-subtitulo">{mito.subtitulo}</p>}
+        </div>
+      </div>
+
+      {/* ── DIVIDER ── */}
+      <div className="fest-divider">
+        <div className="fest-divider-line" />
+        <span className="fest-divider-symbol">✦</span>
+        <div className="fest-divider-line" />
+      </div>
+
+      {/* ── CONTENIDO EDITORIAL ── */}
+      <div className="fest-contenido">
+        {/* ── PRIMER BLOQUE DE TEXTO ── */}
+        {/* Con letra capital (drop cap) */}
+        {mito.contenido && (
+          <div className="fest-texto-bloque primero">
+            <p>{mito.contenido}</p>
+          </div>
+        )}
+
+        {/* ── FOTO FINAL (ancho completo) ── */}
+        {mito.cover_url && (
+          <div className="fest-foto-final-wrapper">
+            <img
+              src={mito.cover_url}
+              alt={`${mito.titulo} — vista final`}
+              className="fest-foto-final"
+              loading="lazy"
+            />
+          </div>
+        )}
+
+        {/* ── COLOFÓN ── */}
+        <div className="fest-divider">
+          <div className="fest-divider-line" />
+          <span className="fest-divider-symbol">✦</span>
+          <div className="fest-divider-line" />
         </div>
 
-        {/* ── SIDEBAR DE INFORMACIÓN ── */}
-        <div className="detalle-sidebar">
-          {/* Panel de datos rápidos */}
-          <div className="detalle-info-panel">
-            <div className="info-fila">
-              <span className="info-label">Categoría</span>
-              <span className="info-value">{catStyle.label}</span>
-            </div>
-
-            {mito.direccion && (
-              <div className="info-fila">
-                <span className="info-label">Dirección</span>
-                <span className="info-value">{mito.direccion}</span>
-              </div>
-            )}
-
-            {/* Coordenadas (si existen) */}
-            {mito.latitud && mito.longitud && (
-              <div className="info-fila">
-                <span className="info-label">Coordenadas</span>
-                <span className="info-value info-coords">
-                  {mito.latitud}, {mito.longitud}
-                </span>
-              </div>
-            )}
-
-            <div className="info-fila">
-              <span className="info-label">Estado</span>
-              <span
-                className="info-value"
-                style={{ color: "var(--color-green)" }}
-              >
-                ● Disponible
-              </span>
-            </div>
-
-            <div className="info-fila">
-              <span className="info-label">Publicado</span>
-              <span className="info-value" style={{ fontSize: 12 }}>
-                {formatearFecha(mito.created_at)}
-              </span>
-            </div>
-          </div>
-
-          {/* Mini mapa placeholder (se activa en Fase 6) */}
-          {mito.latitud && mito.longitud && (
-            <div className="detalle-info-panel" style={{ padding: 16 }}>
-              <h3
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: 11,
-                  fontWeight: 600,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  color: "var(--color-text-label)",
-                  marginBottom: 12,
-                }}
-              >
-                Ubicación
-              </h3>
-              {/* Iframe de mapa estático de OpenStreetMap */}
-              <iframe
-                title={`Mapa de ${mito.titulo}`}
-                width="100%"
-                height="160"
-                style={{ borderRadius: 8, border: "none", display: "block" }}
-                src={`https://www.openstreetmap.org/export/embed.html?bbox=${mito.longitud - 0.01},${mito.latitud - 0.01},${mito.longitud + 0.01},${mito.latitud + 0.01}&layer=mapnik&marker=${mito.latitud},${mito.longitud}`}
-              />
-              <a
-                href={`https://www.openstreetmap.org/?mlat=${mito.latitud}&mlon=${mito.longitud}#map=15/${mito.latitud}/${mito.longitud}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: "block",
-                  textAlign: "center",
-                  marginTop: 8,
-                  fontSize: 11,
-                  color: "var(--color-blue)",
-                  fontFamily: "var(--font-display)",
-                  textDecoration: "none",
-                }}
-              >
-                Ver en mapa completo →
-              </a>
-            </div>
-          )}
+        <div className="fest-colofonFinal">
+          <p>
+            Un relato ancentral de <strong>Pampas</strong> — narrada con
+            tradición, memoria y susurros antiguos.
+          </p>
         </div>
       </div>
     </div>

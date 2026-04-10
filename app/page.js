@@ -38,6 +38,8 @@ const STATS = [
 export default function HomePage() {
   const [destacados, setDestacados] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const [textoExpandido, setTextoExpandido] = useState(false);
 
   useEffect(() => {
     async function cargarDestacados() {
@@ -62,6 +64,81 @@ export default function HomePage() {
     }
     cargarDestacados();
   }, []);
+
+  // Detectar móvil por ancho de pantalla
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Determinar cuántos mostrar según dispositivo
+  const displayedDestacados = isMobile ? destacados.slice(0, 1) : destacados;
+
+  // Texto completo de la historia (puedes extraerlo a una constante)
+  const historiaCompleta = (
+    <>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris et
+        turpis in erat facilisis tristique quis id tortor. In pellentesque
+        imperdiet tempor. Duis a tortor tristique, laoreet ex a, placerat purus.
+        Aliquam erat volutpat. Ut luctus lacus pharetra ex eleifend, vitae
+        egestas mauris sodales. Curabitur metus ipsum, convallis sed sapien nec,
+        malesuada ultricies orci. Etiam quis sem tincidunt, feugiat lacus vitae,
+        porttitor dolor. Mauris malesuada sapien id imperdiet ullamcorper. Sed
+        facilisis consectetur purus et ultrices. Suspendisse consequat rutrum
+        ligula sit amet feugiat.
+      </p>
+      <p>
+        Suspendisse feugiat congue pretium. Aliquam tincidunt mauris neque, sed
+        rutrum odio molestie at. Mauris porta, lorem venenatis dictum tincidunt,
+        dui quam interdum sem, non cursus elit velit ut sapien. Quisque feugiat
+        ex at urna convallis mattis. Suspendisse eget vulputate nisi. Etiam sem
+        leo, ornare a maximus in, fermentum vel nibh. In eu interdum odio, ac
+        aliquet justo. Aenean sapien ex, luctus eget elit eu, efficitur rhoncus
+        ante.
+      </p>
+      <p>
+        Sed convallis facilisis nisl, non sodales mi sollicitudin at. Duis
+        tempus dignissim ultricies. Cras eget sodales leo. Donec vel arcu sem.
+        Maecenas enim mi, feugiat vel commodo in, fermentum a nunc. Nulla quis
+        urna ipsum. Proin at orci dapibus, sodales risus sed, dictum erat. In
+        placerat ut ante at congue. Nunc quis pretium lorem. Aenean aliquam sit
+        amet velit non sodales. Etiam a nunc tristique magna venenatis aliquam.
+        Fusce sollicitudin cursus nisi vitae finibus. Donec in enim non libero
+        tincidunt semper eu sit amet ipsum.
+      </p>
+      <p>
+        Morbi feugiat est dui, eget aliquet est laoreet eu. Sed dapibus tortor
+        ornare, luctus odio id, sagittis turpis. Ut nibh diam, convallis a
+        ultricies vel, venenatis et augue. Vestibulum nec scelerisque nunc. Cras
+        sit amet ullamcorper tortor. Proin non commodo libero. Donec finibus
+        enim enim, quis dictum arcu vehicula in. Etiam sodales tortor ac euismod
+        laoreet. Fusce nec nisi porta, euismod massa sed, tincidunt justo.
+        Curabitur feugiat rutrum nisl eget faucibus. Phasellus est turpis,
+        dignissim non bibendum ut, congue tincidunt nisl. Sed sit amet gravida
+        libero. Donec in augue eros. Nunc semper cursus magna quis tempor.
+        Aenean lacinia molestie ligula, ut auctor tellus egestas ac.
+      </p>
+      <p>
+        Vestibulum eleifend semper lorem, et sagittis est porta quis. Orci
+        varius natoque penatibus et magnis dis parturient montes, nascetur
+        ridiculus mus. Proin sit amet nibh ligula. Curabitur egestas porttitor
+        auctor. In semper, sem tempus gravida imperdiet, erat magna pulvinar
+        dui, a consequat elit diam ut est. Quisque nec lacinia est. Mauris
+        tristique aliquam ante, finibus gravida sapien porttitor et.
+      </p>
+    </>
+  );
+
+  // Resumen: primeros 280 caracteres (sin etiquetas HTML)
+  const textoPlano =
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris et turpis in erat facilisis tristique quis id tortor. In pellentesque imperdiet tempor. Duis a tortor tristique, laoreet ex a, placerat purus. Aliquam erat volutpat. Ut luctus lacus pharetra ex eleifend, vitae egestas mauris sodales. Curabitur metus ipsum, convallis sed sapien nec, malesuada ultricies orci. Etiam quis sem tincidunt, feugiat lacus vitae, porttitor dolor. Mauris malesuada sapien id imperdiet ullamcorper. Sed facilisis consectetur purus et ultrices. Suspendisse consequat rutrum ligula sit amet feugiat.";
+  const resumen =
+    textoPlano.slice(0, 280) + (textoPlano.length > 280 ? "..." : "");
 
   return (
     <div>
@@ -112,16 +189,16 @@ export default function HomePage() {
       {/* ── SITIOS DESTACADOS ── */}
       <section className="section">
         <div className="section-header">
-          <h2 className="section-title">Sitios Destacados</h2>
+          <h2 className="section-title">Sitios Turísticos</h2>
           <Link href="/lugares" className="section-link">
             Ver todos →
           </Link>
         </div>
 
         {loading ? (
-          // Skeleton de 3 cards
           <div className="cards-grid">
-            {[1, 2, 3].map((i) => (
+            {/* En móvil mostramos 1 skeleton, en escritorio 3 */}
+            {Array.from({ length: isMobile ? 1 : 3 }).map((_, i) => (
               <div
                 key={i}
                 style={{
@@ -136,15 +213,13 @@ export default function HomePage() {
               />
             ))}
           </div>
-        ) : destacados.length > 0 ? (
-          // Cards reales de Supabase
+        ) : displayedDestacados.length > 0 ? (
           <div className="cards-grid">
-            {destacados.map((lugar) => (
+            {displayedDestacados.map((lugar) => (
               <CardLugar key={lugar.id} lugar={lugar} variante="normal" />
             ))}
           </div>
         ) : (
-          // Si no hay destacados aún
           <div className="empty-state">
             <p>No hay sitios destacados todavía.</p>
           </div>
@@ -155,59 +230,35 @@ export default function HomePage() {
       <section className="section">
         <div className="section_hitoria">
           <h1 className="title-main">Pampas travel</h1>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris et
-            turpis in erat facilisis tristique quis id tortor. In pellentesque
-            imperdiet tempor. Duis a tortor tristique, laoreet ex a, placerat
-            purus. Aliquam erat volutpat. Ut luctus lacus pharetra ex eleifend,
-            vitae egestas mauris sodales. Curabitur metus ipsum, convallis sed
-            sapien nec, malesuada ultricies orci. Etiam quis sem tincidunt,
-            feugiat lacus vitae, porttitor dolor. Mauris malesuada sapien id
-            imperdiet ullamcorper. Sed facilisis consectetur purus et ultrices.
-            Suspendisse consequat rutrum ligula sit amet feugiat.
-          </p>
-          <p>
-            Suspendisse feugiat congue pretium. Aliquam tincidunt mauris neque,
-            sed rutrum odio molestie at. Mauris porta, lorem venenatis dictum
-            tincidunt, dui quam interdum sem, non cursus elit velit ut sapien.
-            Quisque feugiat ex at urna convallis mattis. Suspendisse eget
-            vulputate nisi. Etiam sem leo, ornare a maximus in, fermentum vel
-            nibh. In eu interdum odio, ac aliquet justo. Aenean sapien ex,
-            luctus eget elit eu, efficitur rhoncus ante.
-          </p>
-          <p>
-            Sed convallis facilisis nisl, non sodales mi sollicitudin at. Duis
-            tempus dignissim ultricies. Cras eget sodales leo. Donec vel arcu
-            sem. Maecenas enim mi, feugiat vel commodo in, fermentum a nunc.
-            Nulla quis urna ipsum. Proin at orci dapibus, sodales risus sed,
-            dictum erat. In placerat ut ante at congue. Nunc quis pretium lorem.
-            Aenean aliquam sit amet velit non sodales. Etiam a nunc tristique
-            magna venenatis aliquam. Fusce sollicitudin cursus nisi vitae
-            finibus. Donec in enim non libero tincidunt semper eu sit amet
-            ipsum.
-          </p>
-          <p>
-            Morbi feugiat est dui, eget aliquet est laoreet eu. Sed dapibus
-            tortor ornare, luctus odio id, sagittis turpis. Ut nibh diam,
-            convallis a ultricies vel, venenatis et augue. Vestibulum nec
-            scelerisque nunc. Cras sit amet ullamcorper tortor. Proin non
-            commodo libero. Donec finibus enim enim, quis dictum arcu vehicula
-            in. Etiam sodales tortor ac euismod laoreet. Fusce nec nisi porta,
-            euismod massa sed, tincidunt justo. Curabitur feugiat rutrum nisl
-            eget faucibus. Phasellus est turpis, dignissim non bibendum ut,
-            congue tincidunt nisl. Sed sit amet gravida libero. Donec in augue
-            eros. Nunc semper cursus magna quis tempor. Aenean lacinia molestie
-            ligula, ut auctor tellus egestas ac.
-          </p>
-          <p>
-            Vestibulum eleifend semper lorem, et sagittis est porta quis. Orci
-            varius natoque penatibus et magnis dis parturient montes, nascetur
-            ridiculus mus. Proin sit amet nibh ligula. Curabitur egestas
-            porttitor auctor. In semper, sem tempus gravida imperdiet, erat
-            magna pulvinar dui, a consequat elit diam ut est. Quisque nec
-            lacinia est. Mauris tristique aliquam ante, finibus gravida sapien
-            porttitor et.
-          </p>
+          {isMobile ? (
+            // Vista móvil con "Leer más/Leer menos"
+            <>
+              {!textoExpandido ? (
+                <>
+                  <p>{resumen}</p>
+                  <button
+                    className="btn-leer-mas"
+                    onClick={() => setTextoExpandido(true)}
+                  >
+                    Leer más
+                  </button>
+                </>
+              ) : (
+                <>
+                  {historiaCompleta}
+                  <button
+                    className="btn-leer-menos"
+                    onClick={() => setTextoExpandido(false)}
+                  >
+                    Leer menos
+                  </button>
+                </>
+              )}
+            </>
+          ) : (
+            // Escritorio: mostrar todo el texto sin botones
+            historiaCompleta
+          )}
         </div>
       </section>
 

@@ -1,0 +1,467 @@
+/* styles/calendario.css */
+/* ─────────────────────────────────────────────────────
+   CALENDARIO FESTIVO — Timeline vertical
+   Estética tradicional, cálida, sin artificios modernos
+   ───────────────────────────────────────────────────── */
+
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Crimson+Text:ital@0;1&display=swap");
+
+/* ── VARIABLES PROPIAS DE ESTA SECCIÓN ── */
+.calendario-root {
+  --cal-gold: #c8952a;
+  --cal-gold-dim: #8a6520;
+  --cal-paper: #0e0b07;
+  --cal-ink: #e8dcc8;
+  --cal-ink-muted: #7a6a52;
+  --cal-line: rgba(200, 149, 42, 0.25);
+  --cal-dot-size: 54px;
+}
+
+/* ── HEADER DE LA PÁGINA ── */
+.calendario-header {
+  text-align: center;
+  padding: 0 0 52px;
+  position: relative;
+}
+
+.calendario-pretitulo {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--cal-gold-dim);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.calendario-titulo {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(28px, 5vw, 46px);
+  font-weight: 700;
+  color: var(--cal-ink);
+  line-height: 1.15;
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
+}
+
+.calendario-titulo em {
+  font-style: italic;
+  color: var(--cal-gold);
+}
+
+.calendario-subtitulo {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 17px;
+  color: var(--cal-ink-muted);
+  font-style: italic;
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.55;
+}
+
+/* Ornamento decorativo bajo el título */
+.calendario-ornamento {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.cal-orn-line {
+  height: 1px;
+  width: 80px;
+  background: linear-gradient(to right, transparent, var(--cal-gold-dim));
+}
+
+.cal-orn-line.right {
+  background: linear-gradient(to left, transparent, var(--cal-gold-dim));
+}
+
+.cal-orn-symbol {
+  color: var(--cal-gold);
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* ── FILTRO DE MESES ── */
+.calendario-meses {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 52px;
+}
+
+.mes-btn {
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 14px;
+  background: none;
+  border: 1px solid rgba(200, 149, 42, 0.2);
+  color: var(--cal-ink-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.04em;
+}
+
+.mes-btn:hover {
+  border-color: rgba(200, 149, 42, 0.5);
+  color: var(--cal-ink);
+}
+
+.mes-btn.activo {
+  background-color: rgba(200, 149, 42, 0.12);
+  border-color: var(--cal-gold-dim);
+  color: var(--cal-gold);
+}
+
+/* ── TIMELINE CONTENEDOR ── */
+.timeline-wrapper {
+  position: relative;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* La línea central vertical */
+.timeline-wrapper::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--cal-line) 8%,
+    var(--cal-line) 92%,
+    transparent 100%
+  );
+  transform: translateX(-50%);
+}
+
+/* ── SEPARADOR DE AÑO/MES ── */
+.timeline-mes-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 44px 0 32px;
+  z-index: 2;
+}
+
+.timeline-mes-label-inner {
+  background-color: #0a0a0a;
+  padding: 6px 22px;
+  border: 1px solid rgba(200, 149, 42, 0.3);
+  border-radius: 20px;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cal-gold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  position: relative;
+}
+
+/* ── ITEM DEL TIMELINE ── */
+.timeline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  margin-bottom: 52px;
+  position: relative;
+}
+
+/* Alterna: izquierda / derecha */
+.timeline-item.izquierda {
+  flex-direction: row;
+}
+
+.timeline-item.derecha {
+  flex-direction: row-reverse;
+}
+
+/* ── CARD DEL ITEM ── */
+.timeline-card {
+  flex: 1;
+  max-width: calc(50% - 44px);
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.timeline-card-inner {
+  background-color: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(200, 149, 42, 0.15);
+  border-radius: 12px;
+  padding: 20px 22px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Línea de acento superior */
+.timeline-card-inner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    var(--card-acento, #c8952a),
+    transparent
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.timeline-card:hover .timeline-card-inner {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: rgba(200, 149, 42, 0.35);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+}
+
+.timeline-card:hover .timeline-card-inner::before {
+  opacity: 1;
+}
+
+/* ── FOTO REDONDA + ENCABEZADO ── */
+.timeline-card-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+/* Foto circular */
+.timeline-foto-redonda {
+  width: var(--cal-dot-size);
+  height: var(--cal-dot-size);
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid rgba(200, 149, 42, 0.3);
+  transition:
+    border-color 0.3s ease,
+    transform 0.3s ease;
+  background-color: #111;
+}
+
+.timeline-card:hover .timeline-foto-redonda {
+  border-color: rgba(200, 149, 42, 0.7);
+  transform: scale(1.06);
+}
+
+/* Placeholder si no hay imagen */
+.timeline-foto-placeholder {
+  width: var(--cal-dot-size);
+  height: var(--cal-dot-size);
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    rgba(200, 149, 42, 0.15),
+    rgba(200, 149, 42, 0.05)
+  );
+  border: 2px solid rgba(200, 149, 42, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+/* Textos del encabezado */
+.timeline-card-meta {
+}
+
+.timeline-fecha-tag {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--cal-gold-dim);
+  letter-spacing: 0.08em;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.timeline-titulo {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--cal-ink);
+  line-height: 1.25;
+  transition: color 0.2s ease;
+}
+
+.timeline-card:hover .timeline-titulo {
+  color: #fff;
+}
+
+/* Descripción corta */
+.timeline-desc {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 14.5px;
+  color: var(--cal-ink-muted);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* Duración del evento */
+.timeline-duracion {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 12px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 12px;
+  color: var(--cal-gold-dim);
+  background-color: rgba(200, 149, 42, 0.06);
+  border: 1px solid rgba(200, 149, 42, 0.15);
+}
+
+/* "Ver más" */
+.timeline-ver-mas {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 14px;
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 13px;
+  color: var(--cal-gold-dim);
+  font-style: italic;
+  transition:
+    color 0.2s ease,
+    gap 0.2s ease;
+}
+
+.timeline-card:hover .timeline-ver-mas {
+  color: var(--cal-gold);
+  gap: 8px;
+}
+
+/* ── PUNTO CENTRAL DEL TIMELINE ── */
+/* El nodo circular en la línea central */
+.timeline-nodo {
+  width: 88px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 18px;
+  position: relative;
+}
+
+.timeline-nodo-circulo {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: var(--nodo-color, var(--cal-gold));
+  border: 3px solid #0a0a0a;
+  box-shadow: 0 0 0 1px var(--nodo-color, var(--cal-gold));
+  z-index: 2;
+  position: relative;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.timeline-item:hover .timeline-nodo-circulo {
+  transform: scale(1.4);
+}
+
+/* Conector horizontal (línea desde el nodo a la card) */
+.timeline-item.izquierda .timeline-nodo::before {
+  content: "";
+  position: absolute;
+  right: 50%;
+  top: 25px;
+  width: 30px;
+  height: 1px;
+  background-color: var(--cal-line);
+}
+
+.timeline-item.derecha .timeline-nodo::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 25px;
+  width: 30px;
+  height: 1px;
+  background-color: var(--cal-line);
+}
+
+/* ── ESTADO VACÍO ── */
+.calendario-vacio {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.calendario-vacio p {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 18px;
+  font-style: italic;
+  color: var(--cal-ink-muted);
+}
+
+/* ── SKELETON ── */
+.timeline-skeleton-card {
+  flex: 1;
+  max-width: calc(50% - 44px);
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(200, 149, 42, 0.08);
+  border-radius: 12px;
+  padding: 20px 22px;
+}
+
+.skel-circle {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skel-line {
+  height: 11px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 680px) {
+  .timeline-wrapper::before {
+    left: 28px;
+  }
+
+  .timeline-item.izquierda,
+  .timeline-item.derecha {
+    flex-direction: row;
+  }
+
+  .timeline-card {
+    max-width: calc(100% - 70px);
+  }
+
+  .timeline-nodo {
+    width: 56px;
+    justify-content: flex-start;
+    padding-left: 21px;
+  }
+
+  .timeline-item.izquierda .timeline-nodo::before,
+  .timeline-item.derecha .timeline-nodo::before {
+    display: none;
+  }
+}
