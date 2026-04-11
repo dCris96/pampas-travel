@@ -229,6 +229,23 @@ const IconMountain = () => (
     <polyline points="3,20 9,12 12,15 15,11 21,20" />
   </svg>
 );
+const CaserioIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    {/* Casa pequeña / vivienda rural */}
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+    <polyline points="9 22 9 12 15 12 15 22" />
+    {/* Elemento adicional que representa varias casas pequeñas agrupadas */}
+    <circle cx="18" cy="8" r="1" />
+    <circle cx="6" cy="8" r="1" />
+  </svg>
+);
 
 // ── ESTRUCTURA DE NAVEGACIÓN ──
 const NAV_SECTIONS = [
@@ -252,6 +269,7 @@ const NAV_SECTIONS = [
     label: "Turismo",
     items: [
       { href: "/lugares", label: "Sitios Turísticos", Icon: IconCompass },
+      { href: "/Caserios", label: "Caseríos", Icon: CaserioIcon },
     ],
   },
   {
@@ -259,7 +277,6 @@ const NAV_SECTIONS = [
     items: [
       { href: "/experiencias", label: "Experiencias", Icon: IconStar },
       { href: "/productos", label: "Productos", Icon: IconShop },
-      // "Mis publicaciones" solo para usuarios logueados (se muestra condicionalmente abajo)
     ],
   },
   {

@@ -138,7 +138,7 @@ export default function AdminPage() {
 
       {/* ── LAYOUT ── */}
       <div className="admin-layout">
-        <AdminSidebar stats={sidebarStats} />
+        <AdminSidebar />
 
         <div>
           {/* ── STATS DEL DASHBOARD ── */}
@@ -200,34 +200,6 @@ export default function AdminPage() {
               <div className="admin-stat-label">Usuarios registrados</div>
               <Link href="/admin/usuarios" className="admin-stat-link">
                 Gestionar →
-              </Link>
-            </div>
-          </div>
-
-          {/* ── ACCESOS RÁPIDOS ── */}
-          <div className="admin-seccion">
-            <div className="admin-seccion-header">
-              <span className="admin-seccion-titulo">Acciones rápidas</span>
-            </div>
-            <div
-              style={{
-                padding: "16px 20px",
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 10,
-              }}
-            >
-              <Link href="/admin/lugares" className="btn-admin-primary">
-                ➕ Nuevo lugar
-              </Link>
-              <Link href="/admin/negocios" className="btn-admin-primary">
-                ➕ Nuevo negocio
-              </Link>
-              <Link href="/admin/usuarios" className="btn-admin-secondary">
-                👥 Ver usuarios
-              </Link>
-              <Link href="/lugares" className="btn-admin-secondary">
-                🗺️ Ver lugares públicos
               </Link>
             </div>
           </div>

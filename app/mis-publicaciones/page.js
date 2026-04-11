@@ -229,7 +229,7 @@ export default function MisPublicacionesPage() {
         style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }}
       >
         {[
-          { label: "📸 Experiencia", modal: "experiencia" },
+          { label: "📸 Agregar Experiencia", modal: "experiencia" },
           { label: "📦 Producto", modal: "producto" },
           { label: "🏪 Negocio", modal: "negocio" },
           { label: "🗺️ Lugar", modal: "lugar" },

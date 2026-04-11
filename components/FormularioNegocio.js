@@ -90,7 +90,7 @@ export default function FormularioNegocio({ onClose, onPublicado }) {
     >
       <div className="modal-card" style={{ maxWidth: 560 }}>
         <div className="modal-header">
-          <span className="modal-titulo">🏪 Sugerir negocio</span>
+          <span className="modal-titulo">🏪 Agregar negocio</span>
           <button
             className="btn-cerrar-modal"
             onClick={onClose}
@@ -161,7 +161,7 @@ export default function FormularioNegocio({ onClose, onPublicado }) {
               </select>
             </div>
             <div className="form-admin-grupo">
-              <label className="form-admin-label">Precio desde (MXN)</label>
+              <label className="form-admin-label">Precio desde (S/)</label>
               <input
                 type="number"
                 min="0"

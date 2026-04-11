@@ -12,7 +12,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import ModalNegocio from "@/components/admin/ModalNegocio";
+import FormularioNegocio from "@/components/FormularioNegocio";
 import "@/styles/admin.css";
 import "@/styles/tabla-admin.css";
 
@@ -173,7 +173,7 @@ export default function AdminNegociosPage() {
     if (accion === "creado") {
       setNegocios((prev) => [negocioGuardado, ...prev]);
       mostrarToast(`✅ "${negocioGuardado.titulo}" creado`);
-    } else {
+    } else if (accion === "actualizado") {
       setNegocios((prev) =>
         prev.map((n) => (n.id === negocioGuardado.id ? negocioGuardado : n)),
       );
@@ -452,7 +452,7 @@ export default function AdminNegociosPage() {
 
       {/* ── MODAL DE CREAR/EDITAR ── */}
       {modal && (
-        <ModalNegocio
+        <FormularioNegocio
           negocio={modal === "crear" ? null : modal}
           onClose={() => setModal(null)}
           onGuardado={handleGuardado}
