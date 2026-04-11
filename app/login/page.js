@@ -102,7 +102,7 @@ export default function LoginPage() {
 
       // Login exitoso: redirigir al inicio
       // El AuthContext detectará automáticamente la sesión
-      router.push("/");
+      router.push("/mis-publicaciones");
       router.refresh(); // Fuerza re-render del layout
     } catch (err) {
       setError("Error inesperado. Intenta de nuevo.");

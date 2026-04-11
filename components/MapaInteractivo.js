@@ -54,8 +54,8 @@ export default function MapaInteractivo({
   puntoActivo = null,
   onPuntoClick = () => {},
   // 🔧 PERSONALIZABLE: Cambia estas coordenadas al centro de TU distrito
-  centro = [-8.187377, -77.845393],
-  zoom = 13,
+  centrito = [-8.187032, -77.81592],
+  zoomsito = 12,
 }) {
   // Ref al div donde se monta el mapa
   const mapaRef = useRef(null);
@@ -88,8 +88,8 @@ export default function MapaInteractivo({
 
       // ── CREAR EL MAPA ──
       const mapa = L.map(mapaRef.current, {
-        center: centro,
-        zoom: zoom,
+        center: centrito,
+        zoom: zoomsito,
         zoomControl: false, // Desactivamos el control por defecto
         attributionControl: true,
       });

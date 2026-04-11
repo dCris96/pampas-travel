@@ -10,6 +10,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 import "../styles/layout.css";
 
 // ── ÍCONOS (mismos de Fase 1) ──
@@ -277,6 +278,7 @@ export default function Navbar({
   closeSidebar,
 }) {
   const pathname = usePathname();
+  const router = useRouter();
 
   // 🔧 Conecta con: context/AuthContext.js
   const { user, perfil, loading, logout, isAdmin } = useAuth();
@@ -285,6 +287,12 @@ export default function Navbar({
   const handleLinkClick = () => {
     if (isMobile) closeSidebar();
   };
+
+  // ── FUNCIÓN DE LOGOUT ──
+  async function handleLogout() {
+    await logout();
+    router.push("/");
+  }
 
   return (
     <aside className={`sidebar ${isOpen ? "open" : ""}`}>
@@ -396,7 +404,7 @@ export default function Navbar({
             {/* Botón Cerrar Sesión */}
             <button
               className="btn-logout"
-              onClick={logout}
+              onClick={handleLogout}
               title="Cerrar sesión"
             >
               <IconLogout />

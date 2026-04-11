@@ -7,7 +7,7 @@
 /* ── WRAPPER DE AUTH ── */
 /* Ocupa todo el alto de la pantalla, centrado */
 .auth-page {
-  min-height: 100vh;
+  /* min-height: 100vh; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -131,6 +131,7 @@
     box-shadow 0.2s ease;
   outline: none;
   /* Quita el estilo amarillo de autofill */
+  box-shadow: 0 0 0 30px #0f0f0f inset !important;
   -webkit-box-shadow: 0 0 0 30px #0f0f0f inset !important;
   -webkit-text-fill-color: var(--color-text) !important;
 }

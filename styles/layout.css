@@ -243,6 +243,50 @@
   scrollbar-width: thin;
 }
 
+/* ─────────────────────────────────────────────────────
+   SCROLL ESTILIZADO PARA SIDEBAR NAV
+   ───────────────────────────────────────────────────── */
+.sidebar-nav {
+  /* 1. Para Firefox: Solo podemos controlar colores y ancho */
+  scrollbar-width: thin;
+  scrollbar-color: #2563eb transparent; /* [Barra] [Fondo transparente] */
+
+  overflow-y: auto;
+}
+
+/* 2. Para Chrome, Edge y Safari (Webkit) */
+
+/* Contenedor principal: le damos un ancho pequeño */
+.sidebar-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Ocultar las flechas (Botones) */
+.sidebar-nav::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* Fondo del scroll (Track): lo hacemos totalmente transparente */
+.sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* La barrita (Thumb) */
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background-color: #2563eb; /* Tu color azul */
+  border-radius: 20px; /* Lo hace totalmente redondeado */
+
+  /* Truco Pro: Si quieres que la barra no toque el borde del sidebar, 
+     puedes usar un borde transparente como "padding" */
+  border: 1px solid transparent;
+  background-clip: content-box;
+}
+
+/* Opcional: Que resalte un poco más al pasar el mouse */
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background-color: #1d4ed8;
+}
+
 /* Grupo de sección (PRINCIPAL, CULTURA, etc.) */
 .nav-group {
   margin-bottom: 4px;
