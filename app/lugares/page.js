@@ -15,7 +15,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { getLugares } from "@/app/actions/lugares";
 import CardLugar from "@/components/CardLugar";
 import "@/styles/lugares.css";
 
@@ -68,12 +68,7 @@ export default function LugaresPage() {
       try {
         // 🔧 Conecta con: tabla public.lugares
         // SELECT * FROM lugares WHERE activo = true ORDER BY created_at DESC
-        const { data, error } = await supabase
-          .from("lugares")
-          .select("*") // Todos los campos
-          .eq("activo", true) // Solo lugares activos
-          .order("destacado", { ascending: false }) // Destacados primero
-          .order("created_at", { ascending: false }); // Más nuevos primero
+        const data = await getLugares();
 
         if (error) throw error;
 

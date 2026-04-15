@@ -5,7 +5,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { getContenidoUsuario } from "@/app/actions/mis-publicaciones";
 import { useAuth } from "@/context/AuthContext";
 import BadgeEstado from "@/components/BadgeEstado";
 import FormularioProducto from "@/components/FormularioProducto";
@@ -60,41 +60,12 @@ export default function MisPublicacionesPage() {
     if (!user) return;
     setLoading(true);
     try {
-      const [expRes, prodRes, negRes, lugRes] = await Promise.all([
-        supabase
-          .from("experiencias")
-          .select("*")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false }),
-        supabase
-          .from("productos")
-          .select("*")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false }),
-        supabase
-          .from("negocios")
-          .select("*")
-          .eq("creado_por", user.id)
-          .order("created_at", { ascending: false }),
-        supabase
-          .from("lugares")
-          .select("*")
-          .eq("creado_por", user.id)
-          .order("created_at", { ascending: false }),
-      ]);
+      const contenido = await getContenidoUsuario(user.id);
+      setData(contenido);
 
-      const newData = {
-        experiencias: expRes.data || [],
-        productos: prodRes.data || [],
-        negocios: negRes.data || [],
-        lugares: lugRes.data || [],
-      };
-
-      setData(newData);
-
-      // Conteo de pendientes por tipo
+      // Calcular pendientes
       const pendientes = {};
-      Object.entries(newData).forEach(([key, arr]) => {
+      Object.entries(contenido).forEach(([key, arr]) => {
         pendientes[key] = arr.filter((i) => i.estado === "pendiente").length;
       });
       setCounts(pendientes);

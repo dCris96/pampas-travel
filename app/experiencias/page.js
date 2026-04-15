@@ -17,7 +17,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabaseClient";
+import { getExperiencias } from "@/app/actions/experiencias";
 import { useAuth } from "@/context/AuthContext";
 import TarjetaExperiencia from "@/components/TarjetaExperiencia";
 import FormularioExperiencia from "@/components/FormularioExperiencia";
@@ -143,77 +143,17 @@ export default function ExperienciasPage() {
   const cargarExperiencias = useCallback(async () => {
     setLoading(true);
     setError("");
-
     try {
-      // 1. Cargar experiencias con el perfil del autor y el lugar
-      //    Supabase permite seleccionar columnas de tablas relacionadas
-      //    usando la sintaxis: tabla_relacionada(campos)
-      const { data: exps, error: expError } = await supabase
-        .from("experiencias")
-        .select(
-          `
-          *,
-          perfil:profiles(nombre, avatar_url),
-          lugar:lugares(id, titulo)
-        `,
-        )
-        .eq("activo", true)
-        .order("created_at", { ascending: false })
-        .limit(50);
-
-      if (expError) throw expError;
-
-      // 2. Si hay usuario logueado, cargar sus likes para marcar cuáles le gustan
-      let misLikes = [];
-      if (user) {
-        const { data: likesData } = await supabase
-          .from("likes")
-          .select("experiencia_id")
-          .eq("user_id", user.id);
-
-        misLikes = (likesData || []).map((l) => l.experiencia_id);
-      }
-
-      // 3. Cargar conteo de likes por experiencia
-      //    Hacemos una consulta separada para el conteo
-      const ids = (exps || []).map((e) => e.id);
-      let likesConteo = {};
-
-      if (ids.length > 0) {
-        const { data: conteos } = await supabase
-          .from("likes")
-          .select("experiencia_id")
-          .in("experiencia_id", ids);
-
-        // Agrupar manualmente por experiencia_id
-        (conteos || []).forEach((l) => {
-          likesConteo[l.experiencia_id] =
-            (likesConteo[l.experiencia_id] || 0) + 1;
-        });
-      }
-
-      // 4. Combinar todo en un solo objeto por experiencia
-      const expsConLikes = (exps || []).map((exp) => ({
-        ...exp,
-        likes_count: likesConteo[exp.id] || 0,
-        user_liked: misLikes.includes(exp.id),
-      }));
-
-      setExperiencias(expsConLikes);
-
-      // 5. Calcular estadísticas para el sidebar
-      const totalExps = expsConLikes.length;
-      const conFoto = expsConLikes.filter((e) => e.imagen_url).length;
-      const usuarios = new Set(expsConLikes.map((e) => e.user_id)).size;
-
-      setStats({ total: totalExps, conFoto, usuarios });
+      const resultado = await getExperiencias(user?.id);
+      setExperiencias(resultado.experiencias);
+      setStats(resultado.stats);
     } catch (err) {
       console.error("Error cargando experiencias:", err);
-      setError("No se pudieron cargar las experiencias.");
+      setError(err.message || "No se pudieron cargar las experiencias.");
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user?.id]);
 
   // Cargar al montar y cuando cambia el usuario
   useEffect(() => {

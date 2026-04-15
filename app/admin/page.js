@@ -8,7 +8,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabaseClient";
+import { getStats, getExpRecientes } from "@/app/actions/admin";
 import { useAuth } from "@/context/AuthContext";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import "@/styles/admin.css";
@@ -28,32 +28,12 @@ export default function AdminPage() {
     async function cargarStats() {
       try {
         // Conteos en paralelo para mayor velocidad
-        const [lugaresRes, negociosRes, expRes, usersRes] = await Promise.all([
-          supabase.from("lugares").select("id", { count: "exact", head: true }),
-          supabase
-            .from("negocios")
-            .select("id", { count: "exact", head: true }),
-          supabase
-            .from("experiencias")
-            .select("id", { count: "exact", head: true }),
-          supabase
-            .from("profiles")
-            .select("id", { count: "exact", head: true }),
-        ]);
+        const data = await getStats();
 
-        setStats({
-          lugares: lugaresRes.count || 0,
-          negocios: negociosRes.count || 0,
-          experiencias: expRes.count || 0,
-          usuarios: usersRes.count || 0,
-        });
+        setStats(data);
 
         // Últimas experiencias para actividad reciente
-        const { data: exps } = await supabase
-          .from("experiencias")
-          .select("id, contenido, created_at, perfil:profiles(nombre)")
-          .order("created_at", { ascending: false })
-          .limit(5);
+        const exps = await getExpRecientes();
 
         setRecientes(exps || []);
       } catch (err) {

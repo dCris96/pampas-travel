@@ -18,7 +18,8 @@
 
 import { useEffect, useState, useMemo, useCallback } from "react";
 import dynamic from "next/dynamic";
-import { supabase } from "@/lib/supabaseClient";
+import { getLugaresParaMapa } from "@/app/actions/lugares";
+import { getNegociosParaMapa } from "@/app/actions/negocios";
 import "@/styles/mapa.css";
 import "@/styles/mapa-sidebar.css";
 
@@ -162,32 +163,14 @@ export default function MapaPage() {
   useEffect(() => {
     async function cargarDatos() {
       try {
-        // Cargamos en paralelo para mayor velocidad
-        const [lugaresRes, negociosRes] = await Promise.all([
-          supabase
-            .from("lugares")
-            .select(
-              "id, titulo, descripcion, categoria, imagen_url, latitud, longitud",
-            )
-            .eq("activo", true)
-            .not("latitud", "is", null) // Solo los que tienen coordenadas
-            .not("longitud", "is", null),
-
-          supabase
-            .from("negocios")
-            .select(
-              "id, nombre, descripcion, tipo, imagen_url, latitud, longitud, direccion",
-            )
-            .eq("activo", true)
-            .not("latitud", "is", null)
-            .not("longitud", "is", null),
+        // Llamada en paralelo a ambas Server Actions
+        const [lugaresData, negociosData] = await Promise.all([
+          getLugaresParaMapa(),
+          getNegociosParaMapa(),
         ]);
 
-        if (lugaresRes.error) throw lugaresRes.error;
-        if (negociosRes.error) throw negociosRes.error;
-
-        setLugares(lugaresRes.data || []);
-        setNegocios(negociosRes.data || []);
+        setLugares(lugaresData);
+        setNegocios(negociosData);
       } catch (err) {
         console.error("Error cargando datos del mapa:", err);
         setError("No se pudieron cargar los datos del mapa.");

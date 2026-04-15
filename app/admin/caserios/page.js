@@ -1,27 +1,21 @@
-// app/admin/lugares/page.js
+// app/admin/mitos/page.js
 // ─────────────────────────────────────────────────────
-// PANEL ADMIN: Gestión de Lugares — CRUD completo
-// Ruta: /admin/lugares
-// 🔧 Conecta con: acciones en app/actions/lugares.js
+// PANEL ADMIN: Gestión de Mitos — CRUD completo
+// Ruta: /admin/mitos
+// 🔧 Conecta con: tabla public.mitos (SELECT, INSERT, UPDATE, DELETE)
 // ─────────────────────────────────────────────────────
 
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
+import { getCaserios, toggleCaserioActivo } from "@/app/actions/caserios";
 import { useAuth } from "@/context/AuthContext";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import ModalLugar from "@/components/admin/ModalLugar";
-import {
-  getLugares,
-  toggleLugarActivo,
-  deleteLugar,
-} from "@/app/actions/lugares";
-import { getCaserios } from "@/app/actions/caserios";
 import "@/styles/admin.css";
 import "@/styles/tabla-admin.css";
 
-// ── ÍCONOS ───────────────────────────────────────────
 const IconEdit = () => (
   <svg
     viewBox="0 0 24 24"
@@ -35,7 +29,6 @@ const IconEdit = () => (
     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
   </svg>
 );
-
 const IconTrash = () => (
   <svg
     viewBox="0 0 24 24"
@@ -52,7 +45,6 @@ const IconTrash = () => (
     <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
   </svg>
 );
-
 const IconPlus = () => (
   <svg
     viewBox="0 0 24 24"
@@ -67,12 +59,12 @@ const IconPlus = () => (
   </svg>
 );
 
+// Número de filas por página
 const POR_PAGINA = 10;
 
-export default function AdminLugaresPage() {
+export default function AdminCaseriosPage() {
   const { user, isAdmin, loading: authLoading } = useAuth();
 
-  const [lugares, setLugares] = useState([]);
   const [caserios, setCaserios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [busqueda, setBusqueda] = useState("");
@@ -80,64 +72,65 @@ export default function AdminLugaresPage() {
   const [modal, setModal] = useState(null); // null | 'crear' | objeto lugar
   const [toastMsg, setToastMsg] = useState("");
 
-  // ── CARGAR DATOS INICIALES ──────────────────────────
-  async function cargarDatos() {
+  // ── CARGAR CASERIOS ──
+  // 🔧 Conecta con: tabla public.caserios SELECT todos (activos e inactivos)
+  async function cargarCaserios() {
     setLoading(true);
     try {
-      const [lugaresData, caseriosData] = await Promise.all([
-        getLugares(),
-        getCaserios(),
-      ]);
-
-      setLugares(lugaresData || []);
-      setCaserios(caseriosData || []);
+      const data = await getCaserios();
+      setCaserios(data || []);
     } catch (err) {
-      console.error("Error cargando datos:", err);
-      mostrarToast("Error al cargar los datos", "error");
+      console.error(err);
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    if (isAdmin) cargarDatos();
+    if (isAdmin) cargarCaserios();
   }, [isAdmin]);
 
-  // ── FILTRAR Y PAGINAR ───────────────────────────────
-  const lugaresFiltrados = useMemo(() => {
+  // ── FILTRAR Y PAGINAR ──
+  const caseriosFiltrados = useMemo(() => {
     const q = busqueda.toLowerCase();
-    return lugares.filter(
-      (l) =>
+    return caserios.filter(
+      (c) =>
         !q ||
-        l.titulo?.toLowerCase().includes(q) ||
-        l.categoria?.toLowerCase().includes(q) ||
-        l.direccion?.toLowerCase().includes(q),
+        c.nombre?.toLowerCase().includes(q) ||
+        c.direccion?.toLowerCase().includes(q),
     );
-  }, [lugares, busqueda]);
+  }, [caserios, busqueda]);
 
-  const totalPaginas = Math.ceil(lugaresFiltrados.length / POR_PAGINA);
-  const lugaresPagina = lugaresFiltrados.slice(
+  const totalPaginas = Math.ceil(caseriosFiltrados.length / POR_PAGINA);
+  const caseriosPagina = caseriosFiltrados.slice(
     (pagina - 1) * POR_PAGINA,
     pagina * POR_PAGINA,
   );
 
-  useEffect(() => setPagina(1), [busqueda]);
+  // Reset página al buscar
+  useEffect(() => {
+    setPagina(1);
+  }, [busqueda]);
 
-  // ── TOAST ───────────────────────────────────────────
-  function mostrarToast(msg, tipo = "success") {
+  // ── TOAST ──
+  function mostrarToast(msg) {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(""), 3000);
   }
 
-  // ── TOGGLE ACTIVO (Server Action) ───────────────────
-  async function toggleActivo(lugar) {
+  // ── TOGGLE ACTIVO ──
+  async function toggleActivo(caserio) {
     try {
-      await toggleLugarActivo(lugar.id, lugar.activo);
-      setLugares((prev) =>
-        prev.map((l) => (l.id === lugar.id ? { ...l, activo: !l.activo } : l)),
+      await toggleCaserioActivo(caserio.id, caserio.activo);
+
+      // Actualización optimista del estado local
+      setCaserios((prev) =>
+        prev.map((c) =>
+          c.id === caserio.id ? { ...c, activo: !c.activo } : c,
+        ),
       );
       mostrarToast(
-        `"${lugar.titulo}" ${!lugar.activo ? "activado" : "desactivado"}`,
+        `"${caserio.nombre}" ${!caserio.activo ? "activado" : "desactivado"}`,
       );
     } catch (error) {
       console.error(error);
@@ -145,41 +138,47 @@ export default function AdminLugaresPage() {
     }
   }
 
-  // ── BORRAR LUGAR (Server Action) ────────────────────
-  async function borrarLugar(lugar) {
+  // ── BORRAR CASERIO ──
+  // 🔧 Conecta con: DELETE FROM caserios WHERE id
+  async function borrarCaserio(caserio) {
     if (
       !confirm(
-        `¿Borrar permanentemente "${lugar.titulo}"?\nEsta acción no se puede deshacer.`,
+        `¿Borrar permanentemente "${caserio.nombre}"?\nEsta acción no se puede deshacer.`,
       )
     )
       return;
 
-    try {
-      await deleteLugar(lugar.id);
-      setLugares((prev) => prev.filter((l) => l.id !== lugar.id));
-      mostrarToast(`"${lugar.titulo}" eliminado`);
-    } catch (error) {
-      console.error(error);
+    const { error } = await supabase
+      .from("caserios")
+      .delete()
+      .eq("id", caserio.id);
+
+    if (!error) {
+      console.log(error);
+
+      setCaserios((prev) => prev.filter((c) => c.id !== caserio.id));
+      mostrarToast(`"${caserio.nombre}" eliminado`);
+    } else {
       alert("Error al borrar: " + error.message);
     }
   }
 
-  // ── AL GUARDAR EN EL MODAL (el modal ya usa acciones) ──
-  function handleGuardado(lugarGuardado, accion) {
+  // ── AL GUARDAR EN EL MODAL ──
+  function handleGuardado(caserioGuardado, accion) {
     if (accion === "creado") {
-      setLugares((prev) => [lugarGuardado, ...prev]);
-      mostrarToast(`✅ "${lugarGuardado.titulo}" creado`);
+      setCaserios((prev) => [caserioGuardado, ...prev]);
+      mostrarToast(`✅ "${caserioGuardado.nombre}" creado`);
     } else {
-      setLugares((prev) =>
-        prev.map((l) => (l.id === lugarGuardado.id ? lugarGuardado : l)),
+      setCaserios((prev) =>
+        prev.map((c) => (c.id === caserioGuardado.id ? caserioGuardado : c)),
       );
-      mostrarToast(`✅ "${lugarGuardado.titulo}" actualizado`);
+      mostrarToast(`✅ "${caserioGuardado.nombre}" actualizado`);
     }
     setModal(null);
   }
 
-  // ── GUARDS ──────────────────────────────────────────
-  if (authLoading) {
+  // ── GUARDS ──
+  if (authLoading)
     return (
       <div
         style={{
@@ -193,9 +192,8 @@ export default function AdminLugaresPage() {
         Verificando permisos...
       </div>
     );
-  }
 
-  if (!isAdmin) {
+  if (!isAdmin)
     return (
       <div className="admin-acceso-denegado">
         <h2>🔒 Sin permisos</h2>
@@ -212,18 +210,17 @@ export default function AdminLugaresPage() {
         </Link>
       </div>
     );
-  }
 
-  // ── RENDER PRINCIPAL ────────────────────────────────
   return (
     <div>
+      {/* ── HEADER ── */}
       <div className="admin-page-header">
         <h1 className="admin-page-titulo">
-          Gestión de Lugares
+          Gestión de Caserios y Centros poblados
           <span className="admin-badge">⚡ Admin</span>
         </h1>
         <p className="admin-page-sub">
-          Crea, edita y gestiona los sitios turísticos del distrito.
+          Crea, edita y gestiona los caserios y centros poblados del distrito.
         </p>
       </div>
 
@@ -231,16 +228,17 @@ export default function AdminLugaresPage() {
         <AdminSidebar />
 
         <div>
+          {/* ── TABLA DE CASERIOS ── */}
           <div className="admin-seccion">
             <div className="admin-seccion-header">
               <span className="admin-seccion-titulo">
-                Lugares ({lugaresFiltrados.length})
+                Caserios ({caseriosFiltrados.length})
               </span>
               <button
                 className="btn-admin-primary"
                 onClick={() => setModal("crear")}
               >
-                <IconPlus /> Nuevo lugar
+                <IconPlus /> Nuevo caserio
               </button>
             </div>
 
@@ -257,7 +255,7 @@ export default function AdminLugaresPage() {
                 />
               </div>
               <span className="tabla-count">
-                {lugaresFiltrados.length} de {lugares.length} lugares
+                {caseriosFiltrados.length} de {caserios.length} caserios
               </span>
             </div>
 
@@ -266,10 +264,10 @@ export default function AdminLugaresPage() {
               <table className="tabla-admin">
                 <thead>
                   <tr>
-                    <th>Lugar</th>
-                    <th>Categoría</th>
+                    <th>Caserio</th>
+                    <th>Descripcion</th>
+                    <th>Población</th>
                     <th>Estado</th>
-                    <th>Destacado</th>
                     <th>Acciones</th>
                   </tr>
                 </thead>
@@ -294,7 +292,7 @@ export default function AdminLugaresPage() {
                         ))}
                       </tr>
                     ))
-                  ) : lugaresPagina.length === 0 ? (
+                  ) : caseriosPagina.length === 0 ? (
                     <tr>
                       <td colSpan={5}>
                         <div className="tabla-vacia">
@@ -308,14 +306,15 @@ export default function AdminLugaresPage() {
                       </td>
                     </tr>
                   ) : (
-                    lugaresPagina.map((lugar) => (
-                      <tr key={lugar.id}>
+                    caseriosPagina.map((caserio) => (
+                      <tr key={caserio.id}>
+                        {/* Nombre + thumbnail */}
                         <td>
                           <div className="tabla-celda-nombre">
-                            {lugar.imagen_url ? (
+                            {caserio.imagen_url ? (
                               <img
-                                src={lugar.imagen_url}
-                                alt={lugar.titulo}
+                                src={caserio.imagen_url}
+                                alt={caserio.nombre}
                                 className="tabla-thumbnail"
                               />
                             ) : (
@@ -325,49 +324,58 @@ export default function AdminLugaresPage() {
                             )}
                             <div>
                               <div className="tabla-nombre-texto">
-                                {lugar.titulo}
+                                {caserio.nombre}
                               </div>
                               <span className="tabla-nombre-sub">
-                                {lugar.direccion || "—"}
+                                {caserio.altitud || "—"} msnm
                               </span>
                             </div>
                           </div>
                         </td>
+
+                        {/* Categoría */}
                         <td style={{ textTransform: "capitalize" }}>
-                          {lugar.categoria}
+                          {caserio.descripcion || "—"}
                         </td>
+
+                        {/* Origen */}
+                        <td style={{ textTransform: "capitalize" }}>
+                          {caserio.poblacion || "—"}
+                        </td>
+
+                        {/* Activo */}
                         <td>
                           <span
-                            className={`tabla-badge-activo ${lugar.activo ? "si" : "no"}`}
+                            className={`tabla-badge-activo ${caserio.activo ? "si" : "no"}`}
                           >
-                            {lugar.activo ? "Activo" : "Inactivo"}
+                            {caserio.activo ? "Activo" : "Inactivo"}
                           </span>
                         </td>
-                        <td>
-                          {lugar.destacado ? (
-                            <span className="tabla-badge-star">★</span>
-                          ) : (
-                            <span style={{ color: "#333" }}>—</span>
-                          )}
-                        </td>
+
+                        {/* Acciones */}
                         <td>
                           <div className="tabla-acciones">
+                            {/* Toggle activo/inactivo */}
                             <button
                               className="btn-toggle-activo"
-                              onClick={() => toggleActivo(lugar)}
-                              title={lugar.activo ? "Desactivar" : "Activar"}
+                              onClick={() => toggleActivo(caserio)}
+                              title={caserio.activo ? "Desactivar" : "Activar"}
                             >
-                              {lugar.activo ? "👁️ Ocultar" : "👁️ Mostrar"}
+                              {caserio.activo ? "👁️ Ocultar" : "👁️ Mostrar"}
                             </button>
+
+                            {/* Editar */}
                             <button
                               className="btn-tabla-editar"
-                              onClick={() => setModal(lugar)}
+                              onClick={() => setModal(caserio)}
                             >
                               <IconEdit /> Editar
                             </button>
+
+                            {/* Borrar */}
                             <button
                               className="btn-tabla-borrar"
-                              onClick={() => borrarLugar(lugar)}
+                              onClick={() => borrarLugar(caserio)}
                             >
                               <IconTrash /> Borrar
                             </button>
@@ -433,17 +441,16 @@ export default function AdminLugaresPage() {
         </div>
       </div>
 
-      {/* Modal de creación/edición */}
+      {/* ── MODAL DE CREAR/EDITAR ── */}
       {modal && (
         <ModalLugar
           lugar={modal === "crear" ? null : modal}
-          caserios={caserios}
           onClose={() => setModal(null)}
           onGuardado={handleGuardado}
         />
       )}
 
-      {/* Toast */}
+      {/* ── TOAST ── */}
       {toastMsg && (
         <div
           style={{

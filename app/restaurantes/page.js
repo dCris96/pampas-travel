@@ -9,7 +9,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabaseClient";
+import { getRestaurantes } from "@/app/actions/negocios";
 import { useAuth } from "@/context/AuthContext";
 import CardNegocio from "@/components/CardNegocio";
 import "@/styles/negocios.css";
@@ -39,15 +39,7 @@ export default function RestaurantesPage() {
   useEffect(() => {
     async function cargar() {
       try {
-        const { data, error } = await supabase
-          .from("negocios")
-          .select("*")
-          .eq("activo", true)
-          .eq("tipo", "restaurante")
-          .order("destacado", { ascending: false })
-          .order("nombre", { ascending: true });
-
-        if (error) throw error;
+        const data = await getRestaurantes();
         setRestaurantes(data || []);
       } catch (err) {
         console.error(err);

@@ -12,7 +12,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabaseClient";
+import { getHoteles } from "@/app/actions/negocios";
 import { useAuth } from "@/context/AuthContext";
 import CardNegocio from "@/components/CardNegocio";
 import "@/styles/negocios.css";
@@ -64,15 +64,7 @@ export default function HotelesPage() {
   useEffect(() => {
     async function cargarHoteles() {
       try {
-        const { data, error } = await supabase
-          .from("negocios")
-          .select("*")
-          .eq("activo", true)
-          .eq("tipo", "hotel") // ← Solo hoteles
-          .order("destacado", { ascending: false })
-          .order("precio_desde", { ascending: true }); // Más baratos primero
-
-        if (error) throw error;
+        const data = await getHoteles();
         setHoteles(data || []);
       } catch (err) {
         console.error("Error cargando hoteles:", err);

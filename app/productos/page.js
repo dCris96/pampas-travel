@@ -4,7 +4,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { getProductos } from "@/app/actions/productos";
 import { useAuth } from "@/context/AuthContext";
 import FormularioProducto from "@/components/FormularioProducto";
 import BadgeEstado from "@/components/BadgeEstado";
@@ -54,14 +54,15 @@ export default function ProductosPage() {
   // 🔧 Conecta con: tabla public.productos WHERE estado = 'aprobado'
   useEffect(() => {
     async function cargar() {
-      const { data } = await supabase
-        .from("productos")
-        .select("*, perfil:profiles(nombre)")
-        .eq("estado", "aprobado")
-        .eq("activo", true)
-        .order("created_at", { ascending: false });
-      setProductos(data || []);
-      setLoading(false);
+      try {
+        const data = await getProductos();
+        setProductos(data);
+      } catch (err) {
+        console.error("Error:", err.message);
+        // Mostrar mensaje en UI
+      } finally {
+        setLoading(false);
+      }
     }
     cargar();
   }, []);

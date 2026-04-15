@@ -14,8 +14,14 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/context/AuthContext";
+import {
+  subirImagenWebP,
+  validarArchivo,
+  formatearTamaño,
+} from "@/lib/imageUtils";
 import "@/styles/formulario-exp.css";
 import "@/styles/modal-admin.css";
+import { getCaserios } from "@/app/actions/caserios";
 
 // ── CONSTANTES PARA IMAGEN ──
 const MAX_MB = 5;
@@ -54,6 +60,7 @@ const CATEGORIAS = [
 export default function ModalLugar({ lugar = null, onClose, onGuardado }) {
   const { user } = useAuth();
   const esEdicion = !!lugar;
+  const [caserios, setCaserios] = useState([]);
 
   // ── ESTADO DEL FORMULARIO (sin imagen_url, manejado aparte) ──
   const [form, setForm] = useState({
@@ -63,9 +70,19 @@ export default function ModalLugar({ lugar = null, onClose, onGuardado }) {
     direccion: lugar?.direccion || "",
     latitud: lugar?.latitud || "",
     longitud: lugar?.longitud || "",
+    altitud: lugar?.altitud || "",
+    caserio_id: lugar?.caserio_id || "",
     destacado: lugar?.destacado || false,
     activo: lugar?.activo !== undefined ? lugar.activo : true,
   });
+
+  useEffect(() => {
+    async function cargarCaserios() {
+      const data = await getCaserios();
+      setCaserios(data);
+    }
+    cargarCaserios();
+  }, []);
 
   // ── ESTADO PARA LA IMAGEN ──
   const [imagenFile, setImagenFile] = useState(null); // nuevo archivo seleccionado
@@ -94,15 +111,9 @@ export default function ModalLugar({ lugar = null, onClose, onGuardado }) {
   function procesarImagen(file) {
     setError("");
 
-    if (!TIPOS_IMAGEN.includes(file.type)) {
-      setError("Solo se permiten imágenes JPG, PNG, WEBP o GIF.");
-      return false;
-    }
-
-    if (file.size > MAX_BYTES) {
-      setError(
-        `La imagen no puede superar ${MAX_MB}MB. Tu archivo pesa ${(file.size / 1024 / 1024).toFixed(1)}MB.`,
-      );
+    const errorValidacion = validarArchivo(file);
+    if (errorValidacion) {
+      setError(errorValidacion);
       return false;
     }
 
@@ -154,34 +165,20 @@ export default function ModalLugar({ lugar = null, onClose, onGuardado }) {
   async function subirImagen() {
     if (!imagenFile) return null;
 
-    // Organizamos dentro de una carpeta "lugares" para no mezclar con experiencias de usuarios
-    const timestamp = Date.now();
-    const extension = imagenFile.name.split(".").pop();
-    const nombreArchivo = `lugares/${timestamp}_${Math.random().toString(36).substring(2, 8)}.${extension}`;
-
-    setUploadProgress(10);
-
-    const { data, error } = await supabase.storage
-      .from("experiencias") // mismo bucket que usa FormularioExperiencia
-      .upload(nombreArchivo, imagenFile, {
-        cacheControl: "3600",
-        upsert: false,
-        contentType: imagenFile.type,
-      });
-
-    if (error) {
+    try {
+      // La función subirImagenWebP maneja la conversión a WebP y la subida
+      const urlPublica = await subirImagenWebP(
+        imagenFile,
+        supabase,
+        "experiencias", // bucket
+        user.id, // carpeta dentro del bucket
+        (progreso) => setUploadProgress(progreso), // callback de progreso (0-100)
+      );
+      return urlPublica;
+    } catch (error) {
       console.error("Error subiendo imagen:", error);
-      throw new Error("No se pudo subir la imagen. Intenta de nuevo.");
+      throw new Error(error.message || "No se pudo subir la imagen.");
     }
-
-    setUploadProgress(70);
-
-    const { data: urlData } = supabase.storage
-      .from("experiencias")
-      .getPublicUrl(nombreArchivo);
-
-    setUploadProgress(100);
-    return urlData.publicUrl;
   }
 
   // ── GUARDAR (INSERT o UPDATE) ──
@@ -220,6 +217,8 @@ export default function ModalLugar({ lugar = null, onClose, onGuardado }) {
         direccion: form.direccion.trim() || null,
         latitud: form.latitud ? parseFloat(form.latitud) : null,
         longitud: form.longitud ? parseFloat(form.longitud) : null,
+        altitud: form.altitud ? parseFloat(form.altitud) : null, // ← nuevo
+        caserio_id: form.caserio_id || null, // ← nuevo
         destacado: form.destacado,
         activo: form.activo,
       };
@@ -427,6 +426,38 @@ export default function ModalLugar({ lugar = null, onClose, onGuardado }) {
           </span>
 
           <div className="form-admin-sep" />
+
+          {/* Altitud */}
+          <div className="form-admin-grupo">
+            <label className="form-admin-label">Altitud (msnm)</label>
+            <input
+              type="number"
+              step="any"
+              className="form-admin-input"
+              placeholder="Ej: 3500"
+              value={form.altitud}
+              onChange={(e) => setField("altitud", e.target.value)}
+              disabled={uploading}
+            />
+          </div>
+
+          {/* Caserío (Select) - Asumiendo que obtienes la lista de caseríos desde el padre */}
+          <div className="form-admin-grupo">
+            <label className="form-admin-label">Caserío</label>
+            <select
+              className="form-admin-select"
+              value={form.caserio_id}
+              onChange={(e) => setField("caserio_id", e.target.value)}
+              disabled={uploading}
+            >
+              <option value="">Ninguno (sin asignar)</option>
+              {caserios?.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.nombre}
+                </option>
+              ))}
+            </select>
+          </div>
 
           {/* Checkboxes */}
           <div className="form-admin-fila">

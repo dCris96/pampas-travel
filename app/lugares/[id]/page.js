@@ -1,12 +1,8 @@
-// app/lugares/[id]/page.js
+// app/lugares/[id]/page.js — VERSIÓN CON GALERÍA DE EXPERIENCIAS
 // ─────────────────────────────────────────────────────
-// PÁGINA: Detalle de un lugar turístico
-// Ruta dinámica: /lugares/[id]
-//
-// El [id] en el nombre de la carpeta es el parámetro
-// dinámico de Next.js — se pasa como prop "params"
-//
-// 🔧 Conecta con: tabla public.lugares → SELECT por id
+// Agrega al final de la página la galería de fotos
+// de las experiencias que mencionan este lugar
+// 🔧 Conecta con: tablas lugares + experiencias + profiles
 // ─────────────────────────────────────────────────────
 
 "use client";
@@ -15,9 +11,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
+import GaleriaFotos from "@/components/GaleriaFotos";
 import "@/styles/lugar-detalle.css";
+import "@/styles/galeria.css";
 
-// ── MAPA DE ESTILOS DE CATEGORÍA ──
+// ── MAPA DE ESTILOS POR CATEGORÍA ──
 const CATEGORIA_STYLES = {
   naturaleza: { bg: "#1a3a26", color: "#6bffab", label: "Naturaleza" },
   patrimonio: { bg: "#3a2a1a", color: "#ffb86b", label: "Patrimonio" },
@@ -41,7 +39,6 @@ const IconArrowLeft = () => (
     <polyline points="12,19 5,12 12,5" />
   </svg>
 );
-
 const IconPin = () => (
   <svg
     viewBox="0 0 24 24"
@@ -56,91 +53,111 @@ const IconPin = () => (
   </svg>
 );
 
-const IconCalendar = () => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    style={{ width: 14, height: 14 }}
-  >
-    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-    <line x1="3" y1="10" x2="21" y2="10" />
-  </svg>
-);
-
 export default function LugarDetallePage() {
-  // useParams() obtiene el { id } de la URL dinámica
   const { id } = useParams();
 
-  // ── ESTADO ──
   const [lugar, setLugar] = useState(null);
+  const [caserio, setCaserio] = useState(null); // Caserío vinculado
+  const [experiencias, setExperiencias] = useState([]); // Experiencias con foto
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // ── CARGAR LUGAR POR ID ──
-  // 🔧 Conecta con: tabla public.lugares → SELECT WHERE id = [id]
   useEffect(() => {
-    async function cargarLugar() {
+    if (!id) return;
+
+    async function cargar() {
       try {
-        const { data, error } = await supabase
+        // 1. Cargar el lugar
+        // 🔧 Conecta con: tabla lugares SELECT WHERE id
+        const { data: lug, error: lugError } = await supabase
           .from("lugares")
           .select("*")
-          .eq("id", id) // Filtramos por el ID de la URL
-          .eq("activo", true) // Solo si está activo
-          .single(); // Esperamos un solo resultado
+          .eq("id", id)
+          .eq("activo", true)
+          .single();
 
-        if (error) {
-          // .single() lanza error si no encuentra nada
-          if (error.code === "PGRST116") {
-            setError("Lugar no encontrado.");
-          } else {
-            throw error;
-          }
+        if (lugError) {
+          setError(
+            lugError.code === "PGRST116"
+              ? "Lugar no encontrado."
+              : "Error al cargar el lugar.",
+          );
           return;
         }
 
-        setLugar(data);
+        setLugar(lug);
+
+        // 2. Si tiene caserío vinculado, cargarlo
+        // 🔧 Conecta con: tabla caserios WHERE id = lugar.caserio_id
+        if (lug.caserio_id) {
+          const { data: cas } = await supabase
+            .from("caserios")
+            .select("id, nombre")
+            .eq("id", lug.caserio_id)
+            .single();
+
+          if (cas) setCaserio(cas);
+        }
+
+        // 3. Cargar experiencias CON FOTO vinculadas a este lugar
+        // 🔧 Conecta con: tabla experiencias WHERE lugar_id = id AND imagen_url IS NOT NULL
+        const { data: exps } = await supabase
+          .from("experiencias")
+          .select(
+            `
+            id,
+            contenido,
+            imagen_url,
+            created_at,
+            perfil:profiles(nombre)
+          `,
+          )
+          .eq("lugar_id", id)
+          .eq("activo", true)
+          .not("imagen_url", "is", null) // Solo las que tienen foto
+          .order("created_at", { ascending: false })
+          .limit(30); // Máximo 30 fotos en la galería
+
+        setExperiencias(exps || []);
       } catch (err) {
-        console.error("Error cargando lugar:", err);
-        setError("Error al cargar el lugar. Intenta de nuevo.");
+        console.error(err);
+        setError("Error inesperado.");
       } finally {
         setLoading(false);
       }
     }
 
-    if (id) cargarLugar();
+    cargar();
   }, [id]);
 
-  // ── FORMATEAR FECHA ──
-  function formatearFecha(iso) {
-    return new Date(iso).toLocaleDateString("es-MX", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  }
+  // ── CONSTRUIR ARRAY DE FOTOS DE EXPERIENCIAS ──
+  // Normalizamos al formato que espera GaleriaFotos
+  const fotosExperiencias = experiencias.map((exp) => ({
+    id: exp.id,
+    url: exp.imagen_url,
+    titulo: exp.perfil?.nombre || "Visitante",
+    subtitulo: exp.contenido
+      ? exp.contenido.substring(0, 60) +
+        (exp.contenido.length > 60 ? "..." : "")
+      : null,
+    // No ponemos link porque no hay página de detalle de experiencia individual
+  }));
 
-  // ── ESTADOS DE CARGA Y ERROR ──
-
+  // ── CARGANDO ──
   if (loading) {
     return (
       <div>
         <Link href="/lugares" className="btn-volver">
           <IconArrowLeft /> Sitios Turísticos
         </Link>
-        {/* Skeleton del hero */}
         <div
           style={{
             height: 400,
             borderRadius: 12,
-            background:
-              "linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%)",
+            marginBottom: 32,
+            background: "linear-gradient(90deg,#111 25%,#1a1a1a 50%,#111 75%)",
             backgroundSize: "200% 100%",
             animation: "shimmer 1.5s infinite",
-            marginBottom: 32,
           }}
         />
       </div>
@@ -153,43 +170,45 @@ export default function LugarDetallePage() {
         <Link href="/lugares" className="btn-volver">
           <IconArrowLeft /> Sitios Turísticos
         </Link>
-        <div className="not-found-page">
-          <h2>🗺️ {error || "Lugar no encontrado"}</h2>
-          <p>Es posible que este lugar haya sido eliminado o no exista.</p>
+        <div style={{ textAlign: "center", padding: 80 }}>
+          <h2 style={{ fontFamily: "var(--font-display)", marginBottom: 10 }}>
+            🗺️ {error || "Lugar no encontrado"}
+          </h2>
           <Link
             href="/lugares"
-            className="btn-primary-link"
             style={{
-              display: "inline-block",
-              padding: "11px 24px",
-              background: "var(--color-btn-primary)",
-              color: "white",
-              borderRadius: 8,
+              color: "var(--color-blue)",
               fontFamily: "var(--font-display)",
               fontSize: 14,
               textDecoration: "none",
             }}
           >
-            Ver todos los lugares
+            ← Ver todos los lugares
           </Link>
         </div>
       </div>
     );
   }
 
-  // Estilos de la categoría del lugar cargado
   const catStyle =
     CATEGORIA_STYLES[lugar.categoria] || CATEGORIA_STYLES.naturaleza;
 
-  // ── RENDER PRINCIPAL ──
+  function formatearFecha(iso) {
+    return new Date(iso).toLocaleDateString("es-MX", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
+
   return (
     <div>
-      {/* ── BREADCRUMB / BOTÓN VOLVER ── */}
+      {/* ── BOTÓN VOLVER ── */}
       <Link href="/lugares" className="btn-volver">
         <IconArrowLeft /> Sitios Turísticos
       </Link>
 
-      {/* ── HERO CON IMAGEN ── */}
+      {/* ── HERO ── */}
       <div className="detalle-hero">
         <img
           src={
@@ -201,30 +220,21 @@ export default function LugarDetallePage() {
         />
         <div className="detalle-hero-overlay" />
 
-        {/* Contenido sobre la imagen */}
         <div className="detalle-hero-content">
           <div className="detalle-hero-meta">
-            {/* Badge de categoría */}
             <span
               className="badge-cat-lg"
               style={{ backgroundColor: catStyle.bg, color: catStyle.color }}
             >
               {catStyle.label}
             </span>
-
-            {/* Título */}
             <h1 className="detalle-hero-titulo">{lugar.titulo}</h1>
-
-            {/* Dirección */}
             {lugar.direccion && (
               <div className="detalle-hero-dir">
-                <IconPin />
-                {lugar.direccion}
+                <IconPin /> {lugar.direccion}
               </div>
             )}
           </div>
-
-          {/* Estrella de destacado */}
           {lugar.destacado && (
             <div
               style={{
@@ -245,11 +255,11 @@ export default function LugarDetallePage() {
         </div>
       </div>
 
-      {/* ── LAYOUT: MAIN + SIDEBAR ── */}
+      {/* ── LAYOUT MAIN + SIDEBAR ── */}
       <div className="detalle-layout">
         {/* ── COLUMNA PRINCIPAL ── */}
         <div className="detalle-main">
-          {/* Descripción completa */}
+          {/* Descripción */}
           <div className="detalle-seccion">
             <h2 className="detalle-seccion-titulo">Descripción</h2>
             <p className="detalle-descripcion">
@@ -257,18 +267,46 @@ export default function LugarDetallePage() {
             </p>
           </div>
 
+          {/* ── GALERÍA DE EXPERIENCIAS ── */}
           {/*
-            🔧 EN FASES FUTURAS puedes agregar aquí:
-            - Galería de fotos (cuando tengas storage)
-            - Experiencias relacionadas (Fase 5)
-            - Mapa embebido (Fase 6)
+            Esta es la sección nueva: fotos de experiencias
+            que los usuarios publicaron vinculadas a este lugar.
+            Solo aparece si hay al menos 1 foto.
           */}
+          <GaleriaFotos
+            fotos={fotosExperiencias}
+            titulo="Fotos de visitantes"
+            icono="📸"
+            columnas={3}
+            maxVisible={9}
+          />
         </div>
 
-        {/* ── SIDEBAR DE INFORMACIÓN ── */}
+        {/* ── SIDEBAR ── */}
         <div className="detalle-sidebar">
-          {/* Panel de datos rápidos */}
+          {/* Panel de datos */}
           <div className="detalle-info-panel">
+            {/* Caserío vinculado */}
+            {caserio && (
+              <div className="info-fila">
+                <span className="info-label">Caserío</span>
+                <Link
+                  href={`/caserios/${caserio.id}`}
+                  style={{
+                    fontSize: 13,
+                    color: "var(--color-blue)",
+                    textDecoration: "none",
+                    fontFamily: "var(--font-body)",
+                    transition: "opacity 0.15s",
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
+                  onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+                >
+                  {caserio.nombre} →
+                </Link>
+              </div>
+            )}
+
             <div className="info-fila">
               <span className="info-label">Categoría</span>
               <span className="info-value">{catStyle.label}</span>
@@ -281,7 +319,6 @@ export default function LugarDetallePage() {
               </div>
             )}
 
-            {/* Coordenadas (si existen) */}
             {lugar.latitud && lugar.longitud && (
               <div className="info-fila">
                 <span className="info-label">Coordenadas</span>
@@ -290,6 +327,17 @@ export default function LugarDetallePage() {
                 </span>
               </div>
             )}
+
+            {/* Contador de fotos de visitantes */}
+            <div className="info-fila">
+              <span className="info-label">Fotos de visitantes</span>
+              <span
+                className="info-value"
+                style={{ color: "var(--color-blue)" }}
+              >
+                {fotosExperiencias.length}
+              </span>
+            </div>
 
             <div className="info-fila">
               <span className="info-label">Estado</span>
@@ -309,28 +357,36 @@ export default function LugarDetallePage() {
             </div>
           </div>
 
-          {/* Mini mapa placeholder (se activa en Fase 6) */}
+          {/* Mini mapa */}
           {lugar.latitud && lugar.longitud && (
-            <div className="detalle-info-panel" style={{ padding: 16 }}>
-              <h3
+            <div
+              className="detalle-info-panel"
+              style={{ padding: 0, overflow: "hidden" }}
+            >
+              <div
                 style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: 11,
-                  fontWeight: 600,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  color: "var(--color-text-label)",
-                  marginBottom: 12,
+                  padding: "12px 16px",
+                  borderBottom: "1px solid var(--color-border)",
                 }}
               >
-                Ubicación
-              </h3>
-              {/* Iframe de mapa estático de OpenStreetMap */}
+                <div
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                    color: "var(--color-text-label)",
+                  }}
+                >
+                  Ubicación
+                </div>
+              </div>
               <iframe
                 title={`Mapa de ${lugar.titulo}`}
                 width="100%"
                 height="160"
-                style={{ borderRadius: 8, border: "none", display: "block" }}
+                style={{ border: "none", display: "block" }}
                 src={`https://www.openstreetmap.org/export/embed.html?bbox=${lugar.longitud - 0.01},${lugar.latitud - 0.01},${lugar.longitud + 0.01},${lugar.latitud + 0.01}&layer=mapnik&marker=${lugar.latitud},${lugar.longitud}`}
               />
               <a
@@ -340,17 +396,60 @@ export default function LugarDetallePage() {
                 style={{
                   display: "block",
                   textAlign: "center",
-                  marginTop: 8,
+                  padding: "8px",
                   fontSize: 11,
                   color: "var(--color-blue)",
                   fontFamily: "var(--font-display)",
                   textDecoration: "none",
+                  borderTop: "1px solid var(--color-border)",
                 }}
               >
                 Ver en mapa completo →
               </a>
             </div>
           )}
+
+          {/* Invitación a publicar experiencia */}
+          <div
+            style={{
+              background: "var(--color-bg-card)",
+              border: "1px solid var(--color-border)",
+              borderRadius: "var(--card-radius)",
+              padding: "16px",
+              marginTop: 14,
+              textAlign: "center",
+            }}
+          >
+            <div style={{ fontSize: 24, marginBottom: 8 }}>📸</div>
+            <p
+              style={{
+                fontSize: 12,
+                color: "#666",
+                fontFamily: "var(--font-display)",
+                marginBottom: 12,
+                lineHeight: 1.5,
+              }}
+            >
+              ¿Visitaste este lugar? Comparte tu experiencia con la comunidad.
+            </p>
+            <Link
+              href="/experiencias"
+              style={{
+                display: "block",
+                padding: "9px",
+                background: "var(--color-btn-primary)",
+                color: "white",
+                borderRadius: 8,
+                fontFamily: "var(--font-display)",
+                fontSize: 12,
+                fontWeight: 600,
+                textDecoration: "none",
+                transition: "background-color 0.15s",
+              }}
+            >
+              Publicar experiencia
+            </Link>
+          </div>
         </div>
       </div>
     </div>

@@ -1,0 +1,457 @@
+/* styles/galeria.css */
+/* ─────────────────────────────────────────────────────
+   ESTILOS: Galería de fotos reutilizable con lightbox
+   Usada en: detalle de caserío y detalle de lugar
+   ───────────────────────────────────────────────────── */
+
+/* ── SECCIÓN CONTENEDORA ── */
+.galeria-seccion {
+  margin-top: 32px;
+}
+
+.galeria-seccion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.galeria-seccion-titulo {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.galeria-seccion-titulo span {
+  /* Emoji decorativo */
+}
+
+.galeria-count {
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+/* ── GRID DE FOTOS ── */
+/* Layout tipo masonry simulado con CSS grid */
+.galeria-grid {
+  display: grid;
+  gap: 6px;
+}
+
+/* 3 columnas por defecto */
+.galeria-grid.cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* 4 columnas para galerías grandes */
+.galeria-grid.cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* 2 columnas para paneles laterales */
+.galeria-grid.cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* ── ÍTEM DE GALERÍA ── */
+.galeria-item {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  background-color: #0a0a0a;
+  /* Aspect ratio cuadrado por defecto */
+  aspect-ratio: 1;
+}
+
+/* Primera foto más grande (destacada) */
+.galeria-grid.cols-3 .galeria-item:first-child {
+  grid-column: span 2;
+  grid-row: span 2;
+  aspect-ratio: auto;
+}
+
+/* Foto de la galería */
+.galeria-foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition:
+    transform 0.4s ease,
+    opacity 0.2s ease;
+}
+
+.galeria-item:hover .galeria-foto {
+  transform: scale(1.06);
+  opacity: 0.82;
+}
+
+/* Overlay hover con ícono */
+.galeria-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.galeria-item:hover .galeria-overlay {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.galeria-overlay-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.7);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.galeria-item:hover .galeria-overlay-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.galeria-overlay-icon svg {
+  width: 16px;
+  height: 16px;
+  color: white;
+}
+
+/* Botón "+N más" para cuando hay muchas fotos */
+.galeria-item.ver-mas {
+  background-color: #0d0d0d;
+  border: 1px solid var(--color-border);
+}
+
+.galeria-item.ver-mas .galeria-foto {
+  opacity: 0.3;
+  filter: blur(2px);
+}
+
+.galeria-ver-mas-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  gap: 4px;
+}
+
+.galeria-ver-mas-label span {
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ── META INFO BAJO LA FOTO ── */
+/* Nombre del lugar o autor de la experiencia */
+.galeria-item-meta {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 10px 8px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.galeria-item:hover .galeria-item-meta {
+  opacity: 1;
+}
+
+.galeria-item-meta-nombre {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.galeria-item-meta-sub {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.6);
+  display: block;
+  margin-top: 1px;
+}
+
+/* ── ESTADO VACÍO ── */
+.galeria-vacia {
+  padding: 36px 20px;
+  text-align: center;
+  background-color: var(--color-bg-card);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--card-radius);
+}
+
+.galeria-vacia-icon {
+  font-size: 28px;
+  opacity: 0.3;
+  margin-bottom: 8px;
+}
+
+.galeria-vacia p {
+  font-size: 13px;
+  color: #444;
+  font-family: var(--font-display);
+}
+
+/* ─────────────────────────────────────────────────────
+   LIGHTBOX — Visor de imagen a pantalla completa
+   ───────────────────────────────────────────────────── */
+
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Contenedor de la imagen en el lightbox */
+.lightbox-contenedor {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: zoomIn 0.2s ease;
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.lightbox-imagen {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  display: block;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+}
+
+/* Info debajo de la imagen */
+.lightbox-info {
+  margin-top: 16px;
+  text-align: center;
+  max-width: 500px;
+}
+
+.lightbox-info-nombre {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.lightbox-info-sub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-display);
+}
+
+/* Botón cerrar (X) */
+.lightbox-cerrar {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  z-index: 1001;
+}
+
+.lightbox-cerrar:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+.lightbox-cerrar svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Botones anterior / siguiente */
+.lightbox-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  z-index: 1001;
+}
+
+.lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: white;
+}
+
+.lightbox-nav svg {
+  width: 20px;
+  height: 20px;
+}
+
+.lightbox-nav.prev {
+  left: 20px;
+}
+.lightbox-nav.next {
+  right: 20px;
+}
+
+/* Contador de fotos */
+.lightbox-contador {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.4);
+  padding: 4px 14px;
+  border-radius: 20px;
+  z-index: 1001;
+}
+
+/* Miniaturas del lightbox (filmstrip) */
+.lightbox-miniaturas {
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  max-width: 90vw;
+  overflow-x: auto;
+  padding: 4px;
+  z-index: 1001;
+}
+
+.lightbox-miniatura {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 0.45;
+  border: 2px solid transparent;
+  flex-shrink: 0;
+  transition:
+    opacity 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.lightbox-miniatura.activa {
+  opacity: 1;
+  border-color: white;
+}
+
+.lightbox-miniatura:hover {
+  opacity: 0.8;
+}
+
+.lightbox-miniatura img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .galeria-grid.cols-3,
+  .galeria-grid.cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* En móvil la primera foto ya no es grande */
+  .galeria-grid.cols-3 .galeria-item:first-child {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+
+  .lightbox-nav {
+    display: none;
+  }
+
+  .lightbox-miniaturas {
+    bottom: 20px;
+  }
+}
+
+@media (max-width: 400px) {
+  .galeria-grid.cols-2 {
+    grid-template-columns: 1fr;
+  }
+}

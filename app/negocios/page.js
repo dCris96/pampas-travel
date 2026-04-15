@@ -15,7 +15,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabaseClient";
+import { getNegociosPagina } from "@/app/actions/negocios";
 import { useAuth } from "@/context/AuthContext";
 import CardNegocio from "@/components/CardNegocio";
 import "@/styles/negocios.css";
@@ -119,14 +119,7 @@ export default function NegociosPage() {
   useEffect(() => {
     async function cargarNegocios() {
       try {
-        const { data, error } = await supabase
-          .from("negocios")
-          .select("*")
-          .eq("activo", true)
-          .order("destacado", { ascending: false })
-          .order("nombre", { ascending: true });
-
-        if (error) throw error;
+        const data = await getNegociosPagina();
         setNegocios(data || []);
         setFiltrados(data || []);
       } catch (err) {

@@ -9,7 +9,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { getStats } from "@/app/actions/admin";
 
 const IconDashboard = () => (
   <svg
@@ -267,59 +267,9 @@ export default function AdminSidebar() {
   useEffect(() => {
     async function cargarStats() {
       try {
-        const [
-          lugaresRes,
-          mitosRes,
-          musicaRes,
-          videosRes,
-          festividadesRes,
-          caseriosRes,
-          productosRes,
-          negociosRes,
-          expRes,
-          usersRes,
-          contPendRes,
-        ] = await Promise.all([
-          supabase.from("lugares").select("id", { count: "exact", head: true }),
-          supabase.from("mitos").select("id", { count: "exact", head: true }),
-          supabase.from("musica").select("id", { count: "exact", head: true }),
-          supabase.from("videos").select("id", { count: "exact", head: true }),
-          supabase
-            .from("festividades")
-            .select("id", { count: "exact", head: true }),
-          supabase
-            .from("caserios")
-            .select("id", { count: "exact", head: true }),
-          supabase
-            .from("productos")
-            .select("id", { count: "exact", head: true }),
-          supabase
-            .from("negocios")
-            .select("id", { count: "exact", head: true }),
-          supabase
-            .from("experiencias")
-            .select("id", { count: "exact", head: true }),
-          supabase
-            .from("profiles")
-            .select("id", { count: "exact", head: true }),
-          supabase
-            .from("contenido_pendiente")
-            .select("id", { count: "exact", head: true }),
-        ]);
+        const data = await getStats();
 
-        setStats({
-          lugares: lugaresRes.count || 0,
-          mitos: mitosRes.count || 0,
-          musica: musicaRes.count || 0,
-          videos: videosRes.count || 0,
-          festividades: festividadesRes.count || 0,
-          caserios: caseriosRes.count || 0,
-          productos: productosRes.count || 0,
-          negocios: negociosRes.count || 0,
-          experiencias: expRes.count || 0,
-          usuarios: usersRes.count || 0,
-          contenidoPendiente: contPendRes.count || 0,
-        });
+        setStats(data);
       } catch (err) {
         console.error("Error cargando stats en sidebar:", err);
       } finally {

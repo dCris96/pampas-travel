@@ -20,7 +20,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { getMitos } from "@/app/actions/mitos";
 import "@/styles/mitos.css";
 import Link from "next/link";
 
@@ -450,6 +450,26 @@ export default function MitosPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // ── CARGAR MITOS ──
+  // 🔧 Conecta con: tabla public.mitos
+  useEffect(() => {
+    async function cargar() {
+      try {
+        const mitosData = await getMitos();
+
+        console.log(mitosData);
+
+        setMitos(mitosData || []);
+      } catch (err) {
+        console.error("Error cargando mitos:", err);
+        setError("No se pudieron cargar los mitos y leyendas.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    cargar();
+  }, []);
+
   // ── ESTADO DEL REPRODUCTOR ──
   const [mitoActivo, setMitoActivo] = useState(null); // Objeto completo del mito seleccionado
 
@@ -468,30 +488,6 @@ export default function MitosPage() {
 
   const hayAnterior = indiceGlobal > 0;
   const haySiguiente = indiceGlobal >= 0 && indiceGlobal < mitos.length - 1;
-
-  // ── CARGAR MITOS ──
-  // 🔧 Conecta con: tabla public.mitos
-  useEffect(() => {
-    async function cargar() {
-      try {
-        const { data, error } = await supabase
-          .from("mitos")
-          .select("*")
-          .eq("activo", true)
-          .eq("estado", "aprobado")
-          .order("created_at", { ascending: false });
-
-        if (error) throw error;
-        setMitos(data || []);
-      } catch (err) {
-        console.error("Error cargando mitos:", err);
-        setError("No se pudieron cargar los mitos y leyendas.");
-      } finally {
-        setLoading(false);
-      }
-    }
-    cargar();
-  }, []);
 
   // ── SELECCIONAR MITO ──
   // Cambia el mito activo; si está en otra página, navega a ella

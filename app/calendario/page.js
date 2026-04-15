@@ -8,7 +8,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabaseClient";
+import { getFestividades } from "@/app/actions/calendario";
 import "@/styles/calendario.css";
 
 // Nombres de meses en español
@@ -152,13 +152,7 @@ export default function CalendarioPage() {
   // 🔧 Conecta con: tabla public.festividades
   useEffect(() => {
     async function cargar() {
-      const { data } = await supabase
-        .from("festividades")
-        .select(
-          "id, titulo, subtitulo, fecha, fecha_fin, descripcion_corta, imagen_card, color_acento",
-        )
-        .eq("activo", true)
-        .order("fecha", { ascending: true });
+      const data = await getFestividades();
 
       setFestividades(data || []);
       setLoading(false);

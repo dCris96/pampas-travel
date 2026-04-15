@@ -15,7 +15,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { getMusica } from "@/app/actions/musica";
 import CardMusica from "@/components/CardMusica";
 import "@/styles/musica.css";
 
@@ -31,14 +31,7 @@ export default function MusicaPage() {
   useEffect(() => {
     async function cargar() {
       try {
-        const { data, error } = await supabase
-          .from("musica")
-          .select("*")
-          .eq("activo", true)
-          .order("destacado", { ascending: false })
-          .order("created_at", { ascending: false });
-
-        if (error) throw error;
+        const data = await getMusica();
         setTracks(data || []);
       } catch (err) {
         console.error(err);

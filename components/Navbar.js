@@ -269,7 +269,7 @@ const NAV_SECTIONS = [
     label: "Turismo",
     items: [
       { href: "/lugares", label: "Sitios Turísticos", Icon: IconCompass },
-      { href: "/Caserios", label: "Caseríos", Icon: CaserioIcon },
+      { href: "/caserios", label: "Caseríos", Icon: CaserioIcon },
     ],
   },
   {
