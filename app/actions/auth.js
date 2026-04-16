@@ -33,11 +33,3 @@ export async function getPerfil(userId) {
   if (error) return null;
   return data;
 }
-
-// Cerrar sesión (Server Action)
-export async function signOut() {
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signOut();
-  if (error) throw new Error("Error al cerrar sesión");
-  return { success: true };
-}

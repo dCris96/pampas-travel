@@ -17,6 +17,7 @@ import {
   toggleLugarActivo,
   deleteLugar,
 } from "@/app/actions/lugares";
+import Swal from "sweetalert2";
 import { getCaserios } from "@/app/actions/caserios";
 import "@/styles/admin.css";
 import "@/styles/tabla-admin.css";
@@ -147,12 +148,21 @@ export default function AdminLugaresPage() {
 
   // ── BORRAR LUGAR (Server Action) ────────────────────
   async function borrarLugar(lugar) {
-    if (
-      !confirm(
-        `¿Borrar permanentemente "${lugar.titulo}"?\nEsta acción no se puede deshacer.`,
-      )
-    )
-      return;
+    // Reemplazo de confirm con Swal.fire
+    const result = await Swal.fire({
+      title: `¿Borrar "${lugar.titulo}"?`,
+      theme: "dark",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, borrar",
+      cancelButtonText: "Cancelar",
+    });
+
+    // Si el usuario no confirma, detenemos la ejecución
+    if (!result.isConfirmed) return;
 
     try {
       await deleteLugar(lugar.id);
