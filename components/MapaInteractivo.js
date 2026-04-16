@@ -48,6 +48,16 @@ const TIPO_CONFIG = {
 
 const DEFAULT_CONFIG = { emoji: "📍", color: "#1f1f1f", textColor: "#aaaaaa" };
 
+// ✅ CORRECCIÓN: Definir los tipos que corresponden a lugares turísticos
+const TIPOS_LUGARES = new Set([
+  "naturaleza",
+  "patrimonio",
+  "mirador",
+  "aventura",
+  "cultura",
+  "gastronomia",
+]);
+
 export default function MapaInteractivo({
   puntos = [],
   capasVisibles = {},
@@ -75,7 +85,6 @@ export default function MapaInteractivo({
       if (leafletRef.current) return;
 
       // Corregir bug de íconos de Leaflet con webpack/next
-      // (los paths de íconos se rompen en bundlers)
       delete L.Icon.Default.prototype._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconRetinaUrl:
@@ -90,15 +99,11 @@ export default function MapaInteractivo({
       const mapa = L.map(mapaRef.current, {
         center: centrito,
         zoom: zoomsito,
-        zoomControl: false, // Desactivamos el control por defecto
+        zoomControl: false,
         attributionControl: true,
       });
 
       // ── TILES DE OPENSTREETMAP ──
-      // Carto Dark Matter: tiles oscuros que combinan con nuestro diseño
-      // 🔧 ALTERNATIVAS (cambia la URL):
-      //   OSM estándar: https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
-      //   Carto Light:  https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png
       L.tileLayer(
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         {
@@ -110,7 +115,6 @@ export default function MapaInteractivo({
       ).addTo(mapa);
 
       // ── CONTROL DE ZOOM PERSONALIZADO ──
-      // Lo agregamos en posición topright
       L.control.zoom({ position: "topright" }).addTo(mapa);
 
       // ── CONTROL PERSONALIZADO: botón para volver al centro ──
@@ -123,7 +127,6 @@ export default function MapaInteractivo({
           btn.onclick = () => {
             mapa.flyTo(centro, zoom, { animate: true, duration: 1 });
           };
-          // Evitar que el click propague al mapa
           L.DomEvent.disableClickPropagation(btn);
           return btn;
         },
@@ -172,9 +175,8 @@ export default function MapaInteractivo({
         }
 
         // ── ÍCONO CUSTOM con DivIcon ──
-        // Usamos HTML puro para el marcador — así controlamos el estilo
         const icono = L.divIcon({
-          className: "", // Vacío para no añadir estilos por defecto
+          className: "",
           html: `
             <div class="marcador-custom marcador-${tipo}"
               style="background-color: ${config.color}; border-color: rgba(255,255,255,0.15);">
@@ -182,25 +184,30 @@ export default function MapaInteractivo({
             </div>
           `,
           iconSize: [32, 32],
-          iconAnchor: [16, 16], // Centro del ícono
-          popupAnchor: [0, -18], // Posición del popup sobre el ícono
+          iconAnchor: [16, 16],
+          popupAnchor: [0, -18],
         });
 
-        // ── CONTENIDO HTML DEL POPUP ──
-        // 🔧 PERSONALIZABLE: Cambia el contenido del popup
-        const rutaDetalle = punto.tipo
-          ? `/negocios/${punto.id}`
-          : `/lugares/${punto.id}`;
+        // ✅ CORRECCIÓN: Determinar ruta según si es lugar turístico o negocio
+        const esLugar = TIPOS_LUGARES.has(tipo);
+        const rutaDetalle = esLugar
+          ? `/lugares/${punto.id}`
+          : `/negocios/${punto.id}`;
 
+        // ── CONTENIDO HTML DEL POPUP ──
         const popupHtml = `
           <div class="popup-card">
             ${
               punto.imagen_url
-                ? `<img src="${punto.imagen_url}" alt="${punto.nombre || punto.titulo}" class="popup-img" />`
+                ? `<img src="${punto.imagen_url}" alt="${
+                    punto.nombre || punto.titulo
+                  }" class="popup-img" />`
                 : ""
             }
             <div class="popup-body">
-              <span class="popup-badge" style="background-color: ${config.color}; color: ${config.textColor};">
+              <span class="popup-badge" style="background-color: ${
+                config.color
+              }; color: ${config.textColor};">
                 ${tipo}
               </span>
               <div class="popup-titulo">${punto.nombre || punto.titulo}</div>
@@ -219,33 +226,29 @@ export default function MapaInteractivo({
           icon: icono,
         });
 
-        // Popup con el contenido custom
         marcador.bindPopup(popupHtml, {
           maxWidth: 240,
           minWidth: 240,
           closeButton: true,
         });
 
-        // Al hacer click en el marcador → notificar al padre
         marcador.on("click", () => {
           onPuntoClick(punto);
         });
 
-        // Agregar a la capa correspondiente
         marcador.addTo(capasRef.current[tipo]);
         marcadoresRef.current[punto.id] = marcador;
       });
     });
-  }, [puntos]); // Se re-ejecuta cuando cambia la lista de puntos
+  }, [puntos]);
 
   // ── APLICAR FILTROS DE VISIBILIDAD ──
-  // Muestra u oculta capas según capasVisibles
   useEffect(() => {
     if (!leafletRef.current) return;
 
     Object.entries(capasRef.current).forEach(([tipo, capa]) => {
       const mapa = leafletRef.current;
-      const visible = capasVisibles[tipo] !== false; // Default: visible
+      const visible = capasVisibles[tipo] !== false;
 
       if (visible && !mapa.hasLayer(capa)) {
         mapa.addLayer(capa);
@@ -256,26 +259,21 @@ export default function MapaInteractivo({
   }, [capasVisibles]);
 
   // ── VOLAR AL PUNTO ACTIVO ──
-  // Cuando se selecciona un punto en el sidebar, el mapa hace zoom
   useEffect(() => {
     if (!leafletRef.current || !puntoActivo) return;
 
     const marcador = marcadoresRef.current[puntoActivo];
     if (!marcador) return;
 
-    // Animación de vuelo al marcador
-    leafletRef.current.flyTo(
-      marcador.getLatLng(),
-      15, // Zoom al hacer click en un punto
-      { animate: true, duration: 0.8 },
-    );
+    leafletRef.current.flyTo(marcador.getLatLng(), 15, {
+      animate: true,
+      duration: 0.8,
+    });
 
-    // Abrir el popup del marcador
     setTimeout(() => {
       marcador.openPopup();
-    }, 850); // Esperar a que termine la animación
+    }, 850);
 
-    // Actualizar clase visual del marcador activo
     Object.entries(marcadoresRef.current).forEach(([id, m]) => {
       const el = m.getElement();
       if (!el) return;
@@ -290,12 +288,10 @@ export default function MapaInteractivo({
   }, [puntoActivo]);
 
   // ── RENDER ──
-  // Solo el div contenedor — Leaflet maneja todo el resto
   return (
     <div
       ref={mapaRef}
       className="mapa-leaflet"
-      /* Accesibilidad */
       role="application"
       aria-label="Mapa interactivo del Valle de los Vientos"
     />

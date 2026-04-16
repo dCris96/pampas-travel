@@ -94,9 +94,9 @@ const IconWhatsApp = () => (
 // ── HELPER: Formatear precio ──
 function formatearPrecio(precio, moneda) {
   if (!precio) return null;
-  return new Intl.NumberFormat("es-MX", {
+  return new Intl.NumberFormat("es-PE", {
     style: "currency",
-    currency: moneda || "MXN",
+    currency: moneda || "PEN",
     minimumFractionDigits: 0,
   }).format(precio);
 }
