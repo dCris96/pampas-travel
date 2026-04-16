@@ -15,7 +15,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { getPerfil, signOut } from "@/app/actions/auth";
+import { getPerfil } from "@/app/actions/auth";
 
 // 1. Crear el contexto vacío
 const AuthContext = createContext(null);
@@ -65,8 +65,10 @@ export function AuthProvider({ children }) {
   // Logout usando Server Action
   async function logout() {
     try {
-      await signOut();
-      // El estado se actualiza automáticamente por onAuthStateChange
+      // ✅ Cerrar sesión con el cliente de Supabase del navegador
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      // El listener onAuthStateChange se encargará de limpiar user y perfil
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
     }
