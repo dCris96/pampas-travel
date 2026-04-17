@@ -17,7 +17,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import "@/styles/auth.css";
 
 // Ícono montaña para el logo
@@ -81,6 +81,8 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
+
+    const supabase = createClient();
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({

@@ -109,6 +109,8 @@
   color: #ccc;
   line-height: 1.75;
   font-family: var(--font-body);
+  white-space: pre-line;
+  text-align: justify;
 }
 
 /* ── SIDEBAR DERECHO ── */

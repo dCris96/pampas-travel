@@ -9,10 +9,11 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { getMitos } from "@/app/actions/mitos";
+import { getMitos, toggleMitoActivo, deleteMito } from "@/app/actions/mitos";
 import { useAuth } from "@/context/AuthContext";
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import ModalLugar from "@/components/admin/ModalLugar";
+import ModalMito from "@/components/admin/ModalMito";
+import Swal from "sweetalert2";
 import "@/styles/admin.css";
 import "@/styles/tabla-admin.css";
 
@@ -119,42 +120,45 @@ export default function AdminMitosPage() {
     setTimeout(() => setToastMsg(""), 3000);
   }
 
-  // ── TOGGLE ACTIVO ──
-  // 🔧 Conecta con: UPDATE mitos SET activo
+  // ── TOGGLE ACTIVO (Server Action) ───────────────────
   async function toggleActivo(mito) {
-    const { error } = await supabase
-      .from("mitos")
-      .update({ activo: !mito.activo })
-      .eq("id", mito.id);
-
-    if (!error) {
+    try {
+      await toggleMitoActivo(mito.id, mito.activo);
       setMitos((prev) =>
         prev.map((m) => (m.id === mito.id ? { ...m, activo: !m.activo } : m)),
       );
       mostrarToast(
         `"${mito.titulo}" ${!mito.activo ? "activado" : "desactivado"}`,
       );
+    } catch (error) {
+      console.error(error);
+      mostrarToast("Error al cambiar el estado", "error");
     }
   }
 
   // ── BORRAR MITO ──
   // 🔧 Conecta con: DELETE FROM mitos WHERE id
   async function borrarMito(mito) {
-    if (
-      !confirm(
-        `¿Borrar permanentemente "${mito.titulo}"?\nEsta acción no se puede deshacer.`,
-      )
-    )
-      return;
+    const result = await Swal.fire({
+      title: `¿Borrar "${mito.titulo}"?`,
+      theme: "dark",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, borrar",
+      cancelButtonText: "Cancelar",
+    });
+    // Si el usuario no confirma, detenemos la ejecución
+    if (!result.isConfirmed) return;
 
-    const { error } = await supabase.from("mitos").delete().eq("id", mito.id);
-
-    if (!error) {
-      console.log(error);
-
+    try {
+      await deleteMito(mito.id);
       setMitos((prev) => prev.filter((m) => m.id !== mito.id));
       mostrarToast(`"${mito.titulo}" eliminado`);
-    } else {
+    } catch (error) {
+      console.error(error);
       alert("Error al borrar: " + error.message);
     }
   }
@@ -212,7 +216,7 @@ export default function AdminMitosPage() {
       {/* ── HEADER ── */}
       <div className="admin-page-header">
         <h1 className="admin-page-titulo">
-          Gestión de Lugares
+          Gestión de Mitos
           <span className="admin-badge">⚡ Admin</span>
         </h1>
         <p className="admin-page-sub">
@@ -261,7 +265,6 @@ export default function AdminMitosPage() {
                 <thead>
                   <tr>
                     <th>Mito</th>
-                    <th>Contenido</th>
                     <th>Origen</th>
                     <th>Epoca</th>
                     <th>Estado</th>
@@ -330,11 +333,6 @@ export default function AdminMitosPage() {
                           </div>
                         </td>
 
-                        {/* Categoría */}
-                        <td style={{ textTransform: "capitalize" }}>
-                          {mito.contenido}
-                        </td>
-
                         {/* Origen */}
                         <td style={{ textTransform: "capitalize" }}>
                           {mito.origen}
@@ -377,7 +375,7 @@ export default function AdminMitosPage() {
                             {/* Borrar */}
                             <button
                               className="btn-tabla-borrar"
-                              onClick={() => borrarLugar(mito)}
+                              onClick={() => borrarMito(mito)}
                             >
                               <IconTrash /> Borrar
                             </button>
@@ -445,7 +443,7 @@ export default function AdminMitosPage() {
 
       {/* ── MODAL DE CREAR/EDITAR ── */}
       {modal && (
-        <ModalLugar
+        <ModalMito
           lugar={modal === "crear" ? null : modal}
           onClose={() => setModal(null)}
           onGuardado={handleGuardado}
