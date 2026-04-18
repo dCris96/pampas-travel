@@ -1,21 +1,25 @@
-// app/admin/mitos/page.js
+// app/admin/musica/page.js
 // ─────────────────────────────────────────────────────
-// PANEL ADMIN: Gestión de Mitos — CRUD completo
-// Ruta: /admin/mitos
-// 🔧 Conecta con: tabla public.mitos (SELECT, INSERT, UPDATE, DELETE)
+// PANEL ADMIN: Gestión de musica — CRUD completo
+// Ruta: /admin/musica
+// 🔧 Conecta con: tabla public.musica (SELECT, INSERT, UPDATE, DELETE)
 // ─────────────────────────────────────────────────────
 
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { getMitos, toggleMitoActivo, deleteMito } from "@/app/actions/mitos";
+import {
+  getMusica,
+  toggleMusicaActivo,
+  deleteMusica,
+} from "@/app/actions/musica";
 import { useAuth } from "@/context/AuthContext";
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import ModalMito from "@/components/admin/ModalMito";
 import Swal from "sweetalert2";
 import "@/styles/admin.css";
 import "@/styles/tabla-admin.css";
+import ModalMusica from "@/components/admin/ModalMusica";
 
 const IconEdit = () => (
   <svg
@@ -63,23 +67,23 @@ const IconPlus = () => (
 // Número de filas por página
 const POR_PAGINA = 10;
 
-export default function AdminMitosPage() {
+export default function AdminMusicaPage() {
   const { user, isAdmin, loading: authLoading } = useAuth();
 
-  const [mitos, setMitos] = useState([]);
+  const [musica, setMusica] = useState([]);
   const [loading, setLoading] = useState(true);
   const [busqueda, setBusqueda] = useState("");
   const [pagina, setPagina] = useState(1);
   const [modal, setModal] = useState(null); // null | 'crear' | objeto lugar
   const [toastMsg, setToastMsg] = useState("");
 
-  // ── CARGAR MITOS ──
-  // 🔧 Conecta con: tabla public.mitos SELECT todos (activos e inactivos)
-  async function cargarMitos() {
+  // ── CARGAR MUSICA ──
+  // 🔧 Conecta con: tabla public.musica SELECT todos (activos e inactivos)
+  async function cargarMusica() {
     setLoading(true);
     try {
-      const data = await getMitos();
-      setMitos(data || []);
+      const data = await getMusica();
+      setMusica(data || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -88,23 +92,23 @@ export default function AdminMitosPage() {
   }
 
   useEffect(() => {
-    if (isAdmin) cargarMitos();
+    if (isAdmin) cargarMusica();
   }, [isAdmin]);
 
   // ── FILTRAR Y PAGINAR ──
-  const mitosFiltrados = useMemo(() => {
+  const musicaFiltrada = useMemo(() => {
     const q = busqueda.toLowerCase();
-    return mitos.filter(
+    return musica.filter(
       (m) =>
         !q ||
         m.titulo?.toLowerCase().includes(q) ||
-        m.origen?.toLowerCase().includes(q) ||
-        m.epoca?.toLowerCase().includes(q),
+        m.artista?.toLowerCase().includes(q) ||
+        m.genero?.toLowerCase().includes(q),
     );
-  }, [mitos, busqueda]);
+  }, [musica, busqueda]);
 
-  const totalPaginas = Math.ceil(mitosFiltrados.length / POR_PAGINA);
-  const mitosPagina = mitosFiltrados.slice(
+  const totalPaginas = Math.ceil(musicaFiltrada.length / POR_PAGINA);
+  const musicaPagina = musicaFiltrada.slice(
     (pagina - 1) * POR_PAGINA,
     pagina * POR_PAGINA,
   );
@@ -121,14 +125,14 @@ export default function AdminMitosPage() {
   }
 
   // ── TOGGLE ACTIVO (Server Action) ───────────────────
-  async function toggleActivo(mito) {
+  async function toggleActivo(musica) {
     try {
-      await toggleMitoActivo(mito.id, mito.activo);
-      setMitos((prev) =>
-        prev.map((m) => (m.id === mito.id ? { ...m, activo: !m.activo } : m)),
+      await toggleMusicaActivo(musica.id, musica.activo);
+      setMusica((prev) =>
+        prev.map((m) => (m.id === musica.id ? { ...m, activo: !m.activo } : m)),
       );
       mostrarToast(
-        `"${mito.titulo}" ${!mito.activo ? "activado" : "desactivado"}`,
+        `"${musica.titulo}" ${!musica.activo ? "activado" : "desactivado"}`,
       );
     } catch (error) {
       console.error(error);
@@ -138,9 +142,9 @@ export default function AdminMitosPage() {
 
   // ── BORRAR MITO ──
   // 🔧 Conecta con: DELETE FROM mitos WHERE id
-  async function borrarMito(mito) {
+  async function borrarMusica(musica) {
     const result = await Swal.fire({
-      title: `¿Borrar "${mito.titulo}"?`,
+      title: `¿Borrar "${musica.titulo}"?`,
       theme: "dark",
       text: "Esta acción no se puede deshacer.",
       icon: "warning",
@@ -154,9 +158,9 @@ export default function AdminMitosPage() {
     if (!result.isConfirmed) return;
 
     try {
-      await deleteMito(mito.id);
-      setMitos((prev) => prev.filter((m) => m.id !== mito.id));
-      mostrarToast(`"${mito.titulo}" eliminado`);
+      await deleteMusica(musica.id);
+      setMusica((prev) => prev.filter((m) => m.id !== musica.id));
+      mostrarToast(`"${musica.titulo}" eliminado`);
     } catch (error) {
       console.error(error);
       alert("Error al borrar: " + error.message);
@@ -164,15 +168,15 @@ export default function AdminMitosPage() {
   }
 
   // ── AL GUARDAR EN EL MODAL ──
-  function handleGuardado(mitoGuardado, accion) {
+  function handleGuardado(musicaGuardada, accion) {
     if (accion === "creado") {
-      setMitos((prev) => [mitoGuardado, ...prev]);
-      mostrarToast(`✅ "${mitoGuardado.titulo}" creado`);
+      setMusica((prev) => [musicaGuardada, ...prev]);
+      mostrarToast(`✅ "${musicaGuardada.titulo}" creado`);
     } else {
-      setMitos((prev) =>
-        prev.map((m) => (m.id === mitoGuardado.id ? mitoGuardado : m)),
+      setMusica((prev) =>
+        prev.map((m) => (m.id === musicaGuardada.id ? musicaGuardada : m)),
       );
-      mostrarToast(`✅ "${mitoGuardado.titulo}" actualizado`);
+      mostrarToast(`✅ "${musicaGuardada.titulo}" actualizado`);
     }
     setModal(null);
   }
@@ -216,11 +220,11 @@ export default function AdminMitosPage() {
       {/* ── HEADER ── */}
       <div className="admin-page-header">
         <h1 className="admin-page-titulo">
-          Gestión de Mitos
+          Gestión de Música
           <span className="admin-badge">⚡ Admin</span>
         </h1>
         <p className="admin-page-sub">
-          Crea, edita y gestiona los mitos del distrito.
+          Crea, edita y gestiona las canciones del distrito.
         </p>
       </div>
 
@@ -232,13 +236,13 @@ export default function AdminMitosPage() {
           <div className="admin-seccion">
             <div className="admin-seccion-header">
               <span className="admin-seccion-titulo">
-                Mitos ({mitosFiltrados.length})
+                Canciones ({musicaFiltrada.length})
               </span>
               <button
                 className="btn-admin-primary"
                 onClick={() => setModal("crear")}
               >
-                <IconPlus /> Nuevo mito
+                <IconPlus /> Nueva canción
               </button>
             </div>
 
@@ -249,13 +253,13 @@ export default function AdminMitosPage() {
                 <input
                   type="text"
                   className="tabla-buscar-input"
-                  placeholder="Buscar por nombre, categoría..."
+                  placeholder="Buscar por titulo, artista..."
                   value={busqueda}
                   onChange={(e) => setBusqueda(e.target.value)}
                 />
               </div>
               <span className="tabla-count">
-                {mitosFiltrados.length} de {mitos.length} mitos
+                {musicaFiltrada.length} de {musica.length} canciones
               </span>
             </div>
 
@@ -264,9 +268,9 @@ export default function AdminMitosPage() {
               <table className="tabla-admin">
                 <thead>
                   <tr>
-                    <th>Mito</th>
-                    <th>Origen</th>
-                    <th>Epoca</th>
+                    <th>Título</th>
+                    <th>Artista</th>
+                    <th>Género</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                   </tr>
@@ -292,63 +296,63 @@ export default function AdminMitosPage() {
                         ))}
                       </tr>
                     ))
-                  ) : mitosPagina.length === 0 ? (
+                  ) : musicaPagina.length === 0 ? (
                     <tr>
                       <td colSpan={5}>
                         <div className="tabla-vacia">
-                          <div className="tabla-vacia-icon">🗺️</div>
+                          <div className="tabla-vacia-icon">📯</div>
                           <p>
                             {busqueda
                               ? "Sin resultados para tu búsqueda"
-                              : "No hay mitos todavía. ¡Crea el primero!"}
+                              : "No hay canciones todavía. ¡Crea la primera!"}
                           </p>
                         </div>
                       </td>
                     </tr>
                   ) : (
-                    mitosPagina.map((mito) => (
-                      <tr key={mito.id}>
+                    musicaPagina.map((cancion) => (
+                      <tr key={cancion.id}>
                         {/* Nombre + thumbnail */}
                         <td>
                           <div className="tabla-celda-nombre">
-                            {mito.cover_url ? (
+                            {cancion.cover_url ? (
                               <img
-                                src={mito.cover_url}
-                                alt={mito.titulo}
+                                src={cancion.cover_url}
+                                alt={cancion.titulo}
                                 className="tabla-thumbnail"
                               />
                             ) : (
                               <div className="tabla-thumbnail-placeholder">
-                                📖
+                                🎶
                               </div>
                             )}
                             <div>
                               <div className="tabla-nombre-texto">
-                                {mito.titulo}
+                                {cancion.titulo}
                               </div>
                               <span className="tabla-nombre-sub">
-                                {mito.subtitulo || "—"}
+                                {cancion.artista || "—"}
                               </span>
                             </div>
                           </div>
                         </td>
 
-                        {/* Origen */}
+                        {/* Artista */}
                         <td style={{ textTransform: "capitalize" }}>
-                          {mito.origen}
+                          {cancion.artista}
                         </td>
 
-                        {/* Epoca */}
+                        {/* Género */}
                         <td style={{ textTransform: "capitalize" }}>
-                          {mito.epoca}
+                          {cancion.genero}
                         </td>
 
                         {/* Activo */}
                         <td>
                           <span
-                            className={`tabla-badge-activo ${mito.activo ? "si" : "no"}`}
+                            className={`tabla-badge-activo ${cancion.activo ? "si" : "no"}`}
                           >
-                            {mito.activo ? "Activo" : "Inactivo"}
+                            {cancion.activo ? "Activo" : "Inactivo"}
                           </span>
                         </td>
 
@@ -358,23 +362,23 @@ export default function AdminMitosPage() {
                             {/* Toggle activo/inactivo */}
                             <button
                               className="btn-toggle-activo"
-                              onClick={() => toggleActivo(mito)}
-                              title={mito.activo ? "Desactivar" : "Activar"}
+                              onClick={() => toggleActivo(cancion)}
+                              title={cancion.activo ? "Desactivar" : "Activar"}
                             >
-                              {mito.activo ? "👁️ Ocultar" : "👁️ Mostrar"}
+                              {cancion.activo ? "👁️ Ocultar" : "👁️ Mostrar"}
                             </button>
 
                             {/* Editar */}
                             <button
                               className="btn-tabla-editar"
-                              onClick={() => setModal(mito)}
+                              onClick={() => setModal(cancion)}
                             >
                               <IconEdit /> Editar
                             </button>
                             {/* Borrar */}
                             <button
                               className="btn-tabla-borrar"
-                              onClick={() => borrarMito(mito)}
+                              onClick={() => borrarMusica(cancion)}
                             >
                               <IconTrash /> Borrar
                             </button>
@@ -442,8 +446,8 @@ export default function AdminMitosPage() {
 
       {/* ── MODAL DE CREAR/EDITAR ── */}
       {modal && (
-        <ModalMito
-          mito={modal === "crear" ? null : modal}
+        <ModalMusica
+          musica={modal === "crear" ? null : modal}
           onClose={() => setModal(null)}
           onGuardado={handleGuardado}
         />

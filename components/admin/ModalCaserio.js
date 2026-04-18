@@ -1,12 +1,12 @@
-// components/admin/ModalLugar.js
+// components/admin/ModalCaserio.js
 // ─────────────────────────────────────────────────────
-// Modal para CREAR o EDITAR un lugar turístico
+// Modal para CREAR o EDITAR un caserio
 // Ahora con drag & drop de imagen que sube al bucket "experiencias"
 //
 // Props:
-//   lugar     → null (crear) | objeto (editar)
+//   caserio   → null (crear) | objeto (editar)
 //   onClose   → cerrar modal
-//   onGuardado → callback con el lugar guardado
+//   onGuardado → callback con el caserio guardado
 // ─────────────────────────────────────────────────────
 
 "use client";
@@ -35,28 +35,29 @@ const IconX = () => (
   </svg>
 );
 
-export default function ModalMito({ mito = null, onClose, onGuardado }) {
+export default function ModalCaserio({ caserio = null, onClose, onGuardado }) {
   const { user } = useAuth();
-  const esEdicion = !!mito;
+  const esEdicion = !!caserio;
 
   // Variable para crear cliente Supabase, necesario para subir imagenes al storage desde este componente. Si ya tienes un cliente global, puedes importarlo directamente.
   const supabase = createClient();
 
   // ── ESTADO DEL FORMULARIO (sin imagen_url, manejado aparte) ──
   const [form, setForm] = useState({
-    titulo: mito?.titulo || "",
-    subtitulo: mito?.subtitulo || "",
-    contenido: mito?.contenido || "",
-    origen: mito?.origen || "",
-    epoca: mito?.epoca || "",
-    audio_url: mito?.audio_url || "",
-    duracion: mito?.duracion || "",
-    activo: mito?.activo !== undefined ? mito.activo : true,
+    nombre: caserio?.nombre || "",
+    descripcion: caserio?.descripcion || "",
+    altitud: caserio?.altitud || "",
+    poblacion: caserio?.poblacion || "",
+    distancia_km: caserio?.distancia_km || "",
+    latitud: caserio?.latitud || "",
+    longitud: caserio?.longitud || "",
+    destacado: caserio?.destacado || false,
+    activo: caserio?.activo !== undefined ? caserio.activo : true,
   });
 
   // ── ESTADO PARA LA IMAGEN ──
   const [imagenFile, setImagenFile] = useState(null); // nuevo archivo seleccionado
-  const [previewUrl, setPreviewUrl] = useState(mito?.cover_url || null); // preview (local o existente)
+  const [previewUrl, setPreviewUrl] = useState(caserio?.cover_url || null); // preview (local o existente)
   const [dragOver, setDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
@@ -155,7 +156,7 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
   async function handleGuardar() {
     setError("");
 
-    if (!form.titulo.trim()) {
+    if (!form.nombre.trim()) {
       setError("El título es obligatorio.");
       return;
     }
@@ -169,7 +170,7 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
         previewUrl && !previewUrl.startsWith("blob:") ? previewUrl : null;
       if (imagenFile) {
         imagenUrl = await subirImagen();
-      } else if (esEdicion && mito?.imagen_url && previewUrl === null) {
+      } else if (esEdicion && caserio?.imagen_url && previewUrl === null) {
         // El usuario quitó la imagen existente → se guarda null
         imagenUrl = null;
       } else if (!imagenFile && previewUrl && previewUrl.startsWith("blob:")) {
@@ -180,22 +181,22 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
       setUploadProgress(90);
 
       const payload = {
-        titulo: form.titulo.trim(),
-        subtitulo: form.subtitulo.trim() || null,
-        contenido: form.contenido.trim() || null,
-        origen: form.origen.trim() || null,
-        epoca: form.epoca.trim() || null,
-        audio_url: form.audio_url.trim() || null,
-        duracion: form.duracion.trim() || null,
-        cover_url: imagenUrl,
+        nombre: form.nombre.trim(),
+        descripcion: form.descripcion.trim() || null,
+        imagen_url: imagenUrl,
+        altitud: form.altitud ? parseFloat(form.altitud) : null,
+        poblacion: form.poblacion ? parseInt(form.poblacion) : null,
+        latitud: form.latitud ? parseFloat(form.latitud) : null,
+        longitud: form.longitud ? parseFloat(form.longitud) : null,
+        destacado: form.destacado,
         activo: form.activo,
       };
 
       if (esEdicion) {
         const { data, error } = await supabase
-          .from("mitos")
+          .from("caserios")
           .update(payload)
-          .eq("id", mito.id)
+          .eq("id", caserio.id)
           .select()
           .single();
 
@@ -203,7 +204,7 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
         onGuardado(data, "actualizado");
       } else {
         const { data, error } = await supabase
-          .from("mitos")
+          .from("caserios")
           .insert({ ...payload })
           .select()
           .single();
@@ -229,7 +230,7 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
         {/* Header */}
         <div className="modal-header">
           <span className="modal-titulo">
-            {esEdicion ? "✏️ Editar mito" : "➕ Nuevo Mito o Leyenda"}
+            {esEdicion ? "✏️ Editar caserío" : "➕ Nuevo Caserío"}
           </span>
           <button
             className="btn-cerrar-modal"
@@ -245,40 +246,26 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
           {/* Título */}
           <div className="form-admin-grupo">
             <label className="form-admin-label">
-              Título <span className="requerido">*</span>
+              Nombre <span className="requerido">*</span>
             </label>
             <input
               type="text"
               className="form-admin-input"
-              placeholder="Nombre del Mito o Leyenda"
-              value={form.titulo}
-              onChange={(e) => setField("titulo", e.target.value)}
-              disabled={uploading}
-            />
-          </div>
-
-          <div className="form-admin-grupo">
-            <label className="form-admin-label">
-              Subtitulo <span className="requerido">*</span>
-            </label>
-            <input
-              type="text"
-              className="form-admin-input"
-              placeholder="Subtitulo o frase corta"
-              value={form.subtitulo}
-              onChange={(e) => setField("subtitulo", e.target.value)}
+              placeholder="Nombre del Caserío"
+              value={form.nombre}
+              onChange={(e) => setField("nombre", e.target.value)}
               disabled={uploading}
             />
           </div>
 
           {/* Descripción */}
           <div className="form-admin-grupo">
-            <label className="form-admin-label">Contenido</label>
+            <label className="form-admin-label">Descripción</label>
             <textarea
               className="form-admin-textarea"
-              placeholder="Contenido del mito..."
-              value={form.contenido}
-              onChange={(e) => setField("contenido", e.target.value)}
+              placeholder="Descripción del caserío..."
+              value={form.descripcion}
+              onChange={(e) => setField("descripcion", e.target.value)}
               disabled={uploading}
             />
           </div>
@@ -344,29 +331,29 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
             )}
           </div>
 
-          {/* ORIGEN Y EPOCA */}
+          {/* Población Y Altitud */}
           <div className="form-admin-fila">
             <div className="form-admin-grupo">
-              <label className="form-admin-label">Origen</label>
+              <label className="form-admin-label">Población</label>
               <input
                 type="text"
                 step="any"
                 className="form-admin-input"
-                placeholder="Origen del mito"
-                value={form.origen}
-                onChange={(e) => setField("origen", e.target.value)}
+                placeholder="Población del caserío"
+                value={form.poblacion}
+                onChange={(e) => setField("poblacion", e.target.value)}
                 disabled={uploading}
               />
             </div>
             <div className="form-admin-grupo">
-              <label className="form-admin-label">Epoca</label>
+              <label className="form-admin-label">Altitud</label>
               <input
                 type="text"
                 step="any"
                 className="form-admin-input"
-                placeholder="Época del mito"
-                value={form.epoca}
-                onChange={(e) => setField("epoca", e.target.value)}
+                placeholder="Altitud del caserío"
+                value={form.altitud}
+                onChange={(e) => setField("altitud", e.target.value)}
                 disabled={uploading}
               />
             </div>
@@ -374,34 +361,69 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
 
           <div className="form-admin-sep" />
 
-          {/* URL DEL AUDIO */}
-          <div className="form-admin-grupo">
-            <label className="form-admin-label">
-              Url del audio <span className="requerido">*</span>
-            </label>
-            <input
-              type="text"
-              className="form-admin-input"
-              placeholder="URL del archivo de audio"
-              value={form.audio_url}
-              onChange={(e) => setField("audio_url", e.target.value)}
-              disabled={uploading}
-            />
-          </div>
-
-          {/* Checkboxes */}
+          {/* Coordenadas*/}
           <div className="form-admin-fila">
             <div className="form-admin-grupo">
+              <label className="form-admin-label">Latitud</label>
               <input
                 type="text"
                 step="any"
                 className="form-admin-input"
-                placeholder="Duración del audio"
-                value={form.duracion}
-                onChange={(e) => setField("duracion", e.target.value)}
+                placeholder="Latitud del caserío"
+                value={form.latitud}
+                onChange={(e) => setField("latitud", e.target.value)}
                 disabled={uploading}
               />
             </div>
+            <div className="form-admin-grupo">
+              <label className="form-admin-label">Longitud</label>
+              <input
+                type="text"
+                step="any"
+                className="form-admin-input"
+                placeholder="Longitud del caserío"
+                value={form.longitud}
+                onChange={(e) => setField("longitud", e.target.value)}
+                disabled={uploading}
+              />
+            </div>
+          </div>
+
+          <span className="form-admin-ayuda" style={{ marginTop: -8 }}>
+            💡 Para obtener coordenadas: busca el lugar en Google Maps → click
+            derecho → "¿Qué hay aquí?" → copia lat, lng
+          </span>
+
+          {/* Distancia de Pampas */}
+          <div className="form-admin-grupo">
+            <label className="form-admin-label">
+              Distancia de Pampas <span className="requerido">*</span>
+            </label>
+            <input
+              type="text"
+              className="form-admin-input"
+              placeholder="Distancia de Pampas"
+              value={form.distancia_km}
+              onChange={(e) => setField("distancia_km", e.target.value)}
+              disabled={uploading}
+            />
+          </div>
+
+          <div className="form-admin-sep" />
+
+          {/* Checkboxes */}
+          <div className="form-admin-fila">
+            <label className="form-admin-check">
+              <input
+                type="checkbox"
+                checked={form.destacado}
+                onChange={(e) => setField("destacado", e.target.checked)}
+                disabled={uploading}
+              />
+              <span className="form-admin-check-label">
+                ⭐ Caserío destacado
+              </span>
+            </label>
             <label className="form-admin-check">
               <input
                 type="checkbox"
@@ -431,13 +453,13 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
           <button
             className="btn-submit-exp"
             onClick={handleGuardar}
-            disabled={uploading || !form.titulo.trim()}
+            disabled={uploading || !form.nombre.trim()}
           >
             {uploading
               ? "Guardando..."
               : esEdicion
-                ? "💾 Actualizar mito"
-                : "➕ Crear mito"}
+                ? "💾 Actualizar caserío"
+                : "➕ Crear caserío"}
           </button>
         </div>
       </div>

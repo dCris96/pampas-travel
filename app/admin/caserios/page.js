@@ -1,18 +1,23 @@
-// app/admin/mitos/page.js
+// app/admin/caserios/page.js
 // ─────────────────────────────────────────────────────
-// PANEL ADMIN: Gestión de Mitos — CRUD completo
-// Ruta: /admin/mitos
-// 🔧 Conecta con: tabla public.mitos (SELECT, INSERT, UPDATE, DELETE)
+// PANEL ADMIN: Gestión de Caserios — CRUD completo
+// Ruta: /admin/caserios
+// 🔧 Conecta con: tabla public.caserios (SELECT, INSERT, UPDATE, DELETE)
 // ─────────────────────────────────────────────────────
 
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { getCaserios, toggleCaserioActivo } from "@/app/actions/caserios";
+import {
+  getCaserios,
+  toggleCaserioActivo,
+  deleteCaserio,
+} from "@/app/actions/caserios";
 import { useAuth } from "@/context/AuthContext";
+import Swal from "sweetalert2";
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import ModalLugar from "@/components/admin/ModalLugar";
+import ModalCaserio from "@/components/admin/ModalCaserio";
 import "@/styles/admin.css";
 import "@/styles/tabla-admin.css";
 
@@ -141,24 +146,27 @@ export default function AdminCaseriosPage() {
   // ── BORRAR CASERIO ──
   // 🔧 Conecta con: DELETE FROM caserios WHERE id
   async function borrarCaserio(caserio) {
-    if (
-      !confirm(
-        `¿Borrar permanentemente "${caserio.nombre}"?\nEsta acción no se puede deshacer.`,
-      )
-    )
-      return;
+    const result = await Swal.fire({
+      title: `¿Borrar "${caserio.nombre}"?`,
+      theme: "dark",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, borrar",
+      cancelButtonText: "Cancelar",
+    });
 
-    const { error } = await supabase
-      .from("caserios")
-      .delete()
-      .eq("id", caserio.id);
+    // Si el usuario no confirma, detenemos la ejecución
+    if (!result.isConfirmed) return;
 
-    if (!error) {
-      console.log(error);
-
+    try {
+      await deleteCaserio(caserio.id);
       setCaserios((prev) => prev.filter((c) => c.id !== caserio.id));
       mostrarToast(`"${caserio.nombre}" eliminado`);
-    } else {
+    } catch (error) {
+      console.error(error);
       alert("Error al borrar: " + error.message);
     }
   }
@@ -265,8 +273,8 @@ export default function AdminCaseriosPage() {
                 <thead>
                   <tr>
                     <th>Caserio</th>
-                    <th>Descripcion</th>
                     <th>Población</th>
+                    <th>Destacado</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                   </tr>
@@ -296,11 +304,11 @@ export default function AdminCaseriosPage() {
                     <tr>
                       <td colSpan={5}>
                         <div className="tabla-vacia">
-                          <div className="tabla-vacia-icon">🗺️</div>
+                          <div className="tabla-vacia-icon">🏘️</div>
                           <p>
                             {busqueda
                               ? "Sin resultados para tu búsqueda"
-                              : "No hay lugares todavía. ¡Crea el primero!"}
+                              : "No hay caserios todavía. ¡Crea el primero!"}
                           </p>
                         </div>
                       </td>
@@ -333,14 +341,18 @@ export default function AdminCaseriosPage() {
                           </div>
                         </td>
 
-                        {/* Categoría */}
-                        <td style={{ textTransform: "capitalize" }}>
-                          {caserio.descripcion || "—"}
-                        </td>
-
-                        {/* Origen */}
+                        {/* población */}
                         <td style={{ textTransform: "capitalize" }}>
                           {caserio.poblacion || "—"}
+                        </td>
+
+                        {/* destacados */}
+                        <td>
+                          {caserio.destacado ? (
+                            <span className="tabla-badge-star">★</span>
+                          ) : (
+                            <span style={{ color: "#333" }}>—</span>
+                          )}
                         </td>
 
                         {/* Activo */}
@@ -375,7 +387,7 @@ export default function AdminCaseriosPage() {
                             {/* Borrar */}
                             <button
                               className="btn-tabla-borrar"
-                              onClick={() => borrarLugar(caserio)}
+                              onClick={() => borrarCaserio(caserio)}
                             >
                               <IconTrash /> Borrar
                             </button>
@@ -443,8 +455,8 @@ export default function AdminCaseriosPage() {
 
       {/* ── MODAL DE CREAR/EDITAR ── */}
       {modal && (
-        <ModalLugar
-          lugar={modal === "crear" ? null : modal}
+        <ModalCaserio
+          caserio={modal === "crear" ? null : modal}
           onClose={() => setModal(null)}
           onGuardado={handleGuardado}
         />

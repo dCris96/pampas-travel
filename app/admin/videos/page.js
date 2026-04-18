@@ -1,18 +1,22 @@
-// app/admin/mitos/page.js
+// app/admin/videos/page.js
 // ─────────────────────────────────────────────────────
-// PANEL ADMIN: Gestión de Mitos — CRUD completo
-// Ruta: /admin/mitos
-// 🔧 Conecta con: tabla public.mitos (SELECT, INSERT, UPDATE, DELETE)
+// PANEL ADMIN: Gestión de videos — CRUD completo
+// Ruta: /admin/videos
+// 🔧 Conecta con: tabla public.videos (SELECT, INSERT, UPDATE, DELETE)
 // ─────────────────────────────────────────────────────
 
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { getMitos, toggleMitoActivo, deleteMito } from "@/app/actions/mitos";
+import {
+  getVideos,
+  toggleVideoActivo,
+  deleteVideo,
+} from "@/app/actions/videos";
 import { useAuth } from "@/context/AuthContext";
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import ModalMito from "@/components/admin/ModalMito";
+import ModalVideos from "@/components/admin/ModalVideos";
 import Swal from "sweetalert2";
 import "@/styles/admin.css";
 import "@/styles/tabla-admin.css";
@@ -63,23 +67,23 @@ const IconPlus = () => (
 // Número de filas por página
 const POR_PAGINA = 10;
 
-export default function AdminMitosPage() {
+export default function AdminVideosPage() {
   const { user, isAdmin, loading: authLoading } = useAuth();
 
-  const [mitos, setMitos] = useState([]);
+  const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [busqueda, setBusqueda] = useState("");
   const [pagina, setPagina] = useState(1);
   const [modal, setModal] = useState(null); // null | 'crear' | objeto lugar
   const [toastMsg, setToastMsg] = useState("");
 
-  // ── CARGAR MITOS ──
-  // 🔧 Conecta con: tabla public.mitos SELECT todos (activos e inactivos)
-  async function cargarMitos() {
+  // ── CARGAR VIDEOS ──
+  // 🔧 Conecta con: tabla public.videos SELECT todos (activos e inactivos)
+  async function cargarVideos() {
     setLoading(true);
     try {
-      const data = await getMitos();
-      setMitos(data || []);
+      const data = await getVideos();
+      setVideos(data || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -88,23 +92,23 @@ export default function AdminMitosPage() {
   }
 
   useEffect(() => {
-    if (isAdmin) cargarMitos();
+    if (isAdmin) cargarVideos();
   }, [isAdmin]);
 
   // ── FILTRAR Y PAGINAR ──
-  const mitosFiltrados = useMemo(() => {
+  const videosFiltrados = useMemo(() => {
     const q = busqueda.toLowerCase();
-    return mitos.filter(
-      (m) =>
+    return videos.filter(
+      (v) =>
         !q ||
-        m.titulo?.toLowerCase().includes(q) ||
-        m.origen?.toLowerCase().includes(q) ||
-        m.epoca?.toLowerCase().includes(q),
+        v.titulo?.toLowerCase().includes(q) ||
+        v.descripcion?.toLowerCase().includes(q) ||
+        v.categoria?.toLowerCase().includes(q),
     );
-  }, [mitos, busqueda]);
+  }, [videos, busqueda]);
 
-  const totalPaginas = Math.ceil(mitosFiltrados.length / POR_PAGINA);
-  const mitosPagina = mitosFiltrados.slice(
+  const totalPaginas = Math.ceil(videosFiltrados.length / POR_PAGINA);
+  const videosPagina = videosFiltrados.slice(
     (pagina - 1) * POR_PAGINA,
     pagina * POR_PAGINA,
   );
@@ -121,14 +125,14 @@ export default function AdminMitosPage() {
   }
 
   // ── TOGGLE ACTIVO (Server Action) ───────────────────
-  async function toggleActivo(mito) {
+  async function toggleActivo(videos) {
     try {
-      await toggleMitoActivo(mito.id, mito.activo);
-      setMitos((prev) =>
-        prev.map((m) => (m.id === mito.id ? { ...m, activo: !m.activo } : m)),
+      await toggleVideoActivo(videos.id, videos.activo);
+      setVideos((prev) =>
+        prev.map((v) => (v.id === videos.id ? { ...v, activo: !v.activo } : v)),
       );
       mostrarToast(
-        `"${mito.titulo}" ${!mito.activo ? "activado" : "desactivado"}`,
+        `"${videos.titulo}" ${!videos.activo ? "activado" : "desactivado"}`,
       );
     } catch (error) {
       console.error(error);
@@ -138,9 +142,9 @@ export default function AdminMitosPage() {
 
   // ── BORRAR MITO ──
   // 🔧 Conecta con: DELETE FROM mitos WHERE id
-  async function borrarMito(mito) {
+  async function borrarVideo(videos) {
     const result = await Swal.fire({
-      title: `¿Borrar "${mito.titulo}"?`,
+      title: `¿Borrar "${videos.titulo}"?`,
       theme: "dark",
       text: "Esta acción no se puede deshacer.",
       icon: "warning",
@@ -154,9 +158,9 @@ export default function AdminMitosPage() {
     if (!result.isConfirmed) return;
 
     try {
-      await deleteMito(mito.id);
-      setMitos((prev) => prev.filter((m) => m.id !== mito.id));
-      mostrarToast(`"${mito.titulo}" eliminado`);
+      await deleteVideo(videos.id);
+      setVideos((prev) => prev.filter((v) => v.id !== videos.id));
+      mostrarToast(`"${videos.titulo}" eliminado`);
     } catch (error) {
       console.error(error);
       alert("Error al borrar: " + error.message);
@@ -164,15 +168,15 @@ export default function AdminMitosPage() {
   }
 
   // ── AL GUARDAR EN EL MODAL ──
-  function handleGuardado(mitoGuardado, accion) {
+  function handleGuardado(videoGuardado, accion) {
     if (accion === "creado") {
-      setMitos((prev) => [mitoGuardado, ...prev]);
-      mostrarToast(`✅ "${mitoGuardado.titulo}" creado`);
+      setVideos((prev) => [videoGuardado, ...prev]);
+      mostrarToast(`✅ "${videoGuardado.titulo}" creado`);
     } else {
-      setMitos((prev) =>
-        prev.map((m) => (m.id === mitoGuardado.id ? mitoGuardado : m)),
+      setVideos((prev) =>
+        prev.map((v) => (v.id === videoGuardado.id ? videoGuardado : v)),
       );
-      mostrarToast(`✅ "${mitoGuardado.titulo}" actualizado`);
+      mostrarToast(`✅ "${videoGuardado.titulo}" actualizado`);
     }
     setModal(null);
   }
@@ -216,11 +220,11 @@ export default function AdminMitosPage() {
       {/* ── HEADER ── */}
       <div className="admin-page-header">
         <h1 className="admin-page-titulo">
-          Gestión de Mitos
+          Gestión de Videos
           <span className="admin-badge">⚡ Admin</span>
         </h1>
         <p className="admin-page-sub">
-          Crea, edita y gestiona los mitos del distrito.
+          Crea, edita y gestiona los videos del distrito.
         </p>
       </div>
 
@@ -232,13 +236,13 @@ export default function AdminMitosPage() {
           <div className="admin-seccion">
             <div className="admin-seccion-header">
               <span className="admin-seccion-titulo">
-                Mitos ({mitosFiltrados.length})
+                Videos ({videosFiltrados.length})
               </span>
               <button
                 className="btn-admin-primary"
                 onClick={() => setModal("crear")}
               >
-                <IconPlus /> Nuevo mito
+                <IconPlus /> Nueva video
               </button>
             </div>
 
@@ -249,13 +253,13 @@ export default function AdminMitosPage() {
                 <input
                   type="text"
                   className="tabla-buscar-input"
-                  placeholder="Buscar por nombre, categoría..."
+                  placeholder="Buscar por titulo, categoria..."
                   value={busqueda}
                   onChange={(e) => setBusqueda(e.target.value)}
                 />
               </div>
               <span className="tabla-count">
-                {mitosFiltrados.length} de {mitos.length} mitos
+                {videosFiltrados.length} de {videos.length} videos
               </span>
             </div>
 
@@ -264,9 +268,9 @@ export default function AdminMitosPage() {
               <table className="tabla-admin">
                 <thead>
                   <tr>
-                    <th>Mito</th>
-                    <th>Origen</th>
-                    <th>Epoca</th>
+                    <th>Título</th>
+                    <th>categoria</th>
+                    <th>Destacado</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                   </tr>
@@ -292,63 +296,63 @@ export default function AdminMitosPage() {
                         ))}
                       </tr>
                     ))
-                  ) : mitosPagina.length === 0 ? (
+                  ) : videosPagina.length === 0 ? (
                     <tr>
                       <td colSpan={5}>
                         <div className="tabla-vacia">
-                          <div className="tabla-vacia-icon">🗺️</div>
+                          <div className="tabla-vacia-icon">📯</div>
                           <p>
                             {busqueda
                               ? "Sin resultados para tu búsqueda"
-                              : "No hay mitos todavía. ¡Crea el primero!"}
+                              : "No hay videos todavía. ¡Crea el primero!"}
                           </p>
                         </div>
                       </td>
                     </tr>
                   ) : (
-                    mitosPagina.map((mito) => (
-                      <tr key={mito.id}>
+                    videosPagina.map((video) => (
+                      <tr key={video.id}>
                         {/* Nombre + thumbnail */}
                         <td>
                           <div className="tabla-celda-nombre">
-                            {mito.cover_url ? (
+                            {video.cover_url ? (
                               <img
-                                src={mito.cover_url}
-                                alt={mito.titulo}
+                                src={video.cover_url}
+                                alt={video.titulo}
                                 className="tabla-thumbnail"
                               />
                             ) : (
                               <div className="tabla-thumbnail-placeholder">
-                                📖
+                                📺
                               </div>
                             )}
                             <div>
                               <div className="tabla-nombre-texto">
-                                {mito.titulo}
+                                {video.titulo}
                               </div>
                               <span className="tabla-nombre-sub">
-                                {mito.subtitulo || "—"}
+                                {video.categoria || "—"}
                               </span>
                             </div>
                           </div>
                         </td>
 
-                        {/* Origen */}
+                        {/* categoria */}
                         <td style={{ textTransform: "capitalize" }}>
-                          {mito.origen}
+                          {video.categoria}
                         </td>
 
-                        {/* Epoca */}
+                        {/* Destacado */}
                         <td style={{ textTransform: "capitalize" }}>
-                          {mito.epoca}
+                          {video.destacado ? "Sí" : "No"}
                         </td>
 
                         {/* Activo */}
                         <td>
                           <span
-                            className={`tabla-badge-activo ${mito.activo ? "si" : "no"}`}
+                            className={`tabla-badge-activo ${video.activo ? "si" : "no"}`}
                           >
-                            {mito.activo ? "Activo" : "Inactivo"}
+                            {video.activo ? "Activo" : "Inactivo"}
                           </span>
                         </td>
 
@@ -358,23 +362,23 @@ export default function AdminMitosPage() {
                             {/* Toggle activo/inactivo */}
                             <button
                               className="btn-toggle-activo"
-                              onClick={() => toggleActivo(mito)}
-                              title={mito.activo ? "Desactivar" : "Activar"}
+                              onClick={() => toggleActivo(video)}
+                              title={video.activo ? "Desactivar" : "Activar"}
                             >
-                              {mito.activo ? "👁️ Ocultar" : "👁️ Mostrar"}
+                              {video.activo ? "👁️ Ocultar" : "👁️ Mostrar"}
                             </button>
 
                             {/* Editar */}
                             <button
                               className="btn-tabla-editar"
-                              onClick={() => setModal(mito)}
+                              onClick={() => setModal(video)}
                             >
                               <IconEdit /> Editar
                             </button>
                             {/* Borrar */}
                             <button
                               className="btn-tabla-borrar"
-                              onClick={() => borrarMito(mito)}
+                              onClick={() => borrarVideo(video)}
                             >
                               <IconTrash /> Borrar
                             </button>
@@ -442,8 +446,8 @@ export default function AdminMitosPage() {
 
       {/* ── MODAL DE CREAR/EDITAR ── */}
       {modal && (
-        <ModalMito
-          mito={modal === "crear" ? null : modal}
+        <ModalVideos
+          video={modal === "crear" ? null : modal}
           onClose={() => setModal(null)}
           onGuardado={handleGuardado}
         />

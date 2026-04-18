@@ -116,33 +116,33 @@ export async function toggleLugarActivo(id, activoActual) {
   return { success: true };
 }
 
-// Crear nuevo lugar
-export async function createLugar(formData) {
-  const supabase = await createClient();
+// // Crear nuevo lugar
+// export async function createLugar(formData) {
+//   const supabase = await createClient();
 
-  // Extraer datos del FormData
-  const rawData = {
-    titulo: formData.get("titulo"),
-    descripcion: formData.get("descripcion"),
-    categoria: formData.get("categoria"),
-    imagen_url: formData.get("imagen_url"),
-    latitud: formData.get("latitud")
-      ? parseFloat(formData.get("latitud"))
-      : null,
-    longitud: formData.get("longitud")
-      ? parseFloat(formData.get("longitud"))
-      : null,
-    altitud: formData.get("altitud")
-      ? parseFloat(formData.get("altitud"))
-      : null,
-    caserio_id: formData.get("caserio_id") || null,
-    destacado: formData.get("destacado") === "true",
-    activo: formData.get("activo") === "true",
-  };
+//   // Extraer datos del FormData
+//   const rawData = {
+//     titulo: formData.get("titulo"),
+//     descripcion: formData.get("descripcion"),
+//     categoria: formData.get("categoria"),
+//     imagen_url: formData.get("imagen_url"),
+//     latitud: formData.get("latitud")
+//       ? parseFloat(formData.get("latitud"))
+//       : null,
+//     longitud: formData.get("longitud")
+//       ? parseFloat(formData.get("longitud"))
+//       : null,
+//     altitud: formData.get("altitud")
+//       ? parseFloat(formData.get("altitud"))
+//       : null,
+//     caserio_id: formData.get("caserio_id") || null,
+//     destacado: formData.get("destacado") === "true",
+//     activo: formData.get("activo") === "true",
+//   };
 
-  const { error } = await supabase.from("lugares").insert([rawData]);
-  if (error) throw new Error("Error al crear lugar");
+//   const { error } = await supabase.from("lugares").insert([rawData]);
+//   if (error) throw new Error("Error al crear lugar");
 
-  revalidatePath("/admin/lugares");
-  redirect("/admin/lugares");
-}
+//   revalidatePath("/admin/lugares");
+//   redirect("/admin/lugares");
+// }

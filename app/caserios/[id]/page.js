@@ -132,7 +132,7 @@ export default function CaserioDetallePage() {
         // 🔧 Conecta con: tabla lugares WHERE caserio_id = id
         const { data: lugs, error: lugsError } = await supabase
           .from("lugares")
-          .select("id, titulo, descripcion, categoria, imagen_url, direccion")
+          .select("id, titulo, descripcion, categoria, imagen_url")
           .eq("caserio_id", id)
           .eq("activo", true)
           .order("titulo");

@@ -215,7 +215,7 @@ const ADMIN_NAV = [
     statKey: "videos",
   },
   {
-    href: "/admin/Fiestas",
+    href: "/admin/fiestas",
     label: "Fiestas",
     Icon: IconCalendar,
     statKey: "festividades",

@@ -1,12 +1,12 @@
-// components/admin/ModalLugar.js
+// components/admin/ModalMusica.js
 // ─────────────────────────────────────────────────────
-// Modal para CREAR o EDITAR un lugar turístico
+// Modal para CREAR o EDITAR un Musica turístico
 // Ahora con drag & drop de imagen que sube al bucket "experiencias"
 //
 // Props:
-//   lugar     → null (crear) | objeto (editar)
+//   Musica     → null (crear) | objeto (editar)
 //   onClose   → cerrar modal
-//   onGuardado → callback con el lugar guardado
+//   onGuardado → callback con el Musica guardado
 // ─────────────────────────────────────────────────────
 
 "use client";
@@ -14,12 +14,24 @@
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
-import { subirImagenWebP, validarArchivo } from "@/lib/imageUtils";
+import {
+  subirImagenWebP,
+  validarArchivo,
+  formatearTamaño,
+} from "@/lib/imageUtils";
 import "@/styles/formulario-exp.css";
 import "@/styles/modal-admin.css";
 
 // ── CONSTANTES PARA IMAGEN ──
 const MAX_MB = 5;
+const MAX_BYTES = MAX_MB * 1024 * 1024;
+const TIPOS_IMAGEN = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/jpg",
+];
 
 const IconX = () => (
   <svg
@@ -35,28 +47,28 @@ const IconX = () => (
   </svg>
 );
 
-export default function ModalMito({ mito = null, onClose, onGuardado }) {
+export default function ModalMusica({ musica = null, onClose, onGuardado }) {
   const { user } = useAuth();
-  const esEdicion = !!mito;
+  const esEdicion = !!musica;
 
   // Variable para crear cliente Supabase, necesario para subir imagenes al storage desde este componente. Si ya tienes un cliente global, puedes importarlo directamente.
   const supabase = createClient();
 
   // ── ESTADO DEL FORMULARIO (sin imagen_url, manejado aparte) ──
   const [form, setForm] = useState({
-    titulo: mito?.titulo || "",
-    subtitulo: mito?.subtitulo || "",
-    contenido: mito?.contenido || "",
-    origen: mito?.origen || "",
-    epoca: mito?.epoca || "",
-    audio_url: mito?.audio_url || "",
-    duracion: mito?.duracion || "",
-    activo: mito?.activo !== undefined ? mito.activo : true,
+    titulo: musica?.titulo || "",
+    artista: musica?.artista || "",
+    descripcion: musica?.descripcion || "",
+    archivo_url: musica?.archivo_url || "",
+    genero: musica?.genero || "",
+    duracion: musica?.duracion || "",
+    destacado: musica?.destacado || false,
+    activo: musica?.activo !== undefined ? musica.activo : true,
   });
 
   // ── ESTADO PARA LA IMAGEN ──
   const [imagenFile, setImagenFile] = useState(null); // nuevo archivo seleccionado
-  const [previewUrl, setPreviewUrl] = useState(mito?.cover_url || null); // preview (local o existente)
+  const [previewUrl, setPreviewUrl] = useState(musica?.cover_url || null); // preview (local o existente)
   const [dragOver, setDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
@@ -169,7 +181,7 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
         previewUrl && !previewUrl.startsWith("blob:") ? previewUrl : null;
       if (imagenFile) {
         imagenUrl = await subirImagen();
-      } else if (esEdicion && mito?.imagen_url && previewUrl === null) {
+      } else if (esEdicion && musica?.cover_url && previewUrl === null) {
         // El usuario quitó la imagen existente → se guarda null
         imagenUrl = null;
       } else if (!imagenFile && previewUrl && previewUrl.startsWith("blob:")) {
@@ -181,21 +193,21 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
 
       const payload = {
         titulo: form.titulo.trim(),
-        subtitulo: form.subtitulo.trim() || null,
-        contenido: form.contenido.trim() || null,
-        origen: form.origen.trim() || null,
-        epoca: form.epoca.trim() || null,
-        audio_url: form.audio_url.trim() || null,
-        duracion: form.duracion.trim() || null,
+        artista: form.artista.trim() || null,
+        descripcion: form.descripcion.trim() || null,
+        archivo_url: form.archivo_url.trim() || null,
         cover_url: imagenUrl,
+        genero: form.genero.trim() || null,
+        duracion: form.duracion.trim() || null,
+        destacado: form.destacado,
         activo: form.activo,
       };
 
       if (esEdicion) {
         const { data, error } = await supabase
-          .from("mitos")
+          .from("musica")
           .update(payload)
-          .eq("id", mito.id)
+          .eq("id", musica.id)
           .select()
           .single();
 
@@ -203,7 +215,7 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
         onGuardado(data, "actualizado");
       } else {
         const { data, error } = await supabase
-          .from("mitos")
+          .from("musica")
           .insert({ ...payload })
           .select()
           .single();
@@ -229,7 +241,7 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
         {/* Header */}
         <div className="modal-header">
           <span className="modal-titulo">
-            {esEdicion ? "✏️ Editar mito" : "➕ Nuevo Mito o Leyenda"}
+            {esEdicion ? "✏️ Editar Canción" : "➕ Nueva Canción"}
           </span>
           <button
             className="btn-cerrar-modal"
@@ -250,7 +262,7 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
             <input
               type="text"
               className="form-admin-input"
-              placeholder="Nombre del Mito o Leyenda"
+              placeholder="Nombre de la canción"
               value={form.titulo}
               onChange={(e) => setField("titulo", e.target.value)}
               disabled={uploading}
@@ -259,26 +271,26 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
 
           <div className="form-admin-grupo">
             <label className="form-admin-label">
-              Subtitulo <span className="requerido">*</span>
+              Artista <span className="requerido">*</span>
             </label>
             <input
               type="text"
               className="form-admin-input"
-              placeholder="Subtitulo o frase corta"
-              value={form.subtitulo}
-              onChange={(e) => setField("subtitulo", e.target.value)}
+              placeholder="Nombre del artista"
+              value={form.artista}
+              onChange={(e) => setField("artista", e.target.value)}
               disabled={uploading}
             />
           </div>
 
           {/* Descripción */}
           <div className="form-admin-grupo">
-            <label className="form-admin-label">Contenido</label>
+            <label className="form-admin-label">Descripción</label>
             <textarea
               className="form-admin-textarea"
-              placeholder="Contenido del mito..."
-              value={form.contenido}
-              onChange={(e) => setField("contenido", e.target.value)}
+              placeholder="Descripción de la canción..."
+              value={form.descripcion}
+              onChange={(e) => setField("descripcion", e.target.value)}
               disabled={uploading}
             />
           </div>
@@ -344,36 +356,6 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
             )}
           </div>
 
-          {/* ORIGEN Y EPOCA */}
-          <div className="form-admin-fila">
-            <div className="form-admin-grupo">
-              <label className="form-admin-label">Origen</label>
-              <input
-                type="text"
-                step="any"
-                className="form-admin-input"
-                placeholder="Origen del mito"
-                value={form.origen}
-                onChange={(e) => setField("origen", e.target.value)}
-                disabled={uploading}
-              />
-            </div>
-            <div className="form-admin-grupo">
-              <label className="form-admin-label">Epoca</label>
-              <input
-                type="text"
-                step="any"
-                className="form-admin-input"
-                placeholder="Época del mito"
-                value={form.epoca}
-                onChange={(e) => setField("epoca", e.target.value)}
-                disabled={uploading}
-              />
-            </div>
-          </div>
-
-          <div className="form-admin-sep" />
-
           {/* URL DEL AUDIO */}
           <div className="form-admin-grupo">
             <label className="form-admin-label">
@@ -383,15 +365,28 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
               type="text"
               className="form-admin-input"
               placeholder="URL del archivo de audio"
-              value={form.audio_url}
-              onChange={(e) => setField("audio_url", e.target.value)}
+              value={form.archivo_url}
+              onChange={(e) => setField("archivo_url", e.target.value)}
               disabled={uploading}
             />
           </div>
 
-          {/* Checkboxes */}
+          {/* Genero y duración */}
           <div className="form-admin-fila">
             <div className="form-admin-grupo">
+              <label className="form-admin-label">Genero</label>
+              <input
+                type="text"
+                step="any"
+                className="form-admin-input"
+                placeholder="Género de la canción"
+                value={form.genero}
+                onChange={(e) => setField("genero", e.target.value)}
+                disabled={uploading}
+              />
+            </div>
+            <div className="form-admin-grupo">
+              <label className="form-admin-label">Duración</label>
               <input
                 type="text"
                 step="any"
@@ -402,6 +397,23 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
                 disabled={uploading}
               />
             </div>
+          </div>
+
+          <div className="form-admin-sep" />
+
+          {/* Checkboxes */}
+          <div className="form-admin-fila">
+            <label className="form-admin-check">
+              <input
+                type="checkbox"
+                checked={form.destacado}
+                onChange={(e) => setField("destacado", e.target.checked)}
+                disabled={uploading}
+              />
+              <span className="form-admin-check-label">
+                ⭐ Canción destacada
+              </span>
+            </label>
             <label className="form-admin-check">
               <input
                 type="checkbox"
@@ -436,8 +448,8 @@ export default function ModalMito({ mito = null, onClose, onGuardado }) {
             {uploading
               ? "Guardando..."
               : esEdicion
-                ? "💾 Actualizar mito"
-                : "➕ Crear mito"}
+                ? "💾 Actualizar canción"
+                : "➕ Crear canción"}
           </button>
         </div>
       </div>

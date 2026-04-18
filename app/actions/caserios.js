@@ -6,10 +6,7 @@ import { redirect } from "next/navigation";
 
 export async function getCaserios() {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("caserios")
-    .select("id, nombre")
-    .order("nombre");
+  const { data, error } = await supabase.from("caserios").select("*");
   if (error) throw error;
   return data;
 }
@@ -32,4 +29,11 @@ export async function toggleCaserioActivo(id, activoActual) {
   revalidatePath("/admin/caserios");
 
   return { success: true };
+}
+
+export async function deleteCaserio(id) {
+  const supabase = await createClient();
+  const { error } = await supabase.from("caserios").delete().eq("id", id);
+  if (error) throw new Error("Error al eliminar caserío");
+  revalidatePath("/admin/caserios");
 }

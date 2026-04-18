@@ -1,18 +1,22 @@
-// app/admin/mitos/page.js
+// app/admin/fiestas/page.js
 // ─────────────────────────────────────────────────────
-// PANEL ADMIN: Gestión de Mitos — CRUD completo
-// Ruta: /admin/mitos
-// 🔧 Conecta con: tabla public.mitos (SELECT, INSERT, UPDATE, DELETE)
+// PANEL ADMIN: Gestión de Fiestas — CRUD completo
+// Ruta: /admin/fiestas
+// 🔧 Conecta con: tabla public.fiestas (SELECT, INSERT, UPDATE, DELETE)
 // ─────────────────────────────────────────────────────
 
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { getMitos, toggleMitoActivo, deleteMito } from "@/app/actions/mitos";
+import {
+  getFiestas,
+  toggleFiestaActiva,
+  deleteFiesta,
+} from "@/app/actions/fiestas";
 import { useAuth } from "@/context/AuthContext";
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import ModalMito from "@/components/admin/ModalMito";
+import ModalFiesta from "@/components/admin/ModalFiesta";
 import Swal from "sweetalert2";
 import "@/styles/admin.css";
 import "@/styles/tabla-admin.css";
@@ -63,10 +67,10 @@ const IconPlus = () => (
 // Número de filas por página
 const POR_PAGINA = 10;
 
-export default function AdminMitosPage() {
+export default function AdminFiestasPage() {
   const { user, isAdmin, loading: authLoading } = useAuth();
 
-  const [mitos, setMitos] = useState([]);
+  const [fiestas, setFiestas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [busqueda, setBusqueda] = useState("");
   const [pagina, setPagina] = useState(1);
@@ -75,11 +79,11 @@ export default function AdminMitosPage() {
 
   // ── CARGAR MITOS ──
   // 🔧 Conecta con: tabla public.mitos SELECT todos (activos e inactivos)
-  async function cargarMitos() {
+  async function cargarFiestas() {
     setLoading(true);
     try {
-      const data = await getMitos();
-      setMitos(data || []);
+      const data = await getFiestas();
+      setFiestas(data || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -88,23 +92,23 @@ export default function AdminMitosPage() {
   }
 
   useEffect(() => {
-    if (isAdmin) cargarMitos();
+    if (isAdmin) cargarFiestas();
   }, [isAdmin]);
 
   // ── FILTRAR Y PAGINAR ──
-  const mitosFiltrados = useMemo(() => {
+  const fiestasFiltradas = useMemo(() => {
     const q = busqueda.toLowerCase();
-    return mitos.filter(
-      (m) =>
+    return fiestas.filter(
+      (f) =>
         !q ||
-        m.titulo?.toLowerCase().includes(q) ||
-        m.origen?.toLowerCase().includes(q) ||
-        m.epoca?.toLowerCase().includes(q),
+        f.titulo?.toLowerCase().includes(q) ||
+        f.fecha?.toLowerCase().includes(q) ||
+        f.mes?.toLowerCase().includes(q),
     );
-  }, [mitos, busqueda]);
+  }, [fiestas, busqueda]);
 
-  const totalPaginas = Math.ceil(mitosFiltrados.length / POR_PAGINA);
-  const mitosPagina = mitosFiltrados.slice(
+  const totalPaginas = Math.ceil(fiestasFiltradas.length / POR_PAGINA);
+  const fiestasPagina = fiestasFiltradas.slice(
     (pagina - 1) * POR_PAGINA,
     pagina * POR_PAGINA,
   );
@@ -121,14 +125,14 @@ export default function AdminMitosPage() {
   }
 
   // ── TOGGLE ACTIVO (Server Action) ───────────────────
-  async function toggleActivo(mito) {
+  async function toggleActivo(fiesta) {
     try {
-      await toggleMitoActivo(mito.id, mito.activo);
-      setMitos((prev) =>
-        prev.map((m) => (m.id === mito.id ? { ...m, activo: !m.activo } : m)),
+      await toggleFiestaActiva(fiesta.id, fiesta.activo);
+      setFiestas((prev) =>
+        prev.map((f) => (f.id === fiesta.id ? { ...f, activo: !f.activo } : f)),
       );
       mostrarToast(
-        `"${mito.titulo}" ${!mito.activo ? "activado" : "desactivado"}`,
+        `"${fiesta.titulo}" ${!fiesta.activo ? "activado" : "desactivado"}`,
       );
     } catch (error) {
       console.error(error);
@@ -138,9 +142,9 @@ export default function AdminMitosPage() {
 
   // ── BORRAR MITO ──
   // 🔧 Conecta con: DELETE FROM mitos WHERE id
-  async function borrarMito(mito) {
+  async function borrarFiesta(fiesta) {
     const result = await Swal.fire({
-      title: `¿Borrar "${mito.titulo}"?`,
+      title: `¿Borrar "${fiesta.titulo}"?`,
       theme: "dark",
       text: "Esta acción no se puede deshacer.",
       icon: "warning",
@@ -154,9 +158,9 @@ export default function AdminMitosPage() {
     if (!result.isConfirmed) return;
 
     try {
-      await deleteMito(mito.id);
-      setMitos((prev) => prev.filter((m) => m.id !== mito.id));
-      mostrarToast(`"${mito.titulo}" eliminado`);
+      await deleteFiesta(fiesta.id);
+      setFiestas((prev) => prev.filter((f) => f.id !== fiesta.id));
+      mostrarToast(`"${fiesta.titulo}" eliminado`);
     } catch (error) {
       console.error(error);
       alert("Error al borrar: " + error.message);
@@ -164,15 +168,15 @@ export default function AdminMitosPage() {
   }
 
   // ── AL GUARDAR EN EL MODAL ──
-  function handleGuardado(mitoGuardado, accion) {
+  function handleGuardado(fiestaGuardada, accion) {
     if (accion === "creado") {
-      setMitos((prev) => [mitoGuardado, ...prev]);
-      mostrarToast(`✅ "${mitoGuardado.titulo}" creado`);
+      setFiestas((prev) => [fiestaGuardada, ...prev]);
+      mostrarToast(`✅ "${fiestaGuardada.titulo}" creado`);
     } else {
-      setMitos((prev) =>
-        prev.map((m) => (m.id === mitoGuardado.id ? mitoGuardado : m)),
+      setFiestas((prev) =>
+        prev.map((f) => (f.id === fiestaGuardada.id ? fiestaGuardada : f)),
       );
-      mostrarToast(`✅ "${mitoGuardado.titulo}" actualizado`);
+      mostrarToast(`✅ "${fiestaGuardada.titulo}" actualizado`);
     }
     setModal(null);
   }
@@ -216,11 +220,11 @@ export default function AdminMitosPage() {
       {/* ── HEADER ── */}
       <div className="admin-page-header">
         <h1 className="admin-page-titulo">
-          Gestión de Mitos
+          Gestión de Fiestas
           <span className="admin-badge">⚡ Admin</span>
         </h1>
         <p className="admin-page-sub">
-          Crea, edita y gestiona los mitos del distrito.
+          Crea, edita y gestiona las fiestas del distrito.
         </p>
       </div>
 
@@ -232,13 +236,13 @@ export default function AdminMitosPage() {
           <div className="admin-seccion">
             <div className="admin-seccion-header">
               <span className="admin-seccion-titulo">
-                Mitos ({mitosFiltrados.length})
+                Mitos ({fiestasFiltradas.length})
               </span>
               <button
                 className="btn-admin-primary"
                 onClick={() => setModal("crear")}
               >
-                <IconPlus /> Nuevo mito
+                <IconPlus /> Nueva Fiesta
               </button>
             </div>
 
@@ -249,13 +253,13 @@ export default function AdminMitosPage() {
                 <input
                   type="text"
                   className="tabla-buscar-input"
-                  placeholder="Buscar por nombre, categoría..."
+                  placeholder="Buscar por nombre, fecha..."
                   value={busqueda}
                   onChange={(e) => setBusqueda(e.target.value)}
                 />
               </div>
               <span className="tabla-count">
-                {mitosFiltrados.length} de {mitos.length} mitos
+                {fiestasFiltradas.length} de {fiestas.length} fiestas
               </span>
             </div>
 
@@ -264,9 +268,9 @@ export default function AdminMitosPage() {
               <table className="tabla-admin">
                 <thead>
                   <tr>
-                    <th>Mito</th>
-                    <th>Origen</th>
-                    <th>Epoca</th>
+                    <th>Fiesta</th>
+                    <th>Fecha</th>
+                    <th>Mes</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                   </tr>
@@ -292,63 +296,63 @@ export default function AdminMitosPage() {
                         ))}
                       </tr>
                     ))
-                  ) : mitosPagina.length === 0 ? (
+                  ) : fiestasPagina.length === 0 ? (
                     <tr>
                       <td colSpan={5}>
                         <div className="tabla-vacia">
-                          <div className="tabla-vacia-icon">🗺️</div>
+                          <div className="tabla-vacia-icon">🎉</div>
                           <p>
                             {busqueda
                               ? "Sin resultados para tu búsqueda"
-                              : "No hay mitos todavía. ¡Crea el primero!"}
+                              : "No hay fiestas todavía. ¡Crea el primero!"}
                           </p>
                         </div>
                       </td>
                     </tr>
                   ) : (
-                    mitosPagina.map((mito) => (
-                      <tr key={mito.id}>
+                    fiestasPagina.map((fiesta) => (
+                      <tr key={fiesta.id}>
                         {/* Nombre + thumbnail */}
                         <td>
                           <div className="tabla-celda-nombre">
-                            {mito.cover_url ? (
+                            {fiesta.imagen_card ? (
                               <img
-                                src={mito.cover_url}
-                                alt={mito.titulo}
+                                src={fiesta.imagen_card}
+                                alt={fiesta.titulo}
                                 className="tabla-thumbnail"
                               />
                             ) : (
                               <div className="tabla-thumbnail-placeholder">
-                                📖
+                                🎉
                               </div>
                             )}
                             <div>
                               <div className="tabla-nombre-texto">
-                                {mito.titulo}
+                                {fiesta.titulo}
                               </div>
                               <span className="tabla-nombre-sub">
-                                {mito.subtitulo || "—"}
+                                {fiesta.subtitulo || "—"}
                               </span>
                             </div>
                           </div>
                         </td>
 
-                        {/* Origen */}
+                        {/* fecha */}
                         <td style={{ textTransform: "capitalize" }}>
-                          {mito.origen}
+                          {fiesta.fecha}
                         </td>
 
-                        {/* Epoca */}
+                        {/* mes */}
                         <td style={{ textTransform: "capitalize" }}>
-                          {mito.epoca}
+                          {fiesta.mes}
                         </td>
 
                         {/* Activo */}
                         <td>
                           <span
-                            className={`tabla-badge-activo ${mito.activo ? "si" : "no"}`}
+                            className={`tabla-badge-activo ${fiesta.activo ? "si" : "no"}`}
                           >
-                            {mito.activo ? "Activo" : "Inactivo"}
+                            {fiesta.activo ? "Activo" : "Inactivo"}
                           </span>
                         </td>
 
@@ -358,23 +362,23 @@ export default function AdminMitosPage() {
                             {/* Toggle activo/inactivo */}
                             <button
                               className="btn-toggle-activo"
-                              onClick={() => toggleActivo(mito)}
-                              title={mito.activo ? "Desactivar" : "Activar"}
+                              onClick={() => toggleActivo(fiesta)}
+                              title={fiesta.activo ? "Desactivar" : "Activar"}
                             >
-                              {mito.activo ? "👁️ Ocultar" : "👁️ Mostrar"}
+                              {fiesta.activo ? "👁️ Ocultar" : "👁️ Mostrar"}
                             </button>
 
                             {/* Editar */}
                             <button
                               className="btn-tabla-editar"
-                              onClick={() => setModal(mito)}
+                              onClick={() => setModal(fiesta)}
                             >
                               <IconEdit /> Editar
                             </button>
                             {/* Borrar */}
                             <button
                               className="btn-tabla-borrar"
-                              onClick={() => borrarMito(mito)}
+                              onClick={() => borrarFiesta(fiesta)}
                             >
                               <IconTrash /> Borrar
                             </button>
@@ -442,8 +446,8 @@ export default function AdminMitosPage() {
 
       {/* ── MODAL DE CREAR/EDITAR ── */}
       {modal && (
-        <ModalMito
-          mito={modal === "crear" ? null : modal}
+        <ModalFiesta
+          fiesta={modal === "crear" ? null : modal}
           onClose={() => setModal(null)}
           onGuardado={handleGuardado}
         />

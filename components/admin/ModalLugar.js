@@ -60,6 +60,7 @@ const CATEGORIAS = [
 export default function ModalLugar({ lugar = null, onClose, onGuardado }) {
   const { user } = useAuth();
   const esEdicion = !!lugar;
+
   const [caserios, setCaserios] = useState([]);
 
   // ── ESTADO DEL FORMULARIO (sin imagen_url, manejado aparte) ──
