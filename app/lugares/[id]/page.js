@@ -10,7 +10,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import GaleriaFotos from "@/components/GaleriaFotos";
 import "@/styles/lugar-detalle.css";
 import "@/styles/galeria.css";
@@ -55,6 +55,8 @@ const IconPin = () => (
 
 export default function LugarDetallePage() {
   const { id } = useParams();
+
+  const supabase = createClient();
 
   const [lugar, setLugar] = useState(null);
   const [caserio, setCaserio] = useState(null); // Caserío vinculado
@@ -229,9 +231,9 @@ export default function LugarDetallePage() {
               {catStyle.label}
             </span>
             <h1 className="detalle-hero-titulo">{lugar.titulo}</h1>
-            {lugar.direccion && (
+            {caserio?.nombre && (
               <div className="detalle-hero-dir">
-                <IconPin /> {lugar.direccion}
+                <IconPin /> {caserio.nombre}
               </div>
             )}
           </div>

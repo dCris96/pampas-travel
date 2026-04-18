@@ -12,7 +12,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import {
   subirImagenWebP,
@@ -60,6 +60,9 @@ const CATEGORIAS = [
 export default function ModalMito({ mito = null, onClose, onGuardado }) {
   const { user } = useAuth();
   const esEdicion = !!mito;
+
+  // Variable para crear cliente Supabase, necesario para subir imagenes al storage desde este componente. Si ya tienes un cliente global, puedes importarlo directamente.
+  const supabase = createClient();
 
   // ── ESTADO DEL FORMULARIO (sin imagen_url, manejado aparte) ──
   const [form, setForm] = useState({

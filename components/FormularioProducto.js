@@ -5,7 +5,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import "@/styles/formulario-exp.css";
 import "@/styles/modal-admin.css";
@@ -38,6 +38,8 @@ const IconX = () => (
 
 export default function FormularioProducto({ onClose, onPublicado }) {
   const { user, perfil } = useAuth();
+
+  const supabase = createClient();
 
   const [form, setForm] = useState({
     nombre: "",

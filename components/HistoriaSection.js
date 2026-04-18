@@ -5,59 +5,111 @@ import { useState, useEffect } from "react";
 const historiaCompleta = (
   <>
     <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris et turpis
-      in erat facilisis tristique quis id tortor. In pellentesque imperdiet
-      tempor. Duis a tortor tristique, laoreet ex a, placerat purus. Aliquam
-      erat volutpat. Ut luctus lacus pharetra ex eleifend, vitae egestas mauris
-      sodales. Curabitur metus ipsum, convallis sed sapien nec, malesuada
-      ultricies orci. Etiam quis sem tincidunt, feugiat lacus vitae, porttitor
-      dolor. Mauris malesuada sapien id imperdiet ullamcorper. Sed facilisis
-      consectetur purus et ultrices. Suspendisse consequat rutrum ligula sit
-      amet feugiat.
+      El distrito de <strong>Pampas</strong>, ubicado en la provincia de
+      Pallasca, Áncash, es un territorio que combina una profunda herencia
+      ancestral con una importancia geográfica estratégica en la sierra norte
+      del Perú.
     </p>
+
+    <hr />
+
+    <h2>1. Evolución Histórica</h2>
+
+    <h3>Época Prehispánica y Colonial</h3>
     <p>
-      Suspendisse feugiat congue pretium. Aliquam tincidunt mauris neque, sed
-      rutrum odio molestie at. Mauris porta, lorem venenatis dictum tincidunt,
-      dui quam interdum sem, non cursus elit velit ut sapien. Quisque feugiat ex
-      at urna convallis mattis. Suspendisse eget vulputate nisi. Etiam sem leo,
-      ornare a maximus in, fermentum vel nibh. In eu interdum odio, ac aliquet
-      justo. Aenean sapien ex, luctus eget elit eu, efficitur rhoncus ante.
+      Los orígenes de Pampas se remontan a la influencia de las culturas{" "}
+      <strong>Pashas</strong> y <strong>Conchucos</strong>. Estos grupos
+      destacaron por su avanzada arquitectura en piedra y su organización social
+      en los valles de la provincia de Pallasca. Durante la colonia, el
+      territorio fue un punto de tránsito vital entre la costa y las zonas
+      mineras de la sierra central.
     </p>
+
+    <h3>Creación Política (1918)</h3>
     <p>
-      Sed convallis facilisis nisl, non sodales mi sollicitudin at. Duis tempus
-      dignissim ultricies. Cras eget sodales leo. Donec vel arcu sem. Maecenas
-      enim mi, feugiat vel commodo in, fermentum a nunc. Nulla quis urna ipsum.
-      Proin at orci dapibus, sodales risus sed, dictum erat. In placerat ut ante
-      at congue. Nunc quis pretium lorem. Aenean aliquam sit amet velit non
-      sodales. Etiam a nunc tristique magna venenatis aliquam. Fusce
-      sollicitudin cursus nisi vitae finibus. Donec in enim non libero tincidunt
-      semper eu sit amet ipsum.
+      El distrito alcanzó su autonomía administrativa a inicios del siglo XX.
+      Fue creado oficialmente mediante la <strong>Ley N° 2971</strong> el{" "}
+      <strong>16 de diciembre de 1918</strong>, bajo la rúbrica del presidente
+      José Pardo y Barreda. Este hecho marcó el inicio de su desarrollo como
+      entidad independiente de la capital provincial.
     </p>
+
+    <hr />
+
+    <h2>2. Datos Geográficos y Extensión</h2>
     <p>
-      Morbi feugiat est dui, eget aliquet est laoreet eu. Sed dapibus tortor
-      ornare, luctus odio id, sagittis turpis. Ut nibh diam, convallis a
-      ultricies vel, venenatis et augue. Vestibulum nec scelerisque nunc. Cras
-      sit amet ullamcorper tortor. Proin non commodo libero. Donec finibus enim
-      enim, quis dictum arcu vehicula in. Etiam sodales tortor ac euismod
-      laoreet. Fusce nec nisi porta, euismod massa sed, tincidunt justo.
-      Curabitur feugiat rutrum nisl eget faucibus. Phasellus est turpis,
-      dignissim non bibendum ut, congue tincidunt nisl. Sed sit amet gravida
-      libero. Donec in augue eros. Nunc semper cursus magna quis tempor. Aenean
-      lacinia molestie ligula, ut auctor tellus egestas ac.
+      Pampas es reconocido por ser uno de los distritos más vastos de la región,
+      limitando con el departamento de La Libertad.
     </p>
+    <ul>
+      <li>
+        <strong>Extensión Territorial:</strong> 438.18 km² (el segundo más
+        grande de Pallasca).
+      </li>
+      <li>
+        <strong>Altitud:</strong> La capital se sitúa a 3,190 m.s.n.m.
+      </li>
+      <li>
+        <strong>Geografía:</strong> Territorio accidentado que incluye valles
+        interandinos y altas punas.
+      </li>
+    </ul>
+
+    <hr />
+
+    <h2>3. Demografía Actualizada</h2>
     <p>
-      Vestibulum eleifend semper lorem, et sagittis est porta quis. Orci varius
-      natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-      Proin sit amet nibh ligula. Curabitur egestas porttitor auctor. In semper,
-      sem tempus gravida imperdiet, erat magna pulvinar dui, a consequat elit
-      diam ut est. Quisque nec lacinia est. Mauris tristique aliquam ante,
-      finibus gravida sapien porttitor et.
+      La población de Pampas ha experimentado cambios significativos debido a
+      los procesos migratorios hacia las capitales costeras.
+    </p>
+    <ul>
+      <li>
+        <strong>Censo 2017 (INEI):</strong> 3,980 habitantes.
+      </li>
+      <li>
+        <strong>Proyección al 2026:</strong> Se estima una población de
+        aproximadamente <strong>2,950 habitantes</strong>.
+      </li>
+      <li>
+        <strong>Densidad:</strong> 6.73 hab/km² aproximadamente.
+      </li>
+    </ul>
+
+    <hr />
+
+    <h2>4. Economía y Tradiciones</h2>
+
+    <h3>Actividades Productivas</h3>
+    <p>
+      La economía del distrito se sustenta en tres ejes principales que han
+      definido el sustento de sus familias por generaciones:
+    </p>
+    <ol>
+      <li>
+        <strong>Agricultura:</strong> Cultivos de altura como papa, trigo,
+        cebada y maíz.
+      </li>
+      <li>
+        <strong>Ganadería:</strong> Crianza de ganado vacuno y ovino.
+      </li>
+      <li>
+        <strong>Minería:</strong> Actividad extractiva polimetálica en las zonas
+        altas del distrito.
+      </li>
+    </ol>
+
+    <h3>Cultura y Fe</h3>
+    <p>
+      La festividad más importante es la celebración en honor a{" "}
+      <strong>San Agustín</strong> y <strong>Santa Rosa</strong>, la cual se
+      lleva a cabo al finales del mes de Agosto. Es el evento cultural más
+      relevante, donde se manifiesta el sincretismo religioso y el retorno de la
+      diáspora pampasina.
     </p>
   </>
 );
 
-const textoPlano =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris et turpis in erat facilisis tristique quis id tortor. In pellentesque imperdiet tempor. Duis a tortor tristique, laoreet ex a, placerat purus. Aliquam erat volutpat. Ut luctus lacus pharetra ex eleifend, vitae egestas mauris sodales. Curabitur metus ipsum, convallis sed sapien nec, malesuada ultricies orci. Etiam quis sem tincidunt, feugiat lacus vitae, porttitor dolor. Mauris malesuada sapien id imperdiet ullamcorper. Sed facilisis consectetur purus et ultrices. Suspendisse consequat rutrum ligula sit amet feugiat"; // copia el texto plano
+const textoPlano = `El distrito de <strong>Pampas</strong>, ubicado en la provincia de Pallasca, Áncash, es un territorio que combina una profunda herencia ancestral con una importancia geográfica estratégica en la sierra norte del Perú.`; // copia el texto plano
 const resumen =
   textoPlano.slice(0, 280) + (textoPlano.length > 280 ? "..." : "");
 
@@ -75,7 +127,9 @@ export default function HistoriaSection() {
   return (
     <section className="section">
       <div className="section_hitoria">
-        <h1 className="title-main">Pampas travel</h1>
+        <h1 className="title-main">
+          Distrito de Pampas: Historia, Geografía y Actualidad
+        </h1>
         {isMobile ? (
           !textoExpandido ? (
             <>

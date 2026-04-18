@@ -4,6 +4,16 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+export async function getLugaresCount() {
+  const supabase = await createClient();
+  const { count, error } = await supabase
+    .from("lugares")
+    .select("*", { count: "exact", head: true }); // head: true evita traer los datos
+
+  if (error) throw new Error("Error al obtener conteo de lugares");
+  return count; // retorna un número (ej: 8)
+}
+
 export async function getLugares() {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -24,7 +34,6 @@ export async function updateLugar(id, formData) {
     descripcion: formData.get("descripcion"),
     categoria: formData.get("categoria"),
     imagen_url: formData.get("imagen_url"),
-    direccion: formData.get("direccion"),
     latitud: formData.get("latitud")
       ? parseFloat(formData.get("latitud"))
       : null,
@@ -117,7 +126,6 @@ export async function createLugar(formData) {
     descripcion: formData.get("descripcion"),
     categoria: formData.get("categoria"),
     imagen_url: formData.get("imagen_url"),
-    direccion: formData.get("direccion"),
     latitud: formData.get("latitud")
       ? parseFloat(formData.get("latitud"))
       : null,

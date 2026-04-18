@@ -15,7 +15,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import GaleriaFotos from "@/components/GaleriaFotos";
 import "@/styles/caserios.css";
 import "@/styles/galeria.css";
@@ -96,6 +96,8 @@ function formatNum(n) {
 
 export default function CaserioDetallePage() {
   const { id } = useParams();
+
+  const supabase = createClient();
 
   const [caserio, setCaserio] = useState(null);
   const [lugares, setLugares] = useState([]);

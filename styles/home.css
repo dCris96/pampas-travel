@@ -20,6 +20,7 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: opacity 600ms ease-in-out;
 }
 
 /* Overlay oscuro sobre la imagen */

@@ -20,7 +20,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import "@/styles/formulario-exp.css";
 
@@ -82,6 +82,8 @@ const IconEnviar = () => (
 
 export default function FormularioExperiencia({ onClose, onPublicado }) {
   const { user, perfil } = useAuth();
+
+  const supabase = createClient();
 
   // ── ESTADO DEL FORMULARIO ──
   const [contenido, setContenido] = useState("");

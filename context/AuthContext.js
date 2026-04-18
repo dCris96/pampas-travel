@@ -14,7 +14,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { getPerfil } from "@/app/actions/auth";
 
 // 1. Crear el contexto vacío
@@ -24,6 +24,9 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   // El objeto user de Supabase Auth (tiene id, email, etc.)
   const [user, setUser] = useState(null);
+
+  // Para las sesiones
+  const supabase = createClient();
 
   // El perfil de nuestra tabla public.profiles (tiene nombre, rol, avatar)
   const [perfil, setPerfil] = useState(null);

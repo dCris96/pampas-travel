@@ -4,7 +4,7 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import "@/styles/formulario-exp.css";
 import "@/styles/modal-admin.css";
@@ -46,6 +46,8 @@ export default function FormularioNegocio({ onClose, onPublicado }) {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const supabase = createClient();
 
   function setField(k, v) {
     setForm((p) => ({ ...p, [k]: v }));

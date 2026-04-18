@@ -31,7 +31,7 @@ import { useEffect, useRef } from "react";
 // 🔧 PERSONALIZABLE: Emoji y color de cada tipo de punto
 const TIPO_CONFIG = {
   // Lugares turísticos
-  naturaleza: { emoji: "🌿", color: "#1a3a26", textColor: "#6bffab" },
+  naturaleza: { emoji: "🏵️", color: "#1a3a26", textColor: "#6bffab" },
   patrimonio: { emoji: "🏛️", color: "#3a2a1a", textColor: "#ffb86b" },
   mirador: { emoji: "🔭", color: "#1a2a5c", textColor: "#6babff" },
   aventura: { emoji: "🧗", color: "#3a1a1a", textColor: "#ff8a6b" },

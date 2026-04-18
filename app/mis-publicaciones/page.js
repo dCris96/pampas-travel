@@ -10,7 +10,6 @@ import { useAuth } from "@/context/AuthContext";
 import BadgeEstado from "@/components/BadgeEstado";
 import FormularioProducto from "@/components/FormularioProducto";
 import FormularioNegocio from "@/components/FormularioNegocio";
-import FormularioLugar from "@/components/FormularioLugar";
 import FormularioExperiencia from "@/components/FormularioExperiencia";
 import "@/styles/mis-publicaciones.css";
 
@@ -172,16 +171,6 @@ export default function MisPublicacionesPage() {
         onPublicado={() => {
           setModal(null);
           mostrarToast("✅ Negocio enviado para revisión.");
-          cargar();
-        }}
-      />
-    ),
-    lugar: (
-      <FormularioLugar
-        onClose={() => setModal(null)}
-        onPublicado={() => {
-          setModal(null);
-          mostrarToast("✅ Lugar enviado para revisión.");
           cargar();
         }}
       />

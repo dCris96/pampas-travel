@@ -12,7 +12,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import {
   subirImagenWebP,
@@ -67,7 +67,6 @@ export default function ModalLugar({ lugar = null, onClose, onGuardado }) {
     titulo: lugar?.titulo || "",
     descripcion: lugar?.descripcion || "",
     categoria: lugar?.categoria || "naturaleza",
-    direccion: lugar?.direccion || "",
     latitud: lugar?.latitud || "",
     longitud: lugar?.longitud || "",
     altitud: lugar?.altitud || "",
@@ -93,6 +92,9 @@ export default function ModalLugar({ lugar = null, onClose, onGuardado }) {
   const [error, setError] = useState("");
   const fileInputRef = useRef(null);
 
+  // Variable para crear cliente Supabase, necesario para subir imagenes al storage desde este componente. Si ya tienes un cliente global, puedes importarlo directamente.
+  const supabase = createClient();
+
   // ── Limpiar URL de preview al desmontar ──
   useEffect(() => {
     return () => {
@@ -112,6 +114,7 @@ export default function ModalLugar({ lugar = null, onClose, onGuardado }) {
     setError("");
 
     const errorValidacion = validarArchivo(file);
+
     if (errorValidacion) {
       setError(errorValidacion);
       return false;
@@ -214,7 +217,6 @@ export default function ModalLugar({ lugar = null, onClose, onGuardado }) {
         descripcion: form.descripcion.trim() || null,
         categoria: form.categoria,
         imagen_url: imagenUrl,
-        direccion: form.direccion.trim() || null,
         latitud: form.latitud ? parseFloat(form.latitud) : null,
         longitud: form.longitud ? parseFloat(form.longitud) : null,
         altitud: form.altitud ? parseFloat(form.altitud) : null, // ← nuevo
@@ -301,23 +303,6 @@ export default function ModalLugar({ lugar = null, onClose, onGuardado }) {
             />
           </div>
 
-          {/* Categoría */}
-          <div className="form-admin-grupo">
-            <label className="form-admin-label">Categoría</label>
-            <select
-              className="form-admin-select"
-              value={form.categoria}
-              onChange={(e) => setField("categoria", e.target.value)}
-              disabled={uploading}
-            >
-              {CATEGORIAS.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
-
           {/* ── NUEVA SECCIÓN: DRAG & DROP DE IMAGEN ── */}
           <div className="form-admin-grupo">
             <label className="form-admin-label">Imagen del lugar</label>
@@ -379,17 +364,37 @@ export default function ModalLugar({ lugar = null, onClose, onGuardado }) {
             )}
           </div>
 
-          {/* Dirección */}
-          <div className="form-admin-grupo">
-            <label className="form-admin-label">Dirección</label>
-            <input
-              type="text"
-              className="form-admin-input"
-              placeholder="Calle, sector o referencia"
-              value={form.direccion}
-              onChange={(e) => setField("direccion", e.target.value)}
-              disabled={uploading}
-            />
+          {/* CATEGORIA Y ALTURA */}
+          <div className="form-admin-fila">
+            {/* Categoría */}
+            <div className="form-admin-grupo">
+              <label className="form-admin-label">Categoría</label>
+              <select
+                className="form-admin-select"
+                value={form.categoria}
+                onChange={(e) => setField("categoria", e.target.value)}
+                disabled={uploading}
+              >
+                {CATEGORIAS.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {/* Altitud */}
+            <div className="form-admin-grupo">
+              <label className="form-admin-label">Altitud (msnm)</label>
+              <input
+                type="number"
+                step="any"
+                className="form-admin-input"
+                placeholder="Ej: 3500"
+                value={form.altitud}
+                onChange={(e) => setField("altitud", e.target.value)}
+                disabled={uploading}
+              />
+            </div>
           </div>
 
           {/* Coordenadas */}
@@ -424,22 +429,6 @@ export default function ModalLugar({ lugar = null, onClose, onGuardado }) {
             💡 Para obtener coordenadas: busca el lugar en Google Maps → click
             derecho → "¿Qué hay aquí?" → copia lat, lng
           </span>
-
-          <div className="form-admin-sep" />
-
-          {/* Altitud */}
-          <div className="form-admin-grupo">
-            <label className="form-admin-label">Altitud (msnm)</label>
-            <input
-              type="number"
-              step="any"
-              className="form-admin-input"
-              placeholder="Ej: 3500"
-              value={form.altitud}
-              onChange={(e) => setField("altitud", e.target.value)}
-              disabled={uploading}
-            />
-          </div>
 
           {/* Caserío (Select) - Asumiendo que obtienes la lista de caseríos desde el padre */}
           <div className="form-admin-grupo">

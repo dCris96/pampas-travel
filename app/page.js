@@ -5,6 +5,9 @@ import Link from "next/link";
 import { getLugaresDestacados } from "@/app/actions/lugares";
 import DestacadosSection from "@/components/DestacadosSection";
 import HistoriaSection from "@/components/HistoriaSection";
+import HeroSlideshow from "@/components/HeroSlideshow";
+import { getFiestasCount } from "@/app/actions/fiestas";
+import { getLugaresCount } from "@/app/actions/lugares";
 import "@/styles/home.css";
 
 const IconLogin = () => (
@@ -23,35 +26,33 @@ const IconLogin = () => (
   </svg>
 );
 
-const STATS = [
-  { value: "4500", label: "Habitantes", color: "blue" },
-  { value: "320 km²", label: "Extensión", color: "yellow" },
-  { value: "12", label: "Festividades/año", color: "cyan" },
-  { value: "8", label: "Sitios turísticos", color: "red" },
-];
-
 export default async function HomePage() {
   // Obtener lugares destacados desde el servidor
   const destacados = await getLugaresDestacados();
+
+  // Llamadas paralelas para mayor eficiencia
+  const [fiestasCount, sitiosCount] = await Promise.all([
+    getFiestasCount(),
+    getLugaresCount(),
+  ]);
+
+  // Construimos STATS con los valores reales
+  const STATS = [
+    { value: "2,950 - 3,000", label: "Habitantes", color: "blue" }, // si es fijo
+    { value: "438.18 km²", label: "Extensión", color: "yellow" }, // si es fijo
+    {
+      value: fiestasCount.toString(),
+      label: "Festividades/año",
+      color: "cyan",
+    },
+    { value: sitiosCount.toString(), label: "Sitios turísticos", color: "red" },
+  ];
 
   return (
     <div>
       {/* HERO */}
       <section className="hero">
-        <img
-          src="https://res.cloudinary.com/dbal2qcrz/image/upload/v1775683497/_DSC0670_nczgke.jpg"
-          alt="Valle de los Vientos"
-          className="hero-image"
-        />
-        <div className="hero-overlay" />
-        <div className="hero-content">
-          <h1 className="hero-title">Valle de los Vientos</h1>
-          <p className="hero-description">
-            Un distrito envuelto en montañas, brumas y tradiciones milenarias.
-            Sus tierras fértiles, sus fiestas vibrantes y la calidez de su gente
-            lo convierten en un destino que no olvidas.
-          </p>
-        </div>
+        <HeroSlideshow />
       </section>
 
       {/* ESTADÍSTICAS */}
