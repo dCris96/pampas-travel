@@ -19,7 +19,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 
 // ── HELPER: Fecha relativa ──
@@ -100,6 +100,8 @@ const IconTrash = () => (
 
 export default function TarjetaExperiencia({ experiencia, onBorrada }) {
   const { user } = useAuth();
+
+  const supabase = createClient();
 
   // ── ESTADO DE LIKES ──
   // Calculamos el estado inicial de like desde los datos ya cargados

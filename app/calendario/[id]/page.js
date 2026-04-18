@@ -9,7 +9,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import "@/styles/festividad-detalle.css";
 
 // ── ÍCONOS ──
@@ -186,6 +186,8 @@ function AudioItem({ audio, estaReproduciendo, onPlay }) {
 // ── PÁGINA PRINCIPAL ──
 export default function FestividadDetallePage() {
   const { id } = useParams();
+
+  const supabase = createClient();
 
   const [fest, setFest] = useState(null);
   const [audios, setAudios] = useState([]);

@@ -9,7 +9,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import FormularioNegocio from "@/components/FormularioNegocio";
@@ -64,6 +64,8 @@ const POR_PAGINA = 10;
 
 export default function AdminNegociosPage() {
   const { user, isAdmin, loading: authLoading } = useAuth();
+
+  const supabase = createClient();
 
   const [negocios, setNegocios] = useState([]);
   const [loading, setLoading] = useState(true);

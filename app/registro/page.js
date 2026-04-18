@@ -13,7 +13,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import "@/styles/auth.css";
 
 const IconMountain = () => (
@@ -69,6 +69,8 @@ export default function RegistroPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+
+  const supabase = createClient();
 
   // ── VALIDACIONES ──
   function validar() {

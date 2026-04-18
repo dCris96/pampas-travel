@@ -9,7 +9,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import "@/styles/admin.css";
@@ -17,6 +17,8 @@ import "@/styles/tabla-admin.css";
 
 export default function AdminUsuariosPage() {
   const { user, isAdmin, loading: authLoading } = useAuth();
+
+  const supabase = createClient();
 
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);

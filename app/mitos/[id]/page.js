@@ -9,7 +9,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import "@/styles/mitos-detalle.css";
 import "@/styles/festividad-detalle.css";
 
@@ -72,6 +72,8 @@ function formatFechaLarga(fechaStr, fechaFinStr) {
 // ── PÁGINA PRINCIPAL ──
 export default function MitosDetallePage() {
   const { id } = useParams();
+
+  const supabase = createClient();
 
   const [mito, setMito] = useState(null);
   const [loading, setLoading] = useState(true);

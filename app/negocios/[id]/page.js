@@ -10,7 +10,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import "@/styles/negocio-detalle.css";
 
 // ── CONFIGURACIÓN DE TIPOS ──
@@ -106,6 +106,8 @@ export default function NegocioDetallePage() {
   const [negocio, setNegocio] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const supabase = createClient();
 
   // 🔧 Conecta con: tabla public.negocios SELECT WHERE id = [id]
   useEffect(() => {

@@ -5,7 +5,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import BadgeEstado from "@/components/BadgeEstado";
@@ -57,6 +57,8 @@ function tiempoRelativo(iso) {
 
 export default function ModeracionPage() {
   const { user, isAdmin, loading: authLoading } = useAuth();
+
+  const supabase = createClient();
 
   const [tipoActivo, setTipoActivo] = useState("experiencias");
   const [filtroEstado, setFiltroEstado] = useState("pendiente");
