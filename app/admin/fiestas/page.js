@@ -17,6 +17,7 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import ModalFiesta from "@/components/admin/ModalFiesta";
+import ModalAudiosFiesta from "@/components/admin/ModalAudiosFiesta";
 import Swal from "sweetalert2";
 import "@/styles/admin.css";
 import "@/styles/tabla-admin.css";
@@ -76,6 +77,9 @@ export default function AdminFiestasPage() {
   const [pagina, setPagina] = useState(1);
   const [modal, setModal] = useState(null); // null | 'crear' | objeto lugar
   const [toastMsg, setToastMsg] = useState("");
+
+  const [modalAudiosAbierto, setModalAudiosAbierto] = useState(false);
+  const [festividadSeleccionada, setFestividadSeleccionada] = useState(null);
 
   // ── CARGAR MITOS ──
   // 🔧 Conecta con: tabla public.mitos SELECT todos (activos e inactivos)
@@ -359,6 +363,16 @@ export default function AdminFiestasPage() {
                         {/* Acciones */}
                         <td>
                           <div className="tabla-acciones">
+                            {/* Audios */}
+                            <button
+                              className="btn-tabla-editar"
+                              onClick={() => {
+                                setFestividadSeleccionada(fiesta);
+                                setModalAudiosAbierto(true);
+                              }}
+                            >
+                              🎵 Audios
+                            </button>
                             {/* Toggle activo/inactivo */}
                             <button
                               className="btn-toggle-activo"
@@ -443,6 +457,18 @@ export default function AdminFiestasPage() {
           </div>
         </div>
       </div>
+
+      {modalAudiosAbierto && (
+        <ModalAudiosFiesta
+          festividadId={festividadSeleccionada.id}
+          festividadTitulo={festividadSeleccionada.titulo}
+          onClose={() => setModalAudiosAbierto(false)}
+          onGuardado={(accion, data) => {
+            // Opcional: refrescar algún estado si es necesario
+            console.log(`Audio ${accion}`, data);
+          }}
+        />
+      )}
 
       {/* ── MODAL DE CREAR/EDITAR ── */}
       {modal && (

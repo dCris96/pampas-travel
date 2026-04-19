@@ -439,9 +439,7 @@ export default function ModalFiesta({ fiesta = null, onClose, onGuardado }) {
 
           {/* SECCIÓN DE CUATRO IMÁGENES */}
           <div className="form-admin-separator">
-            <hr />
             <span>Imágenes de la festividad</span>
-            <hr />
           </div>
 
           {IMAGENES_CONFIG.map((cfg) => renderImageUpload(cfg))}
