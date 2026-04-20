@@ -1,17 +1,39 @@
 // app/admin/moderacion/page.js
-// Panel de moderación — admin aprueba o rechaza publicaciones
+// ─────────────────────────────────────────────────────
+// Panel de moderación de contenido generado por usuarios.
+// Solo modera: experiencias, productos, negocios.
+//
+// Cambios respecto al código original:
+//   ✓ Eliminado setRechazandoId (variable inexistente)
+//   ✓ Supabase calls movidos a Server Actions en /app/actions/moderacion.js
+//   ✓ Join a profiles simplificado (sin sintaxis de FK explícita)
+//   ✓ createClient eliminado del cliente — solo se usa en actions
+//   ✓ Corrección de var no declaradas
+// ─────────────────────────────────────────────────────
 
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import BadgeEstado from "@/components/BadgeEstado";
+import ModalModerar from "@/components/admin/ModalModerar";
+
+// Server Actions — toda escritura/lectura pasa por aquí
+import {
+  cargarConteos,
+  cargarItems,
+  aprobarItem,
+  rechazarItem,
+} from "@/app/actions/moderacion";
+
 import "@/styles/admin.css";
 import "@/styles/moderacion.css";
+import "@/styles/tabla-admin.css";
 
+// ── CONFIGURACIÓN DE TIPOS MODERABLES ──
+// Solo estos tres. Agregar aquí si en el futuro hay más.
 const TIPOS = [
   {
     id: "experiencias",
@@ -19,6 +41,7 @@ const TIPOS = [
     emoji: "📸",
     tabla: "experiencias",
     campoUser: "user_id",
+    campoNombre: "titulo",
   },
   {
     id: "productos",
@@ -26,6 +49,7 @@ const TIPOS = [
     emoji: "📦",
     tabla: "productos",
     campoUser: "user_id",
+    campoNombre: "nombre",
   },
   {
     id: "negocios",
@@ -33,115 +57,109 @@ const TIPOS = [
     emoji: "🏪",
     tabla: "negocios",
     campoUser: "creado_por",
-  },
-  {
-    id: "lugares",
-    label: "Lugares",
-    emoji: "🗺️",
-    tabla: "lugares",
-    campoUser: "creado_por",
+    campoNombre: "nombre",
   },
 ];
 
 const FILTROS_ESTADO = ["pendiente", "aprobado", "rechazado"];
+const POR_PAGINA = 10;
 
+// ── HELPER: tiempo relativo ──
 function tiempoRelativo(iso) {
-  const diff = Date.now() - new Date(iso);
-  const h = Math.floor(diff / 3600000);
-  const d = Math.floor(diff / 86400000);
+  if (!iso) return "—";
+  const diff = Date.now() - new Date(iso).getTime();
+  const h = Math.floor(diff / 3_600_000);
+  const d = Math.floor(diff / 86_400_000);
   if (h < 1) return "hace menos de 1h";
   if (h < 24) return `hace ${h}h`;
   if (d === 1) return "ayer";
   return `hace ${d} días`;
 }
 
+// ── COMPONENTE PRINCIPAL ──
 export default function ModeracionPage() {
   const { user, isAdmin, loading: authLoading } = useAuth();
 
-  const supabase = createClient();
-
+  // Qué tipo de contenido se está viendo
   const [tipoActivo, setTipoActivo] = useState("experiencias");
+  // Filtro de estado: pendiente | aprobado | rechazado
   const [filtroEstado, setFiltroEstado] = useState("pendiente");
+
+  // Datos
   const [items, setItems] = useState([]);
   const [conteos, setConteos] = useState({});
+
+  // UI
   const [loading, setLoading] = useState(true);
-  // ID del item con el input de rechazo abierto
-  const [rechazandoId, setRechazandoId] = useState(null);
-  const [notaRechazo, setNotaRechazo] = useState("");
-  const [procesando, setProcesando] = useState(null); // ID en proceso
+  const [pagina, setPagina] = useState(1);
+  const [modalItem, setModalItem] = useState(null); // ítem en modal de vista
+  const [rejectModal, setRejectModal] = useState(null); // { item, reason }
+  const [procesando, setProcesando] = useState(null); // id del ítem en proceso
   const [toast, setToast] = useState("");
 
-  const mostrarToast = (msg) => {
+  // ── Toast helper ──
+  function mostrarToast(msg) {
     setToast(msg);
     setTimeout(() => setToast(""), 3000);
-  };
+  }
 
-  // ── CARGAR CONTEOS DE PENDIENTES ──
-  // Para los badges de los tabs
-  const cargarConteos = useCallback(async () => {
-    const results = await Promise.all(
-      TIPOS.map(async (t) => {
-        const { count } = await supabase
-          .from(t.tabla)
-          .select("id", { count: "exact", head: true })
-          .eq("estado", "pendiente");
-        return [t.id, count || 0];
-      }),
-    );
-    setConteos(Object.fromEntries(results));
+  // ── Cargar conteos de pendientes ──
+  // 🔧 Llama a Server Action — no hay Supabase en el cliente
+  const refrescarConteos = useCallback(async () => {
+    try {
+      const data = await cargarConteos();
+      setConteos(data);
+    } catch (err) {
+      console.error("Error cargando conteos:", err);
+    }
   }, []);
 
-  // ── CARGAR ITEMS DE LA TAB ACTIVA ──
-  // 🔧 Conecta con: tabla dinámica según tipoActivo
-  const cargarItems = useCallback(async () => {
+  // ── Cargar ítems del tipo y estado activos ──
+  const refrescarItems = useCallback(async () => {
     setLoading(true);
     try {
       const tipo = TIPOS.find((t) => t.id === tipoActivo);
       if (!tipo) return;
 
-      let query = supabase
-        .from(tipo.tabla)
-        .select(
-          `*, perfil:profiles!${tipo.tabla}_${tipo.campoUser}_fkey(nombre, avatar_url)`,
-        )
-        .eq("estado", filtroEstado)
-        .order("created_at", { ascending: filtroEstado === "pendiente" }); // Pendientes: más viejos primero
+      const { data, error } = await cargarItems({
+        tabla: tipo.tabla,
+        estado: filtroEstado,
+      });
 
-      const { data, error } = await query;
-      if (error) throw error;
-      setItems(data || []);
-    } catch (err) {
-      console.error(err);
-      setItems([]);
+      if (error) {
+        console.error("Error cargando ítems:", error);
+        setItems([]);
+      } else {
+        setItems(data);
+      }
+      setPagina(1);
     } finally {
       setLoading(false);
     }
   }, [tipoActivo, filtroEstado]);
 
+  // Carga inicial y cuando cambia tipo o filtro
   useEffect(() => {
-    if (isAdmin) {
-      cargarItems();
-      cargarConteos();
-    }
-  }, [isAdmin, cargarItems, cargarConteos]);
+    if (!isAdmin) return;
+    refrescarItems();
+    refrescarConteos();
+  }, [isAdmin, refrescarItems, refrescarConteos]);
 
   // ── APROBAR ──
-  // 🔧 Conecta con: UPDATE tabla SET estado='aprobado' WHERE id
   async function aprobar(item) {
     setProcesando(item.id);
     try {
       const tipo = TIPOS.find((t) => t.id === tipoActivo);
-      const { error } = await supabase
-        .from(tipo.tabla)
-        .update({ estado: "aprobado", nota_rechazo: null })
-        .eq("id", item.id);
+      const result = await aprobarItem({ tabla: tipo.tabla, id: item.id });
 
-      if (error) throw error;
+      if (!result.ok) throw new Error(result.error);
 
+      // Quitar el ítem de la lista local sin recargar todo
       setItems((prev) => prev.filter((i) => i.id !== item.id));
-      cargarConteos();
-      const nombre = item.titulo || item.nombre || "Publicación";
-      mostrarToast(`✅ "${nombre}" aprobado y publicado.`);
+      refrescarConteos();
+
+      const nombre = item.titulo ?? item.nombre ?? "Publicación";
+      mostrarToast(`✅ "${nombre}" aprobado.`);
     } catch (err) {
       alert("Error al aprobar: " + err.message);
     } finally {
@@ -149,28 +167,28 @@ export default function ModeracionPage() {
     }
   }
 
-  // ── RECHAZAR ──
-  // 🔧 Conecta con: UPDATE tabla SET estado='rechazado', nota_rechazo WHERE id
-  async function rechazar(item) {
-    if (!notaRechazo.trim()) {
-      alert("Escribe una razón para el rechazo (el usuario la verá).");
+  // ── RECHAZAR (requiere motivo) ──
+  async function confirmarRechazo(item, motivo) {
+    if (!motivo.trim()) {
+      alert("Debes escribir una razón para el rechazo.");
       return;
     }
     setProcesando(item.id);
     try {
       const tipo = TIPOS.find((t) => t.id === tipoActivo);
-      const { error } = await supabase
-        .from(tipo.tabla)
-        .update({ estado: "rechazado", nota_rechazo: notaRechazo.trim() })
-        .eq("id", item.id);
+      const result = await rechazarItem({
+        tabla: tipo.tabla,
+        id: item.id,
+        motivo: motivo.trim(),
+      });
 
-      if (error) throw error;
+      if (!result.ok) throw new Error(result.error);
 
       setItems((prev) => prev.filter((i) => i.id !== item.id));
-      setRechazandoId(null);
-      setNotaRechazo("");
-      cargarConteos();
-      const nombre = item.titulo || item.nombre || "Publicación";
+      setRejectModal(null);
+      refrescarConteos();
+
+      const nombre = item.titulo ?? item.nombre ?? "Publicación";
       mostrarToast(`❌ "${nombre}" rechazado.`);
     } catch (err) {
       alert("Error al rechazar: " + err.message);
@@ -179,241 +197,309 @@ export default function ModeracionPage() {
     }
   }
 
-  // ── RENDER DE UN ITEM ──
-  function renderItem(item) {
-    const esProcesando = procesando === item.id;
-    const esRechazando = rechazandoId === item.id;
-    const titulo = item.titulo || item.nombre || "(sin título)";
-    const tipo = TIPOS.find((t) => t.id === tipoActivo);
+  // ── PAGINACIÓN local ──
+  const totalPaginas = Math.ceil(items.length / POR_PAGINA);
+  const itemsPagina = items.slice(
+    (pagina - 1) * POR_PAGINA,
+    pagina * POR_PAGINA,
+  );
+
+  // ── CAMBIAR TIPO de contenido ──
+  function cambiarTipo(nuevoId) {
+    setTipoActivo(nuevoId);
+    // Limpiamos modales y volvemos a pendientes
+    setRejectModal(null);
+    setModalItem(null);
+  }
+
+  // ── CAMBIAR FILTRO de estado ──
+  function cambiarFiltro(estado) {
+    setFiltroEstado(estado);
+    setRejectModal(null);
+    setModalItem(null);
+  }
+
+  // ─────────────────────────────────────────────────────
+  // RENDER TABLA
+  // ─────────────────────────────────────────────────────
+  function renderTabla() {
+    const tipoActual = TIPOS.find((t) => t.id === tipoActivo);
+    const campoNombre = tipoActual.campoNombre;
+
+    if (loading) {
+      // Skeleton mientras carga
+      return (
+        <div className="tabla-admin-wrapper">
+          <table className="tabla-admin">
+            <tbody>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <tr key={i}>
+                  {[...Array(5)].map((_, j) => (
+                    <td key={j}>
+                      <div
+                        style={{
+                          height: 14,
+                          width: "70%",
+                          background:
+                            "linear-gradient(90deg,#111 25%,#1a1a1a 50%,#111 75%)",
+                          backgroundSize: "200% 100%",
+                          animation: "shimmer 1.5s infinite",
+                          borderRadius: 4,
+                        }}
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
 
     return (
-      <div key={item.id} className={`mod-card ${item.estado}`}>
-        {/* Header: autor + tipo + estado */}
-        <div className="mod-card-header">
-          <div className="mod-card-autor">
-            <div className="mod-autor-avatar">
-              {item.perfil?.avatar_url ? (
-                <img
-                  src={item.perfil.avatar_url}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    borderRadius: "50%",
-                  }}
-                  alt=""
-                />
-              ) : (
-                <span>{(item.perfil?.nombre || "U")[0].toUpperCase()}</span>
-              )}
+      <div className="tabla-admin-wrapper">
+        <table className="tabla-admin">
+          <thead>
+            <tr>
+              <th>
+                {tipoActual.label === "Experiencias" ? "Título" : "Nombre"}
+              </th>
+              <th>Autor</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {itemsPagina.map((item) => {
+              const titulo = item[campoNombre] ?? item.titulo ?? "(sin título)";
+              const autor = item.perfil?.nombre ?? "Usuario";
+              const avatar = item.perfil?.avatar_url ?? null;
+              const esProcesando = procesando === item.id;
+
+              return (
+                <tr key={item.id}>
+                  {/* Nombre + thumbnail */}
+                  <td>
+                    <div className="tabla-celda-nombre">
+                      {item.imagen_url ? (
+                        <img
+                          src={item.imagen_url}
+                          alt={titulo}
+                          className="tabla-thumbnail"
+                        />
+                      ) : (
+                        <div className="tabla-thumbnail-placeholder">
+                          {tipoActual.emoji}
+                        </div>
+                      )}
+                      <div>
+                        <div className="tabla-nombre-texto">{titulo}</div>
+                        {item.categoria && (
+                          <span className="tabla-nombre-sub">
+                            {item.categoria}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* Autor */}
+                  <td>
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 8 }}
+                    >
+                      {avatar ? (
+                        <img
+                          src={avatar}
+                          alt=""
+                          style={{
+                            width: 24,
+                            height: 24,
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            width: 24,
+                            height: 24,
+                            borderRadius: "50%",
+                            background: "#2a2a2a",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: 11,
+                            color: "#777",
+                            fontFamily: "var(--font-display)",
+                            fontWeight: 600,
+                          }}
+                        >
+                          {autor[0]?.toUpperCase()}
+                        </div>
+                      )}
+                      <span style={{ fontSize: 13 }}>{autor}</span>
+                    </div>
+                  </td>
+
+                  {/* Fecha */}
+                  <td style={{ fontSize: 12, color: "#666" }}>
+                    {tiempoRelativo(item.created_at)}
+                  </td>
+
+                  {/* Estado */}
+                  <td>
+                    <BadgeEstado estado={item.estado} />
+                  </td>
+
+                  {/* Acciones */}
+                  <td>
+                    <div className="tabla-acciones">
+                      {/* Siempre disponible: ver detalles */}
+                      <button
+                        className="btn-tabla-ver"
+                        onClick={() => setModalItem(item)}
+                        title="Ver detalles completos"
+                      >
+                        👁️ Ver
+                      </button>
+
+                      {/* Acciones según estado actual */}
+                      {filtroEstado === "pendiente" && (
+                        <>
+                          <button
+                            className="btn-aprobar"
+                            onClick={() => aprobar(item)}
+                            disabled={esProcesando}
+                          >
+                            {esProcesando ? "..." : "✅ Aprobar"}
+                          </button>
+                          <button
+                            className="btn-rechazar"
+                            onClick={() => setRejectModal({ item, reason: "" })}
+                            disabled={esProcesando}
+                          >
+                            ❌ Rechazar
+                          </button>
+                        </>
+                      )}
+
+                      {/* Rechazado → puede aprobarse */}
+                      {filtroEstado === "rechazado" && (
+                        <button
+                          className="btn-aprobar"
+                          onClick={() => aprobar(item)}
+                          disabled={esProcesando}
+                        >
+                          {esProcesando ? "..." : "✅ Aprobar"}
+                        </button>
+                      )}
+
+                      {/* Aprobado → puede revocarse */}
+                      {filtroEstado === "aprobado" && (
+                        <button
+                          className="btn-rechazar"
+                          onClick={() =>
+                            setRejectModal({
+                              item,
+                              reason: item.nota_rechazo ?? "",
+                            })
+                          }
+                          disabled={esProcesando}
+                        >
+                          {esProcesando ? "..." : "❌ Revocar"}
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
+        {/* Estado vacío */}
+        {items.length === 0 && (
+          <div className="tabla-vacia">
+            <div className="tabla-vacia-icon">
+              {filtroEstado === "pendiente"
+                ? "⏳"
+                : filtroEstado === "aprobado"
+                  ? "✅"
+                  : "❌"}
             </div>
-            <div>
-              <span className="mod-autor-nombre">
-                {item.perfil?.nombre || "Usuario"}
-              </span>
-              <span className="mod-autor-fecha">
-                {tiempoRelativo(item.created_at)}
-              </span>
-            </div>
-          </div>
-          <div className="mod-card-meta">
-            <span className="mod-tipo-badge">
-              {tipo?.emoji} {tipo?.label.slice(0, -1)}
-            </span>
-            <BadgeEstado estado={item.estado} />
-          </div>
-        </div>
-
-        {/* Cuerpo */}
-        <div className="mod-card-body">
-          {/* Imagen */}
-          {item.imagen_url && (
-            <img
-              src={item.imagen_url}
-              alt=""
-              className="mod-card-img"
-              onClick={() => window.open(item.imagen_url, "_blank")}
-            />
-          )}
-
-          {/* Título para lugares/negocios/productos */}
-          {(item.titulo || item.nombre) && (
-            <div className="mod-card-titulo">{titulo}</div>
-          )}
-
-          {/* Texto de experiencias */}
-          {item.contenido && <p className="mod-card-texto">{item.contenido}</p>}
-
-          {/* Descripción de otros tipos */}
-          {item.descripcion && (
-            <p className="mod-card-texto" style={{ fontSize: 13 }}>
-              {item.descripcion}
+            <p>
+              {filtroEstado === "pendiente"
+                ? "No hay publicaciones pendientes. ¡Todo al día!"
+                : filtroEstado === "aprobado"
+                  ? "No hay publicaciones aprobadas."
+                  : "No hay publicaciones rechazadas."}
             </p>
-          )}
-
-          {/* Datos extra */}
-          <div className="mod-card-datos">
-            {item.categoria && (
-              <div className="mod-dato">
-                <span className="mod-dato-label">Categoría</span>
-                <span
-                  className="mod-dato-valor"
-                  style={{ textTransform: "capitalize" }}
-                >
-                  {item.categoria}
-                </span>
-              </div>
-            )}
-            {item.tipo && (
-              <div className="mod-dato">
-                <span className="mod-dato-label">Tipo</span>
-                <span
-                  className="mod-dato-valor"
-                  style={{ textTransform: "capitalize" }}
-                >
-                  {item.tipo}
-                </span>
-              </div>
-            )}
-            {item.precio_desde && (
-              <div className="mod-dato">
-                <span className="mod-dato-label">Precio desde</span>
-                <span className="mod-dato-valor">${item.precio_desde} MXN</span>
-              </div>
-            )}
-            {item.precio && (
-              <div className="mod-dato">
-                <span className="mod-dato-label">Precio</span>
-                <span className="mod-dato-valor">${item.precio} MXN</span>
-              </div>
-            )}
-            {item.direccion && (
-              <div className="mod-dato">
-                <span className="mod-dato-label">Dirección</span>
-                <span className="mod-dato-valor">{item.direccion}</span>
-              </div>
-            )}
-            {item.ubicacion && (
-              <div className="mod-dato">
-                <span className="mod-dato-label">Ubicación</span>
-                <span className="mod-dato-valor">{item.ubicacion}</span>
-              </div>
-            )}
-            {item.telefono && (
-              <div className="mod-dato">
-                <span className="mod-dato-label">Teléfono</span>
-                <span className="mod-dato-valor">{item.telefono}</span>
-              </div>
-            )}
-            {item.contacto && (
-              <div className="mod-dato">
-                <span className="mod-dato-label">Contacto</span>
-                <span className="mod-dato-valor">{item.contacto}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Nota de rechazo si ya existe */}
-          {item.nota_rechazo && (
-            <div className="mod-nota-rechazo">
-              <strong>Razón del rechazo:</strong> {item.nota_rechazo}
-            </div>
-          )}
-        </div>
-
-        {/* Footer: botones de acción */}
-        {filtroEstado === "pendiente" && (
-          <div className="mod-card-footer" style={{ flexWrap: "wrap" }}>
-            {esRechazando ? (
-              // Input de razón de rechazo
-              <div className="rechazo-input-wrapper">
-                <input
-                  type="text"
-                  className="rechazo-input"
-                  placeholder="Razón del rechazo (el usuario la verá)..."
-                  value={notaRechazo}
-                  onChange={(e) => setNotaRechazo(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && rechazar(item)}
-                  autoFocus
-                />
-                <button
-                  className="btn-rechazar"
-                  onClick={() => rechazar(item)}
-                  disabled={esProcesando || !notaRechazo.trim()}
-                >
-                  {esProcesando ? "..." : "❌ Confirmar rechazo"}
-                </button>
-                <button
-                  onClick={() => {
-                    setRechazandoId(null);
-                    setNotaRechazo("");
-                  }}
-                  style={{
-                    padding: "7px 12px",
-                    background: "none",
-                    border: "1px solid var(--color-border)",
-                    borderRadius: 8,
-                    color: "#555",
-                    fontFamily: "var(--font-display)",
-                    fontSize: 12,
-                    cursor: "pointer",
-                  }}
-                >
-                  Cancelar
-                </button>
-              </div>
-            ) : (
-              <>
-                <button
-                  className="btn-rechazar"
-                  onClick={() => setRechazandoId(item.id)}
-                  disabled={esProcesando}
-                >
-                  ❌ Rechazar
-                </button>
-                <button
-                  className="btn-aprobar"
-                  onClick={() => aprobar(item)}
-                  disabled={esProcesando}
-                >
-                  {esProcesando ? "..." : "✅ Aprobar y publicar"}
-                </button>
-              </>
-            )}
           </div>
         )}
 
-        {/* Para aprobados/rechazados: opción de cambiar */}
-        {filtroEstado !== "pendiente" && (
-          <div className="mod-card-footer">
-            {filtroEstado === "rechazado" && (
+        {/* Paginación */}
+        {totalPaginas > 1 && (
+          <div className="tabla-paginacion">
+            <span style={{ fontSize: 12, color: "#555" }}>
+              Página {pagina} de {totalPaginas}
+            </span>
+            <div className="tabla-paginacion-btns">
               <button
-                className="btn-aprobar"
-                onClick={() => aprobar(item)}
-                disabled={esProcesando}
+                className="btn-pag"
+                onClick={() => setPagina(1)}
+                disabled={pagina === 1}
               >
-                {esProcesando ? "..." : "✅ Aprobar igualmente"}
+                «
               </button>
-            )}
-            {filtroEstado === "aprobado" && (
               <button
-                className="btn-rechazar"
-                onClick={() => {
-                  setRechazandoId(item.id);
-                }}
-                disabled={esProcesando}
+                className="btn-pag"
+                onClick={() => setPagina((p) => p - 1)}
+                disabled={pagina === 1}
               >
-                ❌ Revocar aprobación
+                ‹
               </button>
-            )}
+
+              {Array.from({ length: totalPaginas }, (_, i) => i + 1)
+                .filter((p) => Math.abs(p - pagina) <= 2)
+                .map((p) => (
+                  <button
+                    key={p}
+                    className={`btn-pag ${p === pagina ? "activo" : ""}`}
+                    onClick={() => setPagina(p)}
+                  >
+                    {p}
+                  </button>
+                ))}
+
+              <button
+                className="btn-pag"
+                onClick={() => setPagina((p) => p + 1)}
+                disabled={pagina === totalPaginas}
+              >
+                ›
+              </button>
+              <button
+                className="btn-pag"
+                onClick={() => setPagina(totalPaginas)}
+                disabled={pagina === totalPaginas}
+              >
+                »
+              </button>
+            </div>
           </div>
         )}
       </div>
     );
   }
 
-  // ── GUARDS ──
-  if (authLoading)
+  // ─────────────────────────────────────────────────────
+  // GUARDS DE ACCESO
+  // ─────────────────────────────────────────────────────
+
+  if (authLoading) {
     return (
       <div
         style={{
@@ -427,220 +513,185 @@ export default function ModeracionPage() {
         Verificando permisos...
       </div>
     );
+  }
 
-  if (!isAdmin)
+  if (!user || !isAdmin) {
     return (
       <div className="admin-acceso-denegado">
         <h2>🔒 Sin permisos</h2>
-        <p>Solo los administradores pueden moderar publicaciones.</p>
+        <p>Solo los administradores pueden acceder al panel de moderación.</p>
         <Link
-          href="/"
+          href={!user ? "/login" : "/"}
           style={{
             color: "var(--color-blue)",
             fontFamily: "var(--font-display)",
+            fontSize: 14,
           }}
         >
-          ← Inicio
+          {!user ? "Iniciar sesión" : "← Volver al inicio"}
         </Link>
       </div>
     );
+  }
 
-  const totalPendientes = Object.values(conteos).reduce((a, b) => a + b, 0);
+  // Total de pendientes para el badge del header
+  const totalPendientes = Object.values(conteos).reduce((acc, n) => acc + n, 0);
 
+  // ─────────────────────────────────────────────────────
+  // RENDER PRINCIPAL
+  // ─────────────────────────────────────────────────────
   return (
     <div>
+      {/* ── HEADER ── */}
       <div className="admin-page-header">
         <h1 className="admin-page-titulo">
           Moderación
           {totalPendientes > 0 && (
             <span
-              style={{
-                padding: "3px 12px",
-                borderRadius: 20,
-                fontSize: 12,
-                background: "rgba(255,74,74,0.15)",
-                color: "#ff6b6b",
-                border: "1px solid rgba(255,74,74,0.3)",
-                fontFamily: "var(--font-display)",
-              }}
+              className="admin-badge"
+              style={{ background: "#ff6b6b20", color: "#ff6b6b" }}
             >
               {totalPendientes} pendientes
             </span>
           )}
         </h1>
         <p className="admin-page-sub">
-          Revisa y aprueba el contenido enviado por los usuarios.
+          Revisa y aprueba el contenido generado por los usuarios.
         </p>
       </div>
 
+      {/* ── LAYOUT ── */}
       <div className="admin-layout">
         <AdminSidebar />
 
-        <div>
-          {/* Tabs de tipo */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {/* ── TABS: tipo de contenido ── */}
           <div className="mod-tabs">
             {TIPOS.map((t) => {
-              const count = conteos[t.id] || 0;
+              const count = conteos[t.id] ?? 0;
               return (
                 <button
                   key={t.id}
                   className={`mod-tab ${tipoActivo === t.id ? "activo" : ""}`}
-                  onClick={() => {
-                    setTipoActivo(t.id);
-                    setRechazandoId(null);
-                  }}
+                  onClick={() => cambiarTipo(t.id)}
                 >
                   {t.emoji} {t.label}
                   {count > 0 && (
-                    <span
-                      className={`mod-tab-count ${count > 0 ? "urgente" : ""}`}
-                    >
-                      {count}
-                    </span>
+                    <span className="mod-tab-count urgente">{count}</span>
                   )}
                 </button>
               );
             })}
           </div>
 
-          {/* Filtros de estado */}
+          {/* ── FILTROS: estado ── */}
           <div className="mod-filtros">
             {FILTROS_ESTADO.map((estado) => (
               <button
                 key={estado}
-                className={`mod-filtro-btn ${filtroEstado === estado ? "activo" : ""}`}
-                onClick={() => {
-                  setFiltroEstado(estado);
-                  setRechazandoId(null);
-                }}
+                className={`mod-filtro-btn ${
+                  filtroEstado === estado ? "activo" : ""
+                }`}
+                onClick={() => cambiarFiltro(estado)}
               >
-                {
-                  {
-                    pendiente: "⏳ Pendientes",
-                    aprobado: "✅ Aprobados",
-                    rechazado: "❌ Rechazados",
-                  }[estado]
-                }
+                {estado === "pendiente"
+                  ? "⏳ Pendientes"
+                  : estado === "aprobado"
+                    ? "✅ Aprobados"
+                    : "❌ Rechazados"}
               </button>
             ))}
           </div>
 
-          {/* Lista de items */}
-          {loading ? (
-            Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="mod-card pendiente">
-                <div className="mod-card-header">
-                  <div
-                    style={{ display: "flex", alignItems: "center", gap: 10 }}
-                  >
-                    <div
-                      style={{
-                        width: 34,
-                        height: 34,
-                        borderRadius: "50%",
-                        background:
-                          "linear-gradient(90deg,#111 25%,#1a1a1a 50%,#111 75%)",
-                        backgroundSize: "200% 100%",
-                        animation: "shimmer 1.5s infinite",
-                      }}
-                    />
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 5,
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: 100,
-                          height: 12,
-                          borderRadius: 4,
-                          background:
-                            "linear-gradient(90deg,#111 25%,#1a1a1a 50%,#111 75%)",
-                          backgroundSize: "200% 100%",
-                          animation: "shimmer 1.5s infinite",
-                        }}
-                      />
-                      <div
-                        style={{
-                          width: 60,
-                          height: 9,
-                          borderRadius: 4,
-                          background:
-                            "linear-gradient(90deg,#111 25%,#1a1a1a 50%,#111 75%)",
-                          backgroundSize: "200% 100%",
-                          animation: "shimmer 1.5s infinite",
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="mod-card-body">
-                  <div
-                    style={{
-                      height: 80,
-                      background:
-                        "linear-gradient(90deg,#111 25%,#1a1a1a 50%,#111 75%)",
-                      backgroundSize: "200% 100%",
-                      animation: "shimmer 1.5s infinite",
-                      borderRadius: 8,
-                      marginBottom: 12,
-                    }}
-                  />
-                  <div
-                    style={{
-                      height: 13,
-                      width: "70%",
-                      borderRadius: 4,
-                      background:
-                        "linear-gradient(90deg,#111 25%,#1a1a1a 50%,#111 75%)",
-                      backgroundSize: "200% 100%",
-                      animation: "shimmer 1.5s infinite",
-                    }}
-                  />
-                </div>
-              </div>
-            ))
-          ) : items.length === 0 ? (
-            <div className="mod-vacio">
-              <div className="mod-vacio-icon">
-                {
-                  { pendiente: "⏳", aprobado: "✅", rechazado: "❌" }[
-                    filtroEstado
-                  ]
-                }
-              </div>
-              <h3>
-                {
-                  {
-                    pendiente: "Sin pendientes",
-                    aprobado: "Sin aprobados",
-                    rechazado: "Sin rechazados",
-                  }[filtroEstado]
-                }
-              </h3>
-              <p>
-                {
-                  {
-                    pendiente:
-                      "¡Todo al día! No hay publicaciones esperando revisión.",
-                    aprobado:
-                      "Aún no has aprobado ningún contenido de este tipo.",
-                    rechazado: "No hay publicaciones rechazadas.",
-                  }[filtroEstado]
-                }
-              </p>
-            </div>
-          ) : (
-            items.map((item) => renderItem(item))
-          )}
+          {/* ── TABLA ── */}
+          {renderTabla()}
         </div>
       </div>
 
-      {/* Toast */}
+      {/* ── MODAL: ver contenido completo ── */}
+      {modalItem && (
+        <ModalModerar
+          item={modalItem}
+          tipo={TIPOS.find((t) => t.id === tipoActivo)}
+          onClose={() => setModalItem(null)}
+        />
+      )}
+
+      {/* ── MODAL: motivo de rechazo ── */}
+      {rejectModal && (
+        <div
+          className="modal-overlay"
+          onClick={(e) => e.target === e.currentTarget && setRejectModal(null)}
+        >
+          <div className="modal-card" style={{ maxWidth: 450 }}>
+            <div className="modal-header">
+              <span className="modal-titulo">❌ Motivo del rechazo</span>
+              <button
+                className="btn-cerrar-modal"
+                onClick={() => setRejectModal(null)}
+                aria-label="Cerrar"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="form-admin">
+              <div className="form-admin-grupo">
+                <label className="form-admin-label">
+                  Razón <span style={{ color: "var(--color-red)" }}>*</span>
+                  <span
+                    style={{
+                      fontWeight: 400,
+                      textTransform: "none",
+                      marginLeft: 4,
+                      color: "#555",
+                    }}
+                  >
+                    (el usuario la verá)
+                  </span>
+                </label>
+                <textarea
+                  className="form-admin-textarea"
+                  rows={3}
+                  placeholder="Ej: Faltan datos de contacto, imagen inapropiada, descripción incompleta..."
+                  value={rejectModal.reason}
+                  autoFocus
+                  onChange={(e) =>
+                    setRejectModal({
+                      ...rejectModal,
+                      reason: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button
+                className="btn-cancelar"
+                onClick={() => setRejectModal(null)}
+              >
+                Cancelar
+              </button>
+              <button
+                className="btn-submit-exp"
+                style={{ background: "#cc2200" }}
+                onClick={() =>
+                  confirmarRechazo(rejectModal.item, rejectModal.reason)
+                }
+                disabled={!rejectModal.reason.trim() || !!procesando}
+              >
+                {procesando ? "Procesando..." : "Confirmar rechazo"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── TOAST ── */}
       {toast && (
         <div
+          className="toast-notification"
           style={{
             position: "fixed",
             bottom: 24,
@@ -654,8 +705,6 @@ export default function ModeracionPage() {
             fontSize: 13,
             color: "var(--color-text)",
             boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
-            maxWidth: 320,
-            lineHeight: 1.5,
           }}
         >
           {toast}

@@ -226,24 +226,24 @@ const ADMIN_NAV = [
     Icon: CaserioIcon,
     statKey: "caserios",
   },
-  {
-    href: "/admin/experiencias",
-    label: "Experiencias",
-    Icon: IconStar,
-    statKey: "experiencias",
-  },
-  {
-    href: "/admin/productos",
-    label: "Productos",
-    Icon: IconShop,
-    statKey: "productos",
-  },
-  {
-    href: "/admin/negocios",
-    label: "Negocios",
-    Icon: IconBriefcase,
-    statKey: "negocios",
-  },
+  // {
+  //   href: "/admin/experiencias",
+  //   label: "Experiencias",
+  //   Icon: IconStar,
+  //   statKey: "experiencias",
+  // },
+  // {
+  //   href: "/admin/productos",
+  //   label: "Productos",
+  //   Icon: IconShop,
+  //   statKey: "productos",
+  // },
+  // {
+  //   href: "/admin/negocios",
+  //   label: "Negocios",
+  //   Icon: IconBriefcase,
+  //   statKey: "negocios",
+  // },
   {
     href: "/admin/usuarios",
     label: "Usuarios",

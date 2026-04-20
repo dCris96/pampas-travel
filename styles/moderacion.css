@@ -1,391 +1,232 @@
 /* styles/moderacion.css */
-/* Panel de moderación — cola de publicaciones pendientes */
+/* ─────────────────────────────────────────────────────
+   Estilos específicos del panel de moderación
+   ───────────────────────────────────────────────────── */
 
-/* ── TABS DE TIPOS ── */
+/* ── TABS DE TIPO (Experiencias / Productos / Negocios) ── */
 .mod-tabs {
   display: flex;
-  gap: 4px;
-  margin-bottom: 20px;
-  background-color: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--card-radius);
-  padding: 6px;
+  gap: 6px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
 .mod-tab {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   padding: 8px 16px;
-  border-radius: var(--radius-sm);
+  border-radius: 20px;
   font-family: var(--font-display);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
   color: var(--color-text-muted);
-  background: none;
-  border: none;
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
 }
 
 .mod-tab:hover {
-  background-color: var(--color-bg-hover);
+  border-color: #333;
   color: var(--color-text);
 }
 
 .mod-tab.activo {
   background-color: var(--color-btn-primary);
+  border-color: var(--color-btn-primary);
   color: white;
 }
 
 /* Badge de conteo en el tab */
 .mod-tab-count {
-  padding: 1px 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
   border-radius: 10px;
   font-size: 10px;
   font-weight: 700;
   background-color: rgba(255, 255, 255, 0.15);
+  color: inherit;
 }
 
+/* Conteo urgente (hay pendientes) */
+.mod-tab-count.urgente {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+/* Tab activo — el badge se ve diferente */
 .mod-tab.activo .mod-tab-count {
   background-color: rgba(255, 255, 255, 0.25);
 }
 
-/* Badge de pendientes en rojo */
-.mod-tab-count.urgente {
-  background-color: rgba(255, 74, 74, 0.3);
-  color: #ff8a8a;
+/* ── FILTROS DE ESTADO ── */
+.mod-filtros {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
 }
 
-.mod-tab.activo .mod-tab-count.urgente {
-  background-color: rgba(255, 74, 74, 0.4);
-}
-
-/* ── TARJETA DE MODERACIÓN ── */
-.mod-card {
+.mod-filtro-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 500;
   background-color: var(--color-bg-card);
   border: 1px solid var(--color-border);
-  border-radius: var(--card-radius);
-  overflow: hidden;
-  margin-bottom: 14px;
-  transition: border-color 0.2s ease;
-}
-
-.mod-card:hover {
-  border-color: #252525;
-}
-
-/* Borde izquierdo de color según estado */
-.mod-card.pendiente {
-  border-left: 3px solid #f5c542;
-}
-.mod-card.aprobado {
-  border-left: 3px solid #4aff8a;
-}
-.mod-card.rechazado {
-  border-left: 3px solid #ff6b6b;
-}
-
-/* Header de la mod-card */
-.mod-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--color-border);
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.mod-card-autor {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.mod-autor-avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #2a5fff, #1a3fd0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 600;
-  color: white;
-  flex-shrink: 0;
-}
-
-.mod-autor-nombre {
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text);
-  display: block;
-}
-
-.mod-autor-fecha {
-  font-size: 11px;
-  color: #555;
-  display: block;
-}
-
-.mod-card-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-/* Tipo de contenido */
-.mod-tipo-badge {
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 10px;
-  font-family: var(--font-display);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  background-color: #111;
-  border: 1px solid #222;
-  color: #666;
-}
-
-/* Cuerpo de la mod-card */
-.mod-card-body {
-  padding: 14px 18px;
-}
-
-/* Imagen del contenido */
-.mod-card-img {
-  width: 100%;
-  max-height: 300px;
-  object-fit: cover;
-  border-radius: var(--radius-md);
-  margin-bottom: 12px;
-  display: block;
-  cursor: pointer;
-}
-
-/* Título de lugar/negocio/producto */
-.mod-card-titulo {
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text);
-  margin-bottom: 6px;
-}
-
-/* Texto de la experiencia */
-.mod-card-texto {
-  font-size: 14px;
-  color: #ccc;
-  line-height: 1.65;
-  white-space: pre-wrap;
-  margin-bottom: 10px;
-}
-
-/* Datos extras (precio, categoría, etc.) */
-.mod-card-datos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.mod-dato {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 12px;
-  background-color: #0d0d0d;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  min-width: 100px;
-}
-
-.mod-dato-label {
-  font-size: 9px;
-  font-family: var(--font-display);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #444;
-}
-
-.mod-dato-valor {
-  font-size: 13px;
-  color: var(--color-text);
-  font-family: var(--font-display);
-}
-
-/* Nota de rechazo */
-.mod-nota-rechazo {
-  margin-top: 10px;
-  padding: 10px 14px;
-  background-color: rgba(255, 74, 74, 0.06);
-  border: 1px solid rgba(255, 74, 74, 0.2);
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  color: #ff8a8a;
-  line-height: 1.5;
-}
-
-/* Footer de acciones de la mod-card */
-.mod-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 12px 18px;
-  border-top: 1px solid var(--color-border);
-  background-color: #0a0a0a;
-  flex-wrap: wrap;
-}
-
-/* Botones de acción del moderador */
-.btn-aprobar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 18px;
-  background-color: rgba(74, 255, 138, 0.1);
-  border: 1px solid rgba(74, 255, 138, 0.3);
-  border-radius: var(--radius-md);
-  color: #4aff8a;
-  font-family: var(--font-display);
-  font-size: 12px;
-  font-weight: 600;
+  color: var(--color-text-muted);
   cursor: pointer;
   transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.mod-filtro-btn:hover {
+  border-color: #333;
+  color: var(--color-text);
+}
+
+/* Estado activo de cada filtro con color propio */
+.mod-filtro-btn.activo[data-estado="pendiente"],
+.mod-filtro-btn.activo:nth-child(1) {
+  background-color: rgba(245, 197, 66, 0.12);
+  border-color: rgba(245, 197, 66, 0.4);
+  color: #f5c542;
+}
+
+.mod-filtro-btn.activo[data-estado="aprobado"],
+.mod-filtro-btn.activo:nth-child(2) {
+  background-color: rgba(74, 255, 138, 0.1);
+  border-color: rgba(74, 255, 138, 0.35);
+  color: #4aff8a;
+}
+
+.mod-filtro-btn.activo[data-estado="rechazado"],
+.mod-filtro-btn.activo:nth-child(3) {
+  background-color: rgba(255, 74, 74, 0.1);
+  border-color: rgba(255, 74, 74, 0.35);
+  color: #ff6b6b;
+}
+
+/* ── BOTONES DE ACCIÓN EN LA TABLA ── */
+.btn-tabla-ver {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-tabla-ver:hover {
+  border-color: #444;
+  color: var(--color-text);
+}
+
+.btn-aprobar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  background-color: rgba(74, 255, 138, 0.1);
+  border: 1px solid rgba(74, 255, 138, 0.3);
+  border-radius: var(--radius-sm);
+  color: #4aff8a;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .btn-aprobar:hover:not(:disabled) {
   background-color: rgba(74, 255, 138, 0.18);
+  border-color: rgba(74, 255, 138, 0.5);
+}
+
+.btn-aprobar:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .btn-rechazar {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 18px;
+  gap: 4px;
+  padding: 5px 12px;
   background-color: rgba(255, 74, 74, 0.08);
   border: 1px solid rgba(255, 74, 74, 0.25);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: #ff6b6b;
   font-family: var(--font-display);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .btn-rechazar:hover:not(:disabled) {
   background-color: rgba(255, 74, 74, 0.15);
+  border-color: rgba(255, 74, 74, 0.45);
 }
 
-.btn-aprobar:disabled,
 .btn-rechazar:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
-/* Input de razón de rechazo */
-.rechazo-input-wrapper {
-  width: 100%;
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid var(--color-border);
+/* ── TOAST ── */
+.toast-notification {
+  animation: slideInRight 0.25s ease;
 }
 
-.rechazo-input {
-  flex: 1;
-  padding: 7px 12px;
-  background-color: #0d0d0d;
-  border: 1px solid rgba(255, 74, 74, 0.3);
-  border-radius: var(--radius-sm);
-  color: var(--color-text);
-  font-family: var(--font-body);
-  font-size: 12px;
-  outline: none;
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-.rechazo-input::placeholder {
-  color: #444;
-}
-.rechazo-input:focus {
-  border-color: #ff6b6b;
-}
-
-/* Estado vacío */
-.mod-vacio {
-  text-align: center;
-  padding: 80px 20px;
-  color: #444;
-}
-
-.mod-vacio-icon {
-  font-size: 44px;
-  margin-bottom: 14px;
-  opacity: 0.3;
-}
-
-.mod-vacio h3 {
-  font-family: var(--font-display);
-  font-size: 17px;
-  color: var(--color-text-muted);
-  margin-bottom: 6px;
-}
-
-.mod-vacio p {
-  font-size: 13px;
-}
-
-/* Filtro de estados en moderación */
-.mod-filtros {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 16px;
-}
-
-.mod-filtro-btn {
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-family: var(--font-display);
-  font-weight: 500;
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-muted);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.mod-filtro-btn.activo {
-  background: var(--color-btn-primary);
-  border-color: var(--color-btn-primary);
-  color: white;
-}
-
-@media (max-width: 600px) {
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
   .mod-tabs {
-    gap: 2px;
+    gap: 4px;
   }
+
   .mod-tab {
-    padding: 7px 10px;
-    font-size: 11px;
+    font-size: 12px;
+    padding: 7px 12px;
   }
-  .mod-card-footer {
-    justify-content: stretch;
+
+  .mod-filtros {
+    gap: 6px;
   }
+
   .btn-aprobar,
-  .btn-rechazar {
-    flex: 1;
-    justify-content: center;
+  .btn-rechazar,
+  .btn-tabla-ver {
+    padding: 5px 8px;
+    font-size: 10px;
   }
 }
