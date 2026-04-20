@@ -578,6 +578,19 @@ export default function MusicaPage() {
 
               <div className="mitos-player-extracto">
                 {musicaActiva.descripcion}
+
+                <Link
+                  href=""
+                  className="btn-cerrar"
+                  onClick={(e) => {
+                    setMusicaActiva(null);
+                  }}
+                  style={{
+                    marginTop: 15,
+                  }}
+                >
+                  Cerrar canción
+                </Link>
               </div>
             </>
           ) : (
