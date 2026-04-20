@@ -17,8 +17,9 @@ const TABS = [
   { id: "experiencias", label: "Experiencias", emoji: "📸" },
   { id: "productos", label: "Productos", emoji: "📦" },
   { id: "negocios", label: "Negocios", emoji: "🏪" },
-  { id: "lugares", label: "Lugares", emoji: "🗺️" },
 ];
+
+const ITEMS_PER_PAGE = 10;
 
 function tiempoRelativo(iso) {
   const diff = Date.now() - new Date(iso);
@@ -41,12 +42,12 @@ export default function MisPublicacionesPage() {
     experiencias: [],
     productos: [],
     negocios: [],
-    lugares: [],
   });
   const [counts, setCounts] = useState({});
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(null); // 'experiencia'|'producto'|'negocio'|'lugar'
   const [toast, setToast] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const mostrarToast = (msg) => {
     setToast(msg);
@@ -83,6 +84,11 @@ export default function MisPublicacionesPage() {
     if (!authLoading && !user) router.push("/login");
   }, [user, authLoading, router]);
 
+  // Resetear página al cambiar de tab
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [tab]);
+
   if (authLoading || !user)
     return (
       <div
@@ -99,50 +105,31 @@ export default function MisPublicacionesPage() {
     );
 
   const items = data[tab] || [];
+  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedItems = items.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-  function renderItem(item, tipo) {
-    const titulo =
-      item.titulo || item.nombre || item.contenido?.substring(0, 60) + "...";
-    const preview = item.descripcion || item.contenido || "";
-    const img = item.imagen_url || null;
-    const emoji = {
-      experiencias: "📸",
-      productos: "📦",
-      negocios: "🏪",
-      lugares: "🗺️",
-    }[tipo];
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
 
-    return (
-      <div
-        key={item.id}
-        className={`mispub-item ${item.estado || "pendiente"}`}
-      >
-        {/* Imagen o placeholder */}
-        {img ? (
-          <img src={img} alt={titulo} className="mispub-item-img" />
-        ) : (
-          <div className="mispub-item-img-placeholder">{emoji}</div>
-        )}
+  // Helper para obtener título según tipo
+  const getTitulo = (item, tipo) => {
+    if (tipo === "experiencias")
+      return item.titulo || item.contenido?.substring(0, 60) + "...";
+    if (tipo === "productos") return item.nombre || "Producto sin nombre";
+    if (tipo === "negocios") return item.nombre || "Negocio sin nombre";
+    return "Sin título";
+  };
 
-        <div className="mispub-item-info">
-          <div className="mispub-item-titulo">{titulo}</div>
-          {preview && <p className="mispub-item-preview">{preview}</p>}
-          <div className="mispub-item-footer">
-            <BadgeEstado estado={item.estado || "pendiente"} />
-            <span className="mispub-fecha">
-              {tiempoRelativo(item.created_at)}
-            </span>
-          </div>
-          {/* Razón del rechazo */}
-          {item.estado === "rechazado" && item.nota_rechazo && (
-            <div className="mispub-nota-rechazo">
-              <strong>Razón:</strong> {item.nota_rechazo}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
+  // Helper para obtener descripción/preview
+  const getDescripcion = (item, tipo) => {
+    if (tipo === "experiencias") return item.contenido || "";
+    if (tipo === "productos") return item.descripcion || "";
+    if (tipo === "negocios") return item.descripcion || "";
+    return "";
+  };
 
   const MODAL_MAP = {
     experiencia: (
@@ -190,9 +177,8 @@ export default function MisPublicacionesPage() {
       >
         {[
           { label: "📸 Agregar Experiencia", modal: "experiencia" },
-          { label: "📦 Producto", modal: "producto" },
-          { label: "🏪 Negocio", modal: "negocio" },
-          { label: "🗺️ Lugar", modal: "lugar" },
+          { label: "📦 Agregar Producto", modal: "producto" },
+          { label: "🏪 Agregar Negocio", modal: "negocio" },
         ].map((btn) => (
           <button
             key={btn.modal}
@@ -240,56 +226,12 @@ export default function MisPublicacionesPage() {
         ))}
       </div>
 
-      {/* Lista */}
+      {/* Tabla con paginación */}
       {loading ? (
-        Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="mispub-item pendiente">
-            <div
-              style={{
-                width: 64,
-                height: 64,
-                borderRadius: 8,
-                background:
-                  "linear-gradient(90deg,#111 25%,#1a1a1a 50%,#111 75%)",
-                backgroundSize: "200% 100%",
-                animation: "shimmer 1.5s infinite",
-                flexShrink: 0,
-              }}
-            />
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                gap: 8,
-              }}
-            >
-              <div
-                style={{
-                  height: 14,
-                  width: "60%",
-                  borderRadius: 4,
-                  background:
-                    "linear-gradient(90deg,#111 25%,#1a1a1a 50%,#111 75%)",
-                  backgroundSize: "200% 100%",
-                  animation: "shimmer 1.5s infinite",
-                }}
-              />
-              <div
-                style={{
-                  height: 11,
-                  width: "40%",
-                  borderRadius: 4,
-                  background:
-                    "linear-gradient(90deg,#111 25%,#1a1a1a 50%,#111 75%)",
-                  backgroundSize: "200% 100%",
-                  animation: "shimmer 1.5s infinite",
-                }}
-              />
-            </div>
-          </div>
-        ))
-      ) : items.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "40px", color: "#666" }}>
+          Cargando publicaciones...
+        </div>
+      ) : paginatedItems.length === 0 ? (
         <div className="mispub-vacio">
           <div className="mispub-vacio-icon">
             {
@@ -297,7 +239,6 @@ export default function MisPublicacionesPage() {
                 experiencias: "📸",
                 productos: "📦",
                 negocios: "🏪",
-                lugares: "🗺️",
               }[tab]
             }
           </div>
@@ -307,7 +248,227 @@ export default function MisPublicacionesPage() {
           </p>
         </div>
       ) : (
-        items.map((item) => renderItem(item, tab))
+        <>
+          <div style={{ overflowX: "auto" }}>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                fontFamily: "var(--font-display)",
+                fontSize: "13px",
+                background: "var(--color-bg-card)",
+                borderRadius: "12px",
+                overflow: "hidden",
+              }}
+            >
+              <thead>
+                <tr
+                  style={{
+                    borderBottom: "1px solid var(--color-border)",
+                    background: "rgba(0,0,0,0.2)",
+                  }}
+                >
+                  <th
+                    style={{
+                      padding: "12px 8px",
+                      textAlign: "left",
+                      width: "60px",
+                    }}
+                  >
+                    Imagen
+                  </th>
+                  <th style={{ padding: "12px 8px", textAlign: "left" }}>
+                    Título
+                  </th>
+                  <th style={{ padding: "12px 8px", textAlign: "left" }}>
+                    Descripción
+                  </th>
+                  <th
+                    style={{
+                      padding: "12px 8px",
+                      textAlign: "left",
+                      width: "110px",
+                    }}
+                  >
+                    Estado
+                  </th>
+                  <th
+                    style={{
+                      padding: "12px 8px",
+                      textAlign: "left",
+                      width: "100px",
+                    }}
+                  >
+                    Fecha
+                  </th>
+                  <th
+                    style={{
+                      padding: "12px 8px",
+                      textAlign: "left",
+                      width: "180px",
+                    }}
+                  >
+                    Razón rechazo
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedItems.map((item) => {
+                  const titulo = getTitulo(item, tab);
+                  const descripcion = getDescripcion(item, tab);
+                  const imagen = item.imagen_url;
+                  const emoji = {
+                    experiencias: "📸",
+                    productos: "📦",
+                    negocios: "🏪",
+                  }[tab];
+
+                  return (
+                    <tr
+                      key={item.id}
+                      style={{
+                        borderBottom: "1px solid var(--color-border)",
+                        transition: "background 0.15s",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.background =
+                          "rgba(255,255,255,0.03)")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.background = "transparent")
+                      }
+                    >
+                      <td style={{ padding: "10px 8px" }}>
+                        {imagen ? (
+                          <img
+                            src={imagen}
+                            alt={titulo}
+                            style={{
+                              width: "48px",
+                              height: "48px",
+                              objectFit: "cover",
+                              borderRadius: "8px",
+                              background: "#111",
+                            }}
+                          />
+                        ) : (
+                          <div
+                            style={{
+                              width: "48px",
+                              height: "48px",
+                              borderRadius: "8px",
+                              background: "#1a1a1a",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: "24px",
+                            }}
+                          >
+                            {emoji}
+                          </div>
+                        )}
+                      </td>
+                      <td style={{ padding: "10px 8px", fontWeight: 500 }}>
+                        {titulo}
+                      </td>
+                      <td
+                        style={{
+                          padding: "10px 8px",
+                          color: "var(--color-text-muted)",
+                          maxWidth: "300px",
+                          whiteSpace: "normal",
+                          wordBreak: "break-word",
+                        }}
+                      >
+                        {descripcion.length > 80
+                          ? descripcion.substring(0, 80) + "..."
+                          : descripcion}
+                      </td>
+                      <td style={{ padding: "10px 8px" }}>
+                        <BadgeEstado estado={item.estado || "pendiente"} />
+                      </td>
+                      <td
+                        style={{
+                          padding: "10px 8px",
+                          color: "var(--color-text-muted)",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {tiempoRelativo(item.created_at)}
+                      </td>
+                      <td
+                        style={{
+                          padding: "10px 8px",
+                          color: "#e06c75",
+                          fontSize: "12px",
+                        }}
+                      >
+                        {item.estado === "rechazado" && item.nota_rechazo
+                          ? item.nota_rechazo
+                          : "—"}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Paginación */}
+          {totalPages > 1 && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "8px",
+                marginTop: "24px",
+                flexWrap: "wrap",
+              }}
+            >
+              <button
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                style={{
+                  padding: "6px 12px",
+                  background: "var(--color-bg-card)",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "6px",
+                  fontFamily: "var(--font-display)",
+                  fontSize: "12px",
+                  cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                  opacity: currentPage === 1 ? 0.5 : 1,
+                  color: "var(--color-text)",
+                }}
+              >
+                ← Anterior
+              </button>
+              <span
+                style={{ fontSize: "13px", color: "var(--color-text-muted)" }}
+              >
+                Página {currentPage} de {totalPages}
+              </span>
+              <button
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                style={{
+                  padding: "6px 12px",
+                  background: "var(--color-bg-card)",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "6px",
+                  fontFamily: "var(--font-display)",
+                  fontSize: "12px",
+                  cursor:
+                    currentPage === totalPages ? "not-allowed" : "pointer",
+                  opacity: currentPage === totalPages ? 0.5 : 1,
+                  color: "var(--color-text)",
+                }}
+              >
+                Siguiente →
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {/* Modales */}

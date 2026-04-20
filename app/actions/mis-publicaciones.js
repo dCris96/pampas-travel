@@ -3,8 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 
 export async function getContenidoUsuario(userId) {
-  if (!userId)
-    return { experiencias: [], productos: [], negocios: [], lugares: [] };
+  if (!userId) return { experiencias: [], productos: [], negocios: [] };
 
   const supabase = await createClient();
 
@@ -24,23 +23,16 @@ export async function getContenidoUsuario(userId) {
       .select("*")
       .eq("creado_por", userId)
       .order("created_at", { ascending: false }),
-    supabase
-      .from("lugares")
-      .select("*")
-      .eq("creado_por", userId)
-      .order("created_at", { ascending: false }),
   ]);
 
   // Manejo de errores individuales (opcional)
   if (expRes.error) console.error("Error experiencias:", expRes.error);
   if (prodRes.error) console.error("Error productos:", prodRes.error);
   if (negRes.error) console.error("Error negocios:", negRes.error);
-  if (lugRes.error) console.error("Error lugares:", lugRes.error);
 
   return {
     experiencias: expRes.data || [],
     productos: prodRes.data || [],
     negocios: negRes.data || [],
-    lugares: lugRes.data || [],
   };
 }
