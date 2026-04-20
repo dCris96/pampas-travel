@@ -457,8 +457,6 @@ export default function MitosPage() {
       try {
         const mitosData = await getMitos();
 
-        console.log(mitosData);
-
         setMitos(mitosData || []);
       } catch (err) {
         console.error("Error cargando mitos:", err);
@@ -518,19 +516,6 @@ export default function MitosPage() {
       behavior: "smooth",
       block: "start",
     });
-  }
-
-  // Limpiar reproductor al hacer clic fuera de las tarjetas y fuera de la paginación
-  function handleBackgroundClick(e) {
-    // Si el clic ocurrió dentro de una tarjeta, no hacemos nada (selección normal)
-    if (e.target.closest(".card-mito")) return;
-    // Si el clic ocurrió dentro de la paginación (botones), no limpiamos
-    if (e.target.closest(".mitos-paginacion")) return;
-    // Si el clic ocurrió en el encabezado de la lista, no limpiamos (opcional)
-    if (e.target.closest(".mitos-lista-header")) return;
-
-    // En cualquier otro caso (fondo vacío, skeleton, mensaje de error, etc.) limpiamos el reproductor
-    setMitoActivo(null);
   }
 
   // ─────────────────────────────────────────────────────
