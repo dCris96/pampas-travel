@@ -12,6 +12,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import GaleriaFotos from "@/components/GaleriaFotos";
+import { obtenerClima } from "@/app/actions/clima";
+import ClimaCard from "@/components/ClimaCard";
 import "@/styles/lugar-detalle.css";
 import "@/styles/galeria.css";
 
@@ -63,6 +65,8 @@ export default function LugarDetallePage() {
   const [experiencias, setExperiencias] = useState([]); // Experiencias con foto
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  // Estado para el clima
+  const [clima, setClima] = useState(null);
 
   useEffect(() => {
     if (!id) return;
@@ -121,6 +125,15 @@ export default function LugarDetallePage() {
           .limit(30); // Máximo 30 fotos en la galería
 
         setExperiencias(exps || []);
+
+        if (lug.latitud && lug.longitud) {
+          const datosClima = await obtenerClima(
+            lug.latitud,
+            lug.longitud,
+            lug.titulo,
+          );
+          setClima(datosClima);
+        }
       } catch (err) {
         console.error(err);
         setError("Error inesperado.");
@@ -282,6 +295,10 @@ export default function LugarDetallePage() {
             columnas={3}
             maxVisible={9}
           />
+
+          <div>
+            <ClimaCard clima={clima} />
+          </div>
         </div>
 
         {/* ── SIDEBAR ── */}
@@ -291,7 +308,7 @@ export default function LugarDetallePage() {
             {/* Caserío vinculado */}
             {caserio && (
               <div className="info-fila">
-                <span className="info-label">Caserío</span>
+                <span className="info-label">Caserío o centro poblado</span>
                 <Link
                   href={`/caserios/${caserio.id}`}
                   style={{
@@ -314,10 +331,10 @@ export default function LugarDetallePage() {
               <span className="info-value">{catStyle.label}</span>
             </div>
 
-            {lugar.direccion && (
+            {lugar.altitud && (
               <div className="info-fila">
-                <span className="info-label">Dirección</span>
-                <span className="info-value">{lugar.direccion}</span>
+                <span className="info-label">Altitud</span>
+                <span className="info-value">{lugar.altitud} m s. n. m.</span>
               </div>
             )}
 

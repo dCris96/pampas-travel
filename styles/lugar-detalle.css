@@ -80,10 +80,6 @@
   align-items: start;
 }
 
-/* ── COLUMNA PRINCIPAL ── */
-.detalle-main {
-}
-
 /* Sección de contenido */
 .detalle-seccion {
   background-color: var(--color-bg-card);
@@ -111,10 +107,6 @@
   font-family: var(--font-body);
   white-space: pre-line;
   text-align: justify;
-}
-
-/* ── SIDEBAR DERECHO ── */
-.detalle-sidebar {
 }
 
 /* Panel de datos rápidos */
@@ -260,6 +252,16 @@
   .detalle-hero-titulo {
     font-size: 24px;
   }
+
+  .detalle-info-panel:nth-child(2) {
+    display: none;
+  }
+
+  .info-fila:nth-child(4),
+  .info-fila:nth-child(6),
+  .info-fila:nth-child(7) {
+    display: none;
+  }
 }
 
 @media (max-width: 600px) {
@@ -282,5 +284,13 @@
 
   .detalle-seccion {
     padding: 20px 16px;
+  }
+
+  .detalle-main {
+    order: 2;
+  }
+
+  .detalle-sidebar {
+    order: 1;
   }
 }
