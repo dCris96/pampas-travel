@@ -45,21 +45,36 @@ const MESES_CORTOS = [
   "Dic",
 ];
 
-// Formatear fecha legible
+// Función para obtener mes y día de una fecha (ignorando año)
+function getMesDia(fechaStr) {
+  const d = new Date(fechaStr + "T12:00:00");
+  return { mes: d.getMonth() + 1, dia: d.getDate() };
+}
+
+// Ordenar festividades por mes y día
+function ordenarPorMesDia(festividades) {
+  return [...festividades].sort((a, b) => {
+    const { mes: mesA, dia: diaA } = getMesDia(a.fecha);
+    const { mes: mesB, dia: diaB } = getMesDia(b.fecha);
+    if (mesA !== mesB) return mesA - mesB;
+    return diaA - diaB;
+  });
+}
+
+// Formatear fecha legible (solo día y mes)
 function formatearFecha(fechaStr, fechaFinStr) {
   const f = new Date(fechaStr + "T12:00:00");
   const dia = f.getDate();
   const mes = MESES_ES[f.getMonth() + 1];
-  const anio = f.getFullYear();
 
-  if (!fechaFinStr) return `${dia} de ${mes}, ${anio}`;
+  if (!fechaFinStr) return `${dia} de ${mes}`;
 
   const ff = new Date(fechaFinStr + "T12:00:00");
   const diaFin = ff.getDate();
   const mesFin = MESES_ES[ff.getMonth() + 1];
 
-  if (mes === mesFin) return `${dia} – ${diaFin} de ${mes}, ${anio}`;
-  return `${dia} ${mes} – ${diaFin} ${mesFin}, ${anio}`;
+  if (mes === mesFin) return `${dia} – ${diaFin} de ${mes}`;
+  return `${dia} ${mes} – ${diaFin} ${mesFin}`;
 }
 
 // Calcular duración en días
@@ -149,39 +164,39 @@ export default function CalendarioPage() {
   const [loading, setLoading] = useState(true);
   const [mesFiltro, setMesFiltro] = useState(0); // 0 = todos
 
-  // 🔧 Conecta con: tabla public.festividades
   useEffect(() => {
     async function cargar() {
       const data = await getFestividades();
-
       setFestividades(data || []);
       setLoading(false);
     }
     cargar();
   }, []);
 
-  // Filtrar por mes
+  // Filtrar por mes y ordenar cronológicamente
   const filtradas = useMemo(() => {
-    if (mesFiltro === 0) return festividades;
-    return festividades.filter((f) => {
-      const m = new Date(f.fecha + "T12:00:00").getMonth() + 1;
-      return m === mesFiltro;
-    });
+    let resultado = festividades;
+    if (mesFiltro !== 0) {
+      resultado = resultado.filter((f) => {
+        const m = new Date(f.fecha + "T12:00:00").getMonth() + 1;
+        return m === mesFiltro;
+      });
+    }
+    // Ordenar por mes y día (sin año)
+    return ordenarPorMesDia(resultado);
   }, [festividades, mesFiltro]);
 
-  // Agrupar por mes para los separadores
+  // Agrupar por mes (sin año) para los separadores
   const porMes = useMemo(() => {
     const grupos = {};
     filtradas.forEach((f) => {
-      const d = new Date(f.fecha + "T12:00:00");
-      const key = `${d.getFullYear()}-${d.getMonth() + 1}`;
-      if (!grupos[key])
-        grupos[key] = {
-          mes: d.getMonth() + 1,
-          anio: d.getFullYear(),
+      const { mes } = getMesDia(f.fecha);
+      if (!grupos[mes])
+        grupos[mes] = {
+          mes: mes,
           items: [],
         };
-      grupos[key].items.push(f);
+      grupos[mes].items.push(f);
     });
     return Object.values(grupos);
   }, [filtradas]);
@@ -237,7 +252,6 @@ export default function CalendarioPage() {
       {/* ── TIMELINE ── */}
       <div className="timeline-wrapper">
         {loading ? (
-          // Skeleton
           ["izquierda", "derecha", "izquierda"].map((lado, i) => (
             <SkeletonItem key={i} lado={lado} />
           ))
@@ -246,27 +260,25 @@ export default function CalendarioPage() {
             <p>No hay festividades en este período.</p>
           </div>
         ) : (
-          // Renderizar agrupado por mes
           porMes.map((grupo) => (
-            <div key={`${grupo.anio}-${grupo.mes}`}>
+            <div key={grupo.mes}>
               {/* Separador de mes */}
               <div className="timeline-mes-label">
                 <div className="timeline-mes-label-inner">
-                  {MESES_ES[grupo.mes]} {grupo.anio}
+                  {MESES_ES[grupo.mes]}
                 </div>
               </div>
 
               {/* Items del mes */}
               {grupo.items.map((fest, idx) => {
-                // Alternar izquierda/derecha globalmente
-                const posGlobal = filtradas.indexOf(fest);
+                // Ahora usamos el índice global sobre filtradas (ordenadas)
+                const posGlobal = filtradas.findIndex((f) => f.id === fest.id);
                 const lado = posGlobal % 2 === 0 ? "izquierda" : "derecha";
                 const acento = fest.color_acento || "#c8952a";
                 const duracion = calcularDuracion(fest.fecha, fest.fecha_fin);
 
                 return (
                   <div key={fest.id} className={`timeline-item ${lado}`}>
-                    {/* ── CARD (lado izquierdo) ── */}
                     {lado === "izquierda" && (
                       <Link
                         href={`/calendario/${fest.id}`}
@@ -277,7 +289,6 @@ export default function CalendarioPage() {
                           className="timeline-card-inner"
                           style={{ "--card-acento": acento }}
                         >
-                          {/* Top: foto redonda + títulos (en reverse para izquierda) */}
                           <div
                             className="timeline-card-top"
                             style={{ flexDirection: "row-reverse" }}
@@ -305,15 +316,11 @@ export default function CalendarioPage() {
                               </div>
                             </div>
                           </div>
-
-                          {/* Descripción corta */}
                           {fest.descripcion_corta && (
                             <p className="timeline-desc">
                               {fest.descripcion_corta}
                             </p>
                           )}
-
-                          {/* Duración */}
                           {duracion && (
                             <div
                               style={{
@@ -326,21 +333,18 @@ export default function CalendarioPage() {
                               </span>
                             </div>
                           )}
-
-                          {/* Ver más */}
                           <div
                             style={{
                               display: "flex",
                               justifyContent: "flex-end",
                             }}
                           >
-                            <span className="timeline-ver-mas">leer más ←</span>
+                            <span className="timeline-ver-mas">leer más →</span>
                           </div>
                         </div>
                       </Link>
                     )}
 
-                    {/* ── NODO CENTRAL ── */}
                     <div className="timeline-nodo">
                       <div
                         className="timeline-nodo-circulo"
@@ -348,7 +352,6 @@ export default function CalendarioPage() {
                       />
                     </div>
 
-                    {/* ── CARD (lado derecho) ── */}
                     {lado === "derecha" && (
                       <Link
                         href={`/calendario/${fest.id}`}
@@ -358,7 +361,6 @@ export default function CalendarioPage() {
                           className="timeline-card-inner"
                           style={{ "--card-acento": acento }}
                         >
-                          {/* Top: foto redonda + títulos */}
                           <div className="timeline-card-top">
                             {fest.imagen_card ? (
                               <img
@@ -380,20 +382,31 @@ export default function CalendarioPage() {
                               </div>
                             </div>
                           </div>
-
                           {fest.descripcion_corta && (
                             <p className="timeline-desc">
                               {fest.descripcion_corta}
                             </p>
                           )}
-
                           {duracion && (
-                            <span className="timeline-duracion">
-                              📅 {duracion}
-                            </span>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "flex-start",
+                              }}
+                            >
+                              <span className="timeline-duracion">
+                                📅 {duracion}
+                              </span>
+                            </div>
                           )}
-
-                          <span className="timeline-ver-mas">leer más →</span>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "flex-start",
+                            }}
+                          >
+                            <span className="timeline-ver-mas">leer más →</span>
+                          </div>
                         </div>
                       </Link>
                     )}
