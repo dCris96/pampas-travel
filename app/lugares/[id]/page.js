@@ -14,7 +14,6 @@ import { createClient } from "@/lib/supabase/client";
 import GaleriaFotos from "@/components/GaleriaFotos";
 import { obtenerClima } from "@/app/actions/clima";
 import ClimaCard from "@/components/ClimaCard";
-import Compartir from "@/components/Compartir";
 import "@/styles/lugar-detalle.css";
 import "@/styles/galeria.css";
 
@@ -375,35 +374,6 @@ export default function LugarDetallePage() {
               <span className="info-value" style={{ fontSize: 12 }}>
                 {formatearFecha(lugar.created_at)}
               </span>
-            </div>
-          </div>
-
-          {/* 🔥 BOTONES PARA COMPARTIR ESTE LUGAR */}
-          <div className="detalle-info-panel">
-            <div
-              style={{
-                padding: "12px 16px",
-                borderBottom: "1px solid var(--color-border)",
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: 11,
-                  fontWeight: 600,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  color: "var(--color-text-label)",
-                }}
-              >
-                Compartir sitio
-              </div>
-            </div>
-            <div style={{ padding: "16px" }}>
-              <Compartir
-                titulo={lugar.titulo}
-                url={`${typeof window !== "undefined" ? window.location.origin : ""}/lugares/${id}`}
-              />
             </div>
           </div>
 
