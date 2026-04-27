@@ -406,6 +406,7 @@ export default function LugarDetallePage() {
               />
             </div>
           </div>
+
           {/* Mini mapa */}
           {lugar.latitud && lugar.longitud && (
             <div
