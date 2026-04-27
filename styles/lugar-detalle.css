@@ -253,9 +253,9 @@
     font-size: 24px;
   }
 
-  .detalle-info-panel:nth-child(2) {
+  /* .detalle-info-panel:nth-child(2) {
     display: none;
-  }
+  } */
 
   /* .info-fila:nth-child(4),
   .info-fila:nth-child(6),
