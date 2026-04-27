@@ -131,6 +131,7 @@ export default function LugarDetallePage() {
             lug.latitud,
             lug.longitud,
             lug.titulo,
+            lug.imagen_url,
           );
           setClima(datosClima);
         }

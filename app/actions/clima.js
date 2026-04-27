@@ -1,6 +1,6 @@
 "use server";
 
-export async function obtenerClima(lat, lon, nombreLugar = "") {
+export async function obtenerClima(lat, lon, nombreLugar = "", image = "") {
   if (!lat || !lon) {
     throw new Error("Latitud y longitud son requeridas");
   }
@@ -21,6 +21,7 @@ export async function obtenerClima(lat, lon, nombreLugar = "") {
 
     return {
       nombreLugar,
+      image,
       actual: data.current_weather,
       pronostico: data.daily,
     };
@@ -29,6 +30,7 @@ export async function obtenerClima(lat, lon, nombreLugar = "") {
     return {
       error: error.message,
       nombreLugar,
+      image,
     };
   }
 }

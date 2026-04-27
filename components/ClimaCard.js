@@ -38,29 +38,33 @@ export default function ClimaCard({ clima }) {
   const diasFuturos = obtenerDiasFuturos(clima.pronostico, 4);
 
   return (
-    <div className="clima-card">
+    <div
+      className="clima-card"
+      style={{
+        backgroundImage: `url('${clima.image}')`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        width: "100%",
+      }}
+    >
       <h2>Clima en {clima.nombreLugar}</h2>
 
       <div className="clima-contenedor">
         {/* Clima Actual */}
-        <div>
-          <h3>Hoy</h3>
-          <div className="clima-actual">
-            <img src={getWeatherIconPath(clima.actual.weathercode)} />
-            {/* <Image
-              src={getWeatherIconPath(clima.actual.weathercode)}
-              alt={getWeatherDescription(clima.actual.weathercode)}
-              width={300}
-              height={300}
-              priority
-            /> */}
-            <div>
-              <p className="descripcion">
-                {getWeatherDescription(clima.actual.weathercode)}
-              </p>
-              <p className="temperatura-actual">{clima.actual.temperature}°C</p>
-              <p className="viento">💨 Viento: {clima.actual.windspeed} km/h</p>
-            </div>
+        <div className="clima-actual">
+          <h3>Ahora</h3>
+          <img
+            src={getWeatherIconPath(clima.actual.weathercode)}
+            alt={getWeatherIconPath(clima.actual.weathercode)}
+            loading="lazy"
+          />
+          <div>
+            <p className="descripcion">
+              {getWeatherDescription(clima.actual.weathercode)}
+            </p>
+            <p className="temperatura-actual">{clima.actual.temperature}°C</p>
+            <p className="viento">💨 Viento: {clima.actual.windspeed} km/h</p>
           </div>
         </div>
 
@@ -77,19 +81,24 @@ export default function ClimaCard({ clima }) {
                   })}
                 </strong>
 
-                <Image
+                <img
                   src={getWeatherIconPath(dia.weathercode)}
                   alt={getWeatherDescription(dia.weathercode)}
-                  width={40}
-                  height={40}
+                  loading="lazy"
                 />
+
+                <p className="dia_descripcion">
+                  {getWeatherDescription(dia.weathercode)}
+                </p>
 
                 <div className="temps">
                   <span className="max">{dia.max}°</span>
                   <span className="min">{dia.min}°</span>
                 </div>
 
-                <p className="precipitacion">💧 {dia.precipitacion} mm</p>
+                <p className="precipitacion">
+                  Precipitación💧 {dia.precipitacion} mm
+                </p>
               </div>
             ))}
           </div>
