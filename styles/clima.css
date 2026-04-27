@@ -134,4 +134,14 @@
   .pronostico-grid {
     grid-template-columns: 1fr;
   }
+
+  .dia-pronostico {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .dia-pronostico > :nth-child(1),
+  .dia-pronostico > :nth-child(5) {
+    grid-column: 1 / -1;
+  }
 }
