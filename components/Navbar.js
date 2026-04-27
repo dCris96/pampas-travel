@@ -319,7 +319,7 @@ export default function Navbar({
           <IconMountain />
         </div>
         <div className="sidebar-logo-text">
-          <div className="sidebar-logo-title">Valle de los Vientos</div>
+          <div className="sidebar-logo-title">Pampas Travel</div>
           <div className="sidebar-logo-subtitle">Portal del Distrito</div>
         </div>
       </div>

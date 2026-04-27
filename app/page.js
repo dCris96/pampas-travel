@@ -65,21 +65,6 @@ export default async function HomePage() {
         ))}
       </div>
 
-      {/* INFORMACIÓN LOGIN */}
-      <section className="section">
-        <div className="Main_login">
-          <p>
-            Comparte tu experiencia en nuestro distrito con toda la comunidad.
-            Si deseas publicar tu negocio, producto o servicio, inicia sesión y
-            cuéntanos lo que quieras mostrar al mundo.
-          </p>
-          <Link href="/login" className="btn-login">
-            <IconLogin />
-            Iniciar Sesión
-          </Link>
-        </div>
-      </section>
-
       {/* SITIOS DESTACADOS - Componente cliente que recibe datos del servidor */}
       <DestacadosSection lugaresIniciales={destacados} />
 

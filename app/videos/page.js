@@ -11,7 +11,6 @@
 //
 // 🔧 Conecta con: tabla public.videos
 // ─────────────────────────────────────────────────────
-
 "use client";
 
 import { useEffect, useState, useMemo } from "react";

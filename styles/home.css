@@ -49,7 +49,6 @@
   font-size: 38px;
   font-weight: 700;
   color: #ffffff;
-  margin-bottom: 10px;
   line-height: 1.1;
   /* Sombra sutil para legibilidad */
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
@@ -299,24 +298,6 @@
   .hero-title {
     font-size: 22px;
   }
-}
-
-/* CODIGO PARA LA SECCION DE LOGIN EN EL CONTENEDOR PRINCIPAL */
-.Main_login {
-  width: 50%;
-  min-width: 380px;
-  margin: auto;
-}
-
-.Main_login p {
-  text-align: center;
-  line-height: 1rem;
-  margin-bottom: 20px;
-}
-
-.Main_login .btn-login {
-  width: 150px;
-  margin: auto;
 }
 
 /* CODIGO PARA EL APARTADO DE HISTORIA */

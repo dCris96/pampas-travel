@@ -1,0 +1,15 @@
+# robots.txt — pampas-travel.vercel.app
+# Generado: abril 2026
+
+# Permitir todos los rastreadores principales
+User-agent: *
+Allow: /
+
+# Bloquear rutas que no deben indexarse
+Disallow: /login
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+
+# Sitemap (ajusta la URL si usas dominio propio)
+Sitemap: https://pampas-travel.vercel.app/sitemap.xml

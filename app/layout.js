@@ -6,9 +6,9 @@ import "@/styles/layout.css"; // ← asegúrate de importar layout.css
 import "@/styles/lugares.css";
 
 export const metadata = {
-  title: "Valle de los Vientos — Portal del Distrito",
+  title: "Pampas Travel — Portal del Distrito",
   description:
-    "Un distrito envuelto en montañas, brumas y tradiciones milenarias.",
+    "Vive el turismo en Pampas, Pallasca, Áncash: un destino de montañas, brumas y tradiciones milenarias.",
 };
 
 export default function RootLayout({ children }) {

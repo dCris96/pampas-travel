@@ -127,9 +127,9 @@ export default function HistoriaSection() {
   return (
     <section className="section">
       <div className="section_hitoria">
-        <h1 className="title-main">
+        <h2 className="title-main">
           Distrito de Pampas: Historia, Geografía y Actualidad
-        </h1>
+        </h2>
         {isMobile ? (
           !textoExpandido ? (
             <>

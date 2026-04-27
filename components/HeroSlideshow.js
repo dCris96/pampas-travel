@@ -34,13 +34,16 @@ export default function HeroSlideshow() {
     <section className="hero">
       <img
         src={images[currentIndex]}
-        alt={`Valle de los Vientos - imagen ${currentIndex + 1}`}
+        alt={`Pampas Travel - imagen ${currentIndex + 1}`}
         className="hero-image"
         style={{ opacity }} // 👈 Vinculamos la opacidad al estado
       />
       <div className="hero-overlay" />
       <div className="hero-content">
-        <h1 className="hero-title">Valle de los Vientos</h1>
+        <h1 className="hero-title">Pampas</h1>
+        <span style={{ fontSize: 24, color: "#ffc353", fontWeight: "600" }}>
+          Capital minera del norte
+        </span>
         <p className="hero-description">
           Un distrito envuelto en montañas, brumas y tradiciones milenarias. Sus
           tierras fértiles, sus fiestas vibrantes y la calidez de su gente lo
