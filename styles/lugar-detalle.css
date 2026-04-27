@@ -294,3 +294,59 @@
     order: 1;
   }
 }
+
+/* ── BOTONES COMPARTIR ── */
+.compartir-botones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.compartir-label {
+  font-size: 12px;
+  color: var(--color-text-label, #888);
+  font-family: var(--font-display);
+  margin-right: 4px;
+}
+
+.btn-compartir {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border, #333);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btn-compartir:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.2);
+}
+
+.btn-compartir.facebook:hover {
+  background: #1877f2;
+  border-color: #1877f2;
+}
+.btn-compartir.twitter:hover {
+  background: #1da1f2;
+  border-color: #1da1f2;
+}
+.btn-compartir.whatsapp:hover {
+  background: #25d366;
+  border-color: #25d366;
+}
+.btn-compartir.linkedin:hover {
+  background: #0a66c2;
+  border-color: #0a66c2;
+}
+.btn-compartir.telegram:hover {
+  background: #0088cc;
+  border-color: #0088cc;
+}
