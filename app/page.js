@@ -7,6 +7,7 @@ import DestacadosSection from "@/components/DestacadosSection";
 import HistoriaSection from "@/components/HistoriaSection";
 import HeroSlideshow from "@/components/HeroSlideshow";
 import EvolucionHistorica from "@/components/EvolucionHistorica";
+import Geografia from "@/components/Geografia";
 import { getFiestasCount } from "@/app/actions/fiestas";
 import { getLugaresCount } from "@/app/actions/lugares";
 import "@/styles/home.css";
@@ -57,6 +58,11 @@ export default async function HomePage() {
       <section className="section">
         <EvolucionHistorica />
       </section>
+
+      <section className="section">
+        <Geografia />
+      </section>
+
       <HistoriaSection />
 
       {/* PRÓXIMAMENTE */}
