@@ -18,6 +18,7 @@ export async function getExperiencias(userId = null) {
     `,
     )
     .eq("activo", true)
+    .eq("estado", "aprobado")
     .order("created_at", { ascending: false })
     .limit(50);
 
