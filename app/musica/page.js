@@ -20,7 +20,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { getMusica } from "@/app/actions/musica";
+import { getMusicaActiva } from "@/app/actions/musica";
 import "@/styles/mitos.css";
 import Link from "next/link";
 
@@ -455,7 +455,7 @@ export default function MusicaPage() {
   useEffect(() => {
     async function cargar() {
       try {
-        const musicaData = await getMusica();
+        const musicaData = await getMusicaActiva();
 
         setMusicas(musicaData || []);
       } catch (err) {
