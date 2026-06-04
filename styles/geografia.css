@@ -18,7 +18,7 @@
 }
 
 .info-title {
-  font-size: clamp(1.6rem, 2vw, 2.2rem);
+  font-size: 1.2rem;
   font-weight: 700;
 }
 
@@ -41,9 +41,14 @@
 }
 
 .info-subtitle {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 5px;
+}
+
+.info-text p{
+  font-size: .9rem;
+  line-height: 1rem;
 }
 
 .mapa {
@@ -115,32 +120,11 @@
   .mapa {
     margin-top: 20px;
   }
-  .mapa-info {
-    width: 100px;
-    height: 100px;
-  }
-  .mapa-info ::after {
-    top: 50%;
-    left: 110%;
-    width: 115px;
-    height: 115px;
-  }
 
   .mapa-info p {
     font-size: 1.2rem;
     font-weight: 700;
     line-height: 1;
     text-align: center;
-  }
-
-  @keyframes pulse {
-    0% {
-      transform: translate(-100%, -50%) scale(1);
-      opacity: 1;
-    }
-    100% {
-      transform: translate(-100%, -50%) scale(1.5);
-      opacity: 0;
-    }
   }
 }

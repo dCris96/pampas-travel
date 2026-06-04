@@ -45,9 +45,7 @@ export default function HeroSlideshow() {
           Capital minera del norte
         </span>
         <p className="hero-description">
-          Un distrito envuelto en montañas, brumas y tradiciones milenarias. Sus
-          tierras fértiles, sus fiestas vibrantes y la calidez de su gente lo
-          convierten en un destino que no olvidas.
+          Un territorio que combina una profunda herencia ancestral con un presente en constante crecimiento. Conoce más sobre nuestras raíces, nuestra tierra y nuestra gente.
         </p>
       </div>
     </section>

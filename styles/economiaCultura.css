@@ -1,0 +1,77 @@
+.economia-container{
+  width: 100%;  
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 20px;
+}
+
+.economia-card,
+.cultura-card{
+  background: var(--color-bg-card);
+  color: white;
+  padding: 1.5rem;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.economia-titulo{
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.economia-subtitulo{
+  font-size: 1rem;
+  color: rgb(5, 211, 5);
+  margin-bottom: 10px;
+}
+
+.economia-card p{
+  font-size: 0.9rem;
+  line-height: 0.8rem;
+  margin-bottom: 10px;
+}
+
+.economia-card ul{
+  font-size: 0.9rem;
+  line-height: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; 
+}
+
+.cultura-card{
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 10px;
+}
+
+.cultura-img{
+  height: 200px;
+  border-radius: 15px;
+  overflow: hidden;
+  background-color: red;
+}
+
+.cultura-img img{
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.cultura-card p{
+  text-indent: 20px;
+  font-size: 1rem;
+  line-height: 1.1rem;
+}
+
+@media screen and (max-width: 700px) {
+  .economia-container{
+    grid-template-columns: 1fr;
+  }
+
+  .cultura-card{
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
