@@ -20,7 +20,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { getMitos } from "@/app/actions/mitos";
+import { getMitosActivos } from "@/app/actions/mitos";
 import "@/styles/mitos.css";
 import Link from "next/link";
 
@@ -455,7 +455,7 @@ export default function MitosPage() {
   useEffect(() => {
     async function cargar() {
       try {
-        const mitosData = await getMitos();
+        const mitosData = await getMitosActivos();
 
         setMitos(mitosData || []);
       } catch (err) {

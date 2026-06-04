@@ -11,6 +11,17 @@ export async function getMitos() {
   return data;
 }
 
+export async function getMitosActivos() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("mitos")
+    .select("*")
+    .eq("activo", true);
+  
+  if (error) throw error;
+  return data;
+}
+
 export async function toggleMitoActivo(id, activoActual) {
   const supabase = await createClient();
 
