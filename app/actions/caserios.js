@@ -11,6 +11,17 @@ export async function getCaserios() {
   return data;
 }
 
+export async function getCaseriosActivos(){
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("caserios")
+    .select("*")
+    .eq("activo", true);
+  
+  if (error) throw error;
+  return data;
+}
+
 export async function toggleCaserioActivo(id, activoActual) {
   const supabase = await createClient();
 

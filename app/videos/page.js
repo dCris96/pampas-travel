@@ -14,7 +14,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { getVideos } from "@/app/actions/videos";
+import { getVideosActivos } from "@/app/actions/videos";
 import { useAuth } from "@/context/AuthContext";
 import CardVideo from "@/components/CardVideo";
 import PlayerVideo from "@/components/PlayerVideo";
@@ -108,7 +108,7 @@ export default function VideosPage() {
   useEffect(() => {
     async function cargar() {
       try {
-        const data = await getVideos();
+        const data = await getVideosActivos();
 
         if (error) throw error;
         setVideos(data || []);

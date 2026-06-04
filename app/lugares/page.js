@@ -15,7 +15,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getLugares } from "@/app/actions/lugares";
+import { getLugaresActivos } from "@/app/actions/lugares";
 import CardLugar from "@/components/CardLugar";
 import "@/styles/lugares.css";
 
@@ -68,7 +68,7 @@ export default function LugaresPage() {
       try {
         // 🔧 Conecta con: tabla public.lugares
         // SELECT * FROM lugares WHERE activo = true ORDER BY created_at DESC
-        const data = await getLugares();
+        const data = await getLugaresActivos();
 
         if (error) throw error;
 

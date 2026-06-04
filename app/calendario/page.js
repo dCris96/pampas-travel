@@ -8,7 +8,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { getFestividades } from "@/app/actions/calendario";
+import { getFestividades, getFiestasActivas } from "@/app/actions/calendario";
 import "@/styles/calendario.css";
 
 // Nombres de meses en español
@@ -166,7 +166,7 @@ export default function CalendarioPage() {
 
   useEffect(() => {
     async function cargar() {
-      const data = await getFestividades();
+      const data = await getFiestasActivas();
       setFestividades(data || []);
       setLoading(false);
     }

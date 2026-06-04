@@ -14,6 +14,17 @@ export async function getLugaresCount() {
   return count; // retorna un número (ej: 8)
 }
 
+export async function getLugaresActivos(){
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("lugares")
+    .select("*")
+    .eq("activo", true);
+  
+  if (error) throw error;
+  return data;
+}
+
 export async function getLugares() {
   const supabase = await createClient();
   const { data, error } = await supabase

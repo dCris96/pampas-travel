@@ -8,7 +8,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getCaserios } from "@/app/actions/caserios";
+import { getCaseriosActivos } from "@/app/actions/caserios";
 import "@/styles/caserios.css";
 
 function formatNum(n) {
@@ -24,7 +24,7 @@ export default function CaseriosPage() {
   useEffect(() => {
     async function cargar() {
       try {
-        const data = await getCaserios();
+        const data = await getCaseriosActivos();
 
         setCaserios(data || []);
       } catch (err) {

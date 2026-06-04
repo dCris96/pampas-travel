@@ -10,3 +10,14 @@ export async function getFestividades() {
   if (error) throw error;
   return data;
 }
+
+export async function getFiestasActivas(){
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("festividades")
+    .select("*")
+    .eq("activo", true);
+  
+  if (error) throw error;
+  return data;
+}
