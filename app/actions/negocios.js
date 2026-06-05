@@ -37,6 +37,7 @@ export async function getHoteles() {
     .select("*")
     .eq("activo", true)
     .eq("tipo", "hotel")
+    .eq("estado", "aprobado")
     .order("destacado", { ascending: false })
     .order("precio_desde", { ascending: true }); // Más baratos primero
   if (error) throw error;
@@ -50,6 +51,7 @@ export async function getRestaurantes() {
     .select("*")
     .eq("activo", true)
     .eq("tipo", "restaurante")
+    .eq("estado", "aprobado")
     .order("destacado", { ascending: false })
     .order("precio_desde", { ascending: true }); // Más baratos primero
   if (error) throw error;
@@ -62,6 +64,8 @@ export async function getNegociosPagina() {
     .from("negocios")
     .select("*")
     .eq("activo", true)
+    .eq("estado", "aprobado")
+    .in("tipo", ["servicio", "tienda", "transporte", "cafe"])
     .order("destacado", { ascending: false })
     .order("nombre", { ascending: true });
   if (error) throw error;
