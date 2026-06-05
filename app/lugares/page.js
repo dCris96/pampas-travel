@@ -102,7 +102,7 @@ export default function LugaresPage() {
       <div className="page-header">
         <h1 className="page-title">Sitios Turísticos</h1>
         <p className="page-subtitle">
-          Descubre los lugares más importantes del Valle de los Vientos.
+          Descubre los lugares más importantes de Pampas y sus caseríos.
         </p>
       </div>
 

@@ -213,7 +213,7 @@ export default function CalendarioPage() {
     <div className="calendario-root">
       {/* ── HEADER ── */}
       <div className="calendario-header">
-        <span className="calendario-pretitulo">Valle de los Vientos</span>
+        <span className="calendario-pretitulo">PAMPAS TRAVEL</span>
         <h1 className="calendario-titulo">
           Calendario de <em>Festividades</em>
         </h1>

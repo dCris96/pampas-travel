@@ -144,7 +144,7 @@ export default function VideosPage() {
       {/* ── HEADER ── */}
       <div className="videos-header">
         <h1>Videos</h1>
-        <p>Documentales, recorridos y momentos del Valle de los Vientos.</p>
+        <p>Documentales, recorridos y momentos en Pampas.</p>
       </div>
 
       {/* ── AVISO DE HOSTING (visible para admins) ── */}

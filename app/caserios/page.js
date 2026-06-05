@@ -45,7 +45,7 @@ export default function CaseriosPage() {
         <p>
           {loading
             ? "Cargando centros poblados..."
-            : `${caserios.length} centros poblados en el Valle de los Vientos`}
+            : `${caserios.length} centros poblados y caseríos en Pampas.`}
         </p>
       </div>
 

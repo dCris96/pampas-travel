@@ -68,7 +68,7 @@ export default function RestaurantesPage() {
       <div className="negocios-page-header">
         <div className="negocios-page-header-text">
           <h1>Restaurantes</h1>
-          <p>Gastronomía local en el Valle de los Vientos.</p>
+          <p>Gastronomía local.</p>
         </div>
         {!user && (
           <Link href="/login" className="btn-header-login">

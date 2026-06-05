@@ -86,7 +86,7 @@ export default function ProductosPage() {
       <div className="productos-header">
         <div className="productos-header-text">
           <h1>Productos Locales</h1>
-          <p>Artesanías, alimentos y servicios del Valle de los Vientos.</p>
+          <p>Artesanías, alimentos y servicios que Pampas te ofrece.</p>
         </div>
         {user ? (
           <button

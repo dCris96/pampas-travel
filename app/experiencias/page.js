@@ -181,7 +181,7 @@ export default function ExperienciasPage() {
       <div className="exp-page-header">
         <div className="exp-page-header-text">
           <h1>Experiencias</h1>
-          <p>Lo que la comunidad vive y comparte en el Valle de los Vientos.</p>
+          <p>Lo que la comunidad vive y comparte.</p>
         </div>
 
         {user ? (
@@ -245,7 +245,7 @@ export default function ExperienciasPage() {
         <aside className="exp-sidebar">
           {/* Stats del feed */}
           <div className="exp-sidebar-panel">
-            <h3>Actividad del valle</h3>
+            <h3>Actividad de Pampas</h3>
             <div className="exp-sidebar-stat">
               <span className="exp-sidebar-stat-label">Experiencias</span>
               <span className="exp-sidebar-stat-value">{stats.total}</span>
@@ -273,7 +273,7 @@ export default function ExperienciasPage() {
                 }}
               >
                 Crea una cuenta gratis para publicar tus experiencias y
-                conectarte con el valle.
+                conectarte con Pampas.
               </p>
               <Link
                 href="/registro"

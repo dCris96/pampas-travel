@@ -90,7 +90,7 @@ export default function NegociosPage() {
       <div className="negocios-page-header">
         <div className="negocios-page-header-text">
           <h1>Negocios</h1>
-          <p>Servicios, comercios y establecimientos del Valle de los Vientos.</p>
+          <p>Servicios, comercios y establecimientos en Pampas.</p>
         </div>
         {!user && (
           <Link href="/login" className="btn-header-login">

@@ -527,7 +527,7 @@ export default function MitosPage() {
       <div className="mitos-header">
         <h1>Mitos y Leyendas</h1>
         <p>
-          Historias ancestrales que dan vida al Valle de los Vientos.
+          Historias ancestrales que dan vida a nuestra tierra.
           {!loading && mitos.length > 0 && ` ${mitos.length} relatos.`}
         </p>
       </div>
