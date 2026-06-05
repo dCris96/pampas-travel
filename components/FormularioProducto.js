@@ -219,7 +219,7 @@ export default function FormularioProducto({ onClose, onPublicado }) {
               </select>
             </div>
             <div className="form-admin-grupo">
-              <label className="form-admin-label">Precio (MXN)</label>
+              <label className="form-admin-label">Precio (S/)</label>
               <input
                 type="number"
                 min="0"
@@ -283,7 +283,7 @@ export default function FormularioProducto({ onClose, onPublicado }) {
               <input
                 type="text"
                 className="form-admin-input"
-                placeholder="+52 744 123 4567"
+                placeholder="+51 944 123 456"
                 value={form.contacto}
                 onChange={(e) => setField("contacto", e.target.value)}
                 disabled={loading}

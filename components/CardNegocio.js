@@ -132,7 +132,7 @@ export default function CardNegocio({ negocio, variante = "normal" }) {
             {precioFormateado ? (
               <div className="card-negocio-precio">
                 Desde {precioFormateado}
-                <span>/{negocio.tipo === "hotel" ? "noche" : "persona"}</span>
+                <span>{negocio.tipo === "hotel" ? "La noche" : " El plato"}</span>
               </div>
             ) : (
               <div className="card-negocio-precio sin-precio">
@@ -187,8 +187,8 @@ export default function CardNegocio({ negocio, variante = "normal" }) {
         {/* Precio */}
         {precioFormateado ? (
           <div className="card-negocio-precio">
+            <span>{negocio.tipo === "hotel" ? "La noche" : "Precios : "}</span>
             Desde {precioFormateado}
-            <span>/{negocio.tipo === "hotel" ? "noche" : "persona"}</span>
           </div>
         ) : (
           <div className="card-negocio-precio sin-precio">Consultar precio</div>
