@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import "@/styles/negocio-detalle.css";
+import "@/styles/lugar-detalle.css";
 
 // ── CONFIGURACIÓN DE TIPOS ──
 const TIPO_CONFIG = {
@@ -207,18 +208,7 @@ export default function NegocioDetallePage() {
     <div>
       {/* ── BOTÓN VOLVER ── */}
       <Link
-        href="/negocios"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-          fontSize: 13,
-          color: "#666",
-          textDecoration: "none",
-          marginBottom: 20,
-          fontFamily: "var(--font-display)",
-          transition: "color 0.15s",
-        }}
+       href="/negocios" className="btn-volver"
         onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
         onMouseLeave={(e) => (e.currentTarget.style.color = "#666")}
       >
@@ -244,11 +234,6 @@ export default function NegocioDetallePage() {
             {config.emoji} {config.label}
           </span>
           <h1 className="negocio-hero-nombre">{negocio.nombre}</h1>
-          {negocio.direccion && (
-            <div className="negocio-hero-dir">
-              <IconPin /> {negocio.direccion}
-            </div>
-          )}
         </div>
       </div>
 

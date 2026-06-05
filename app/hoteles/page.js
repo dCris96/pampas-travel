@@ -68,13 +68,8 @@ export default function HotelesPage() {
       <div className="negocios-page-header">
         <div className="negocios-page-header-text">
           <h1>Hoteles</h1>
-          <p>Alojamiento en el Valle de los Vientos.</p>
+          <p>Alojamiento en Pampas.</p>
         </div>
-        {!user && (
-          <Link href="/login" className="btn-header-login">
-            <IconLogin /> Inicia sesión
-          </Link>
-        )}
       </div>
 
       {loading ? (
