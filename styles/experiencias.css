@@ -66,8 +66,6 @@
    ───────────────────────────────────────────────────── */
 
 .exp-layout {
-  width: 700px;
-  margin: auto;
   display: grid;
   grid-template-columns: 1fr 280px;
   gap: 24px;
@@ -485,4 +483,11 @@
     width: 100%;
     justify-content: center;
   }
+}
+
+@media (min-width: 700px){
+  .exp-layout {
+    width: 700px;
+    margin: auto;
+  }  
 }
