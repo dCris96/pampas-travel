@@ -17,6 +17,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import GaleriaFotos from "@/components/GaleriaFotos";
+import { obtenerClima } from "@/app/actions/clima";
+import ClimaCard from "@/components/ClimaCard";
 import "@/styles/caserios.css";
 import "@/styles/galeria.css";
 
@@ -104,6 +106,9 @@ export default function CaserioDetallePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Estado para el clima
+  const [clima, setClima] = useState(null);
+
   useEffect(() => {
     if (!id) return;
 
@@ -138,6 +143,16 @@ export default function CaserioDetallePage() {
           .order("titulo");
 
         if (!lugsError) setLugares(lugs || []);
+
+        if (cas.latitud && cas.longitud) {
+          const datosClima = await obtenerClima(
+            cas.latitud,
+            cas.longitud,
+            cas.nombre,
+            cas.imagen_url,
+          );
+          setClima(datosClima);
+        }
       } catch (err) {
         console.error(err);
         setError("Error inesperado al cargar.");
@@ -453,6 +468,10 @@ export default function CaserioDetallePage() {
             </div>
           )}
         </div>
+
+        <div>
+                    <ClimaCard clima={clima} />
+                  </div>
       </div>
     </div>
   );

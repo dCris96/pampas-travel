@@ -14,7 +14,7 @@
 
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import "@/styles/galeria.css";
 
@@ -75,6 +75,20 @@ const IconChevronRight = () => (
   </svg>
 );
 
+const IconArrowLeft = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <line x1="19" y1="12" x2="5" y2="12" />
+    <polyline points="12,19 5,12 12,5" />
+  </svg>
+);
+
 export default function GaleriaFotos({
   fotos = [],
   titulo = "Galería",
@@ -90,10 +104,15 @@ export default function GaleriaFotos({
   const fotosVisibles = fotos.slice(0, MAX);
   const restantes = fotos.length - MAX;
 
+  // ── SWIPE STATE ──
+  const touchStartX = useRef(null);
+  const touchStartY = useRef(null);
+  const isSwiping = useRef(false);
+  const swipeThreshold = 50;
+
   // ── ABRIR LIGHTBOX ──
   function abrirLightbox(idx) {
     setLightboxIdx(idx);
-    // Bloquear scroll del body
     document.body.style.overflow = "hidden";
   }
 
@@ -125,6 +144,89 @@ export default function GaleriaFotos({
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [lightboxIdx, irAnterior, irSiguiente]);
+
+  // ── NAVEGACIÓN DEL NAVEGADOR (history) ──
+  useEffect(() => {
+    if (lightboxIdx === null) return;
+
+    const state = { lightboxOpen: true };
+    window.history.pushState(state, "", window.location.href);
+
+    function handlePopState(e) {
+      cerrarLightbox();
+    }
+
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [lightboxIdx]);
+
+  // ── SWIPE / DRAG ──
+  const handleTouchStart = useCallback((e) => {
+    const touch = e.touches ? e.touches[0] : e;
+    touchStartX.current = touch.clientX;
+    touchStartY.current = touch.clientY;
+    isSwiping.current = false;
+  }, []);
+
+  const handleTouchMove = useCallback((e) => {
+    if (touchStartX.current === null) return;
+
+    const touch = e.touches ? e.touches[0] : e;
+    const diffX = touch.clientX - touchStartX.current;
+    const diffY = touch.clientY - touchStartY.current;
+
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
+      isSwiping.current = true;
+      if (e.preventDefault) e.preventDefault();
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback((e) => {
+    if (touchStartX.current === null) return;
+
+    const touch = e.changedTouches ? e.changedTouches[0] : e;
+    const diffX = touch.clientX - touchStartX.current;
+
+    if (Math.abs(diffX) > swipeThreshold && isSwiping.current) {
+      if (diffX > 0) {
+        irAnterior();
+      } else {
+        irSiguiente();
+      }
+    }
+
+    touchStartX.current = null;
+    touchStartY.current = null;
+    isSwiping.current = false;
+  }, [irAnterior, irSiguiente]);
+
+  // ── MOUSE DRAG ──
+  const isMouseDown = useRef(false);
+  const mouseStartX = useRef(null);
+
+  const handleMouseDown = useCallback((e) => {
+    isMouseDown.current = true;
+    mouseStartX.current = e.clientX;
+  }, []);
+
+  const handleMouseUp = useCallback((e) => {
+    if (!isMouseDown.current || mouseStartX.current === null) return;
+
+    const diffX = e.clientX - mouseStartX.current;
+
+    if (Math.abs(diffX) > swipeThreshold) {
+      if (diffX > 0) {
+        irAnterior();
+      } else {
+        irSiguiente();
+      }
+    }
+
+    isMouseDown.current = false;
+    mouseStartX.current = null;
+  }, [irAnterior, irSiguiente]);
 
   // ── CLEANUP al desmontar ──
   useEffect(() => {
@@ -167,10 +269,9 @@ export default function GaleriaFotos({
           </span>
         </div>
 
-        {/* Grid */}
+        {/* Grid Masonry */}
         <div className={`galeria-grid cols-${columnas}`}>
           {fotosVisibles.map((foto, idx) => {
-            // La última posición puede ser el botón "+N más"
             const esUltima = idx === fotosVisibles.length - 1;
             const hayRestantes = restantes > 0;
             const mostrarMas = esUltima && hayRestantes;
@@ -189,7 +290,6 @@ export default function GaleriaFotos({
                     : `Ver ${foto.titulo || "foto"}`
                 }
               >
-                {/* Imagen */}
                 <img
                   src={foto.url}
                   alt={foto.titulo || "Foto de la galería"}
@@ -201,7 +301,6 @@ export default function GaleriaFotos({
                   }}
                 />
 
-                {/* Overlay de hover */}
                 <div className="galeria-overlay">
                   {!mostrarMas && (
                     <div className="galeria-overlay-icon">
@@ -210,7 +309,6 @@ export default function GaleriaFotos({
                   )}
                 </div>
 
-                {/* Botón "+N más" encima de la última foto */}
                 {mostrarMas && (
                   <div className="galeria-ver-mas-label">
                     +{restantes}
@@ -218,7 +316,6 @@ export default function GaleriaFotos({
                   </div>
                 )}
 
-                {/* Meta info (nombre/autor) */}
                 {!mostrarMas && (foto.titulo || foto.subtitulo) && (
                   <div className="galeria-item-meta">
                     {foto.titulo && (
@@ -238,7 +335,6 @@ export default function GaleriaFotos({
           })}
         </div>
 
-        {/* Link "ver todas" si hay más fotos */}
         {restantes > 0 && (
           <button
             onClick={() => abrirLightbox(0)}
@@ -276,14 +372,33 @@ export default function GaleriaFotos({
           role="dialog"
           aria-modal="true"
           aria-label="Visor de imágenes"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={() => {
+            isMouseDown.current = false;
+            mouseStartX.current = null;
+          }}
         >
-          {/* Botón cerrar */}
+          {/* Botón cerrar (X) */}
           <button
             className="lightbox-cerrar"
             onClick={cerrarLightbox}
             aria-label="Cerrar"
           >
             <IconX />
+          </button>
+
+          {/* Botón retroceder (flecha atrás) - visible en pantallas grandes */}
+          <button
+            className="lightbox-atras"
+            onClick={cerrarLightbox}
+            aria-label="Volver atrás"
+          >
+            <IconArrowLeft />
+            <span>Volver</span>
           </button>
 
           {/* Anterior */}
@@ -305,7 +420,6 @@ export default function GaleriaFotos({
               className="lightbox-imagen"
             />
 
-            {/* Info de la foto */}
             {(fotoActual.titulo || fotoActual.subtitulo) && (
               <div className="lightbox-info">
                 {fotoActual.titulo && (
@@ -318,7 +432,6 @@ export default function GaleriaFotos({
                     {fotoActual.subtitulo}
                   </div>
                 )}
-                {/* Link al lugar/experiencia si existe */}
                 {fotoActual.link && (
                   <Link
                     href={fotoActual.link}
@@ -357,7 +470,7 @@ export default function GaleriaFotos({
             </div>
           )}
 
-          {/* Miniaturas (filmstrip) — solo si hay más de 2 fotos */}
+          {/* Miniaturas */}
           {fotos.length > 2 && (
             <div className="lightbox-miniaturas">
               {fotos.map((f, i) => (

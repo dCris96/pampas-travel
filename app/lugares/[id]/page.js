@@ -12,8 +12,6 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import GaleriaFotos from "@/components/GaleriaFotos";
-import { obtenerClima } from "@/app/actions/clima";
-import ClimaCard from "@/components/ClimaCard";
 import "@/styles/lugar-detalle.css";
 import "@/styles/galeria.css";
 
@@ -65,8 +63,6 @@ export default function LugarDetallePage() {
   const [experiencias, setExperiencias] = useState([]); // Experiencias con foto
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  // Estado para el clima
-  const [clima, setClima] = useState(null);
 
   useEffect(() => {
     if (!id) return;
@@ -120,21 +116,12 @@ export default function LugarDetallePage() {
           )
           .eq("lugar_id", id)
           .eq("activo", true)
+          .eq("estado", "aprobado")
           .not("imagen_url", "is", null) // Solo las que tienen foto
           .order("created_at", { ascending: false })
           .limit(30); // Máximo 30 fotos en la galería
 
         setExperiencias(exps || []);
-
-        if (lug.latitud && lug.longitud) {
-          const datosClima = await obtenerClima(
-            lug.latitud,
-            lug.longitud,
-            lug.titulo,
-            lug.imagen_url,
-          );
-          setClima(datosClima);
-        }
       } catch (err) {
         console.error(err);
         setError("Error inesperado.");
@@ -294,12 +281,8 @@ export default function LugarDetallePage() {
             titulo="Fotos de visitantes"
             icono="📸"
             columnas={3}
-            maxVisible={9}
+            maxVisible={6}
           />
-
-          <div>
-            <ClimaCard clima={clima} />
-          </div>
         </div>
 
         {/* ── SIDEBAR ── */}
