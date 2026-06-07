@@ -54,6 +54,8 @@
 .info-text-demo span{
     font-size: 0.8rem;
     font-weight: 300;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.2;
 }
 
 .info-card:hover{

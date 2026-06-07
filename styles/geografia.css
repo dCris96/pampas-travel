@@ -48,7 +48,8 @@
 
 .info-text p{
   font-size: .9rem;
-  line-height: 1rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.2;
 }
 
 .mapa {

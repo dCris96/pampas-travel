@@ -30,6 +30,8 @@
   font-size: 0.9rem;
   line-height: 0.8rem;
   margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.2;
 }
 
 .economia-card ul{
@@ -38,6 +40,8 @@
   display: flex;
   flex-direction: column;
   gap: 8px; 
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.2;
 }
 
 .cultura-card{
@@ -63,6 +67,14 @@
   text-indent: 20px;
   font-size: 1rem;
   line-height: 1.1rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.2;
+}
+
+.negrita{
+  font-size: 1rem;
+  font-style: italic;
+  color: #ffffff;
 }
 
 @media screen and (max-width: 700px) {
