@@ -32,7 +32,7 @@ export default function Geografia() {
       </div>
 
       <div className="mapa">
-        <img src="/mapa.png" alt="Mapa de General Pico" />
+        <img src="/mapa.png" alt="Mapa de Pampas, Pallasca, Áncash" />
         <div className="mapa-info">
           <p>438.18 km²</p>
           <span>Extensión</span>

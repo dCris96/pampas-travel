@@ -76,7 +76,7 @@ export default function CardLugar({ lugar, variante = "normal" }) {
               lugar.imagen_url ||
               "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=70"
             }
-            alt={lugar.titulo}
+            alt={`${lugar.titulo} en Pampas, Pallasca, Áncash`}
             className="card-lugar-h-img"
           />
           {/* Badge de categoría */}

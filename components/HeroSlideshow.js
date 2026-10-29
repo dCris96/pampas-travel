@@ -34,13 +34,13 @@ export default function HeroSlideshow() {
     <section className="hero">
       <img
         src={images[currentIndex]}
-        alt={`Pampas Travel - imagen ${currentIndex + 1}`}
+        alt={`Pampas, Pallasca, Áncash - imagen ${currentIndex + 1}`}
         className="hero-image"
         style={{ opacity }} // 👈 Vinculamos la opacidad al estado
       />
       <div className="hero-overlay" />
       <div className="hero-content">
-        <h2 className="hero-title">Pampas, Pallasca: Turismo y cultura en el corazón de áncash</h2>
+        <h1 className="hero-title">Pampas, Pallasca: Turismo y cultura en el corazón de áncash</h1>
         <p className="hero-description">
           Un territorio que combina una profunda herencia ancestral con un presente en constante crecimiento. Conoce más sobre nuestras raíces, nuestra tierra y nuestra gente.
         </p>
