@@ -6,9 +6,9 @@ import "@/styles/layout.css"; // ← asegúrate de importar layout.css
 import "@/styles/lugares.css";
 
 export const metadata = {
-  title: "Pampas Travel — Portal del Distrito",
+  title: "Descubre Pampas, Pallasca, Áncash",
   description:
-    "Vive el turismo en Pampas, Pallasca, Áncash: un destino de montañas, brumas y tradiciones milenarias.",
+    "Vive el turismo en Pampas, Pallasca, Áncash: un destino de montañas, brumas y tradiciones milenarias. Descubre qué ver en Pampas, Pallasca (Áncash): lagunas, cataratas, fiestas tradicionales y rutas de trekking. Guía práctica para tu visita.",
 };
 
 export default function RootLayout({ children }) {

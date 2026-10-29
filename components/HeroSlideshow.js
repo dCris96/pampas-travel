@@ -40,10 +40,7 @@ export default function HeroSlideshow() {
       />
       <div className="hero-overlay" />
       <div className="hero-content">
-        <h1 className="hero-title">Pampas</h1>
-        <span style={{ fontSize: 24, color: "#ffc353", fontWeight: "600" }}>
-          Capital minera del norte
-        </span>
+        <h2 className="hero-title">Pampas, Pallasca: Turismo y cultura en el corazón de áncash</h2>
         <p className="hero-description">
           Un territorio que combina una profunda herencia ancestral con un presente en constante crecimiento. Conoce más sobre nuestras raíces, nuestra tierra y nuestra gente.
         </p>

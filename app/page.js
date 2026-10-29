@@ -70,14 +70,6 @@ export default async function HomePage() {
       <section className="section">
         <EconomiaCultura />
       </section>
-
-      {/* PRÓXIMAMENTE */}
-      <section className="section">
-        <h2 className="section-title">Próximamente...</h2>
-        <p>
-          ¡Estamos preparando más contenido para ti!
-        </p>
-      </section>
     </div>
   );
 }

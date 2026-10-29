@@ -320,7 +320,7 @@ export default function Navbar({
         </div>
         <div className="sidebar-logo-text">
           <div className="sidebar-logo-title">Pampas Travel</div>
-          <div className="sidebar-logo-subtitle">Portal del Distrito</div>
+          <div className="sidebar-logo-subtitle">Distrito de Pampas (Pallasca)</div>
         </div>
       </div>
 
